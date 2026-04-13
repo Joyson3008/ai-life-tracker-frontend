@@ -1,0 +1,227 @@
+/* ===============================
+   🌌 THEME TOKENS (AURORA UI)
+================================ */
+:root {
+  --bg-primary: #030712;
+  --bg-secondary: #020617;
+
+  --card-bg: rgba(15, 23, 42, 0.6);
+  --border-color: rgba(255, 255, 255, 0.08);
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+
+  --accent-1: #00c6ff;
+  --accent-2: #7c3aed;
+  --accent-3: #22c55e;
+
+  --gradient-main: linear-gradient(135deg, #6366f1, #9333ea);
+}
+
+/* ===============================
+   🌈 BACKGROUND
+================================ */
+.app-bg {
+  min-height: 100vh;
+  color: var(--text-primary);
+  background: radial-gradient(circle at 20% 20%, #1e3a8a, transparent 40%),
+              radial-gradient(circle at 80% 30%, #7c3aed, transparent 40%),
+              radial-gradient(circle at 50% 80%, #00c6ff, transparent 40%),
+              var(--bg-primary);
+}
+
+/* ===============================
+   🧊 GLASS CARD (GLOBAL)
+================================ */
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+
+  padding: 20px;
+
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    inset 0 0 0.5px rgba(255, 255, 255, 0.08);
+
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.7),
+    0 0 25px rgba(99, 102, 241, 0.3);
+}
+
+/* ===============================
+   💰 EXPENSES SECTION (FIXED)
+================================ */
+.expense-card {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(20px);
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+
+  padding: 20px;
+
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+/* ===============================
+   🎯 CATEGORY CHIPS
+================================ */
+.expense-chip {
+  padding: 12px;
+  border-radius: 14px;
+
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  color: #e2e8f0;
+  cursor: pointer;
+
+  transition: all 0.25s ease;
+}
+
+.expense-chip:hover {
+  transform: scale(1.06);
+  background: rgba(99, 102, 241, 0.15);
+
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+}
+
+.expense-chip.active {
+  background: var(--gradient-main);
+  color: white;
+
+  box-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+}
+
+/* ===============================
+   ✏️ INPUT
+================================ */
+.expense-input {
+  width: 100%;
+  padding: 14px;
+
+  border-radius: 14px;
+
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  color: white;
+}
+
+.expense-input:focus {
+  outline: none;
+
+  box-shadow:
+    0 0 0 2px rgba(99, 102, 241, 0.5),
+    0 0 20px rgba(147, 51, 234, 0.3);
+}
+
+/* ===============================
+   🔘 BUTTON
+================================ */
+.expense-add-btn {
+  background: var(--gradient-main);
+
+  padding: 12px 22px;
+  border-radius: 14px;
+
+  color: white;
+  font-weight: 600;
+
+  transition: all 0.25s ease;
+}
+
+.expense-add-btn:hover {
+  transform: scale(1.05);
+
+  box-shadow:
+    0 10px 30px rgba(99, 102, 241, 0.5),
+    0 0 20px rgba(147, 51, 234, 0.5);
+}
+
+/* ===============================
+   ✏️ GLOBAL INPUT (KEEP)
+================================ */
+.input {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 14px;
+
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid var(--border-color);
+
+  color: var(--text-primary);
+}
+
+.input:focus {
+  outline: none;
+
+  box-shadow:
+    0 0 0 2px rgba(99, 102, 241, 0.4),
+    0 0 20px rgba(147, 51, 234, 0.3);
+}
+
+/* ===============================
+   🔘 BUTTON GLOBAL
+================================ */
+.btn-primary {
+  background: var(--gradient-main);
+  padding: 12px 22px;
+  border-radius: 14px;
+
+  color: white;
+  font-weight: 600;
+
+  transition: all 0.25s ease;
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+}
+
+/* ===============================
+   ✨ ANIMATION
+================================ */
+.fade-in {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===============================
+   ⏳ SPINNER
+================================ */
+.spinner {
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top: 3px solid #6366f1;
+
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
