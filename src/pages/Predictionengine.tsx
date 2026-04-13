@@ -15,6 +15,7 @@ import {
   PolarAngleAxis,
 } from "recharts";
 
+
 type Props = { userId: number };
 
 const CATEGORIES = [
