@@ -82,7 +82,7 @@ function getTrendLabel(slope: number): {
   return { label: "Declining ⚠️", color: "#f43f5e", icon: "↘" };
 }
 
-// ✅ Fixed here — removed unused `delta`
+// Fixed: removed unused `delta` parameter
 function getRiskLevel(
   predicted7: number,
   avgScore: number,
@@ -105,10 +105,11 @@ function getRiskLevel(
       color: "#f59e0b",
       desc: "Room for improvement. Focus on your weakest categories.",
     };
+  // avgScore used for context in the description
   return {
     level: "At Risk",
     color: "#f43f5e",
-    desc: "Your momentum is dropping. Urgent attention needed.",
+    desc: `Your momentum is dropping (avg: ${avgScore.toFixed(1)}). Urgent attention needed.`,
   };
 }
 
@@ -136,10 +137,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export default function PredictionEngine({ userId }: Props) {
   const { darkMode } = useTheme();
 
-  // Theme-aware class helpers
   const bg = darkMode ? "bg-[#060910]" : "bg-slate-100";
-  // const cardBg    = darkMode ? "bg-white/[0.03] border-white/[0.07]" : "bg-white border-slate-200";
-  const text = darkMode ? "{textMuted} " : "text-slate-900";
+  const text = darkMode ? "text-white" : "text-slate-900";
 
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -177,7 +176,6 @@ export default function PredictionEngine({ userId }: Props) {
     const predictions: number[] = [];
     for (let i = 1; i <= predDays; i++) {
       const rawPred = predict(reg, scores.length - 1 + i);
-      // Add reversion-to-mean dampening
       const dampened = rawPred * 0.7 + recentAvg * 0.3;
       predictions.push(Math.min(10, Math.max(0, dampened)));
     }
@@ -302,6 +300,7 @@ export default function PredictionEngine({ userId }: Props) {
       });
     }
 
+    // Fixed: only passing two arguments to getRiskLevel
     const risk = getRiskLevel(predicted7, avgScore);
     const trendInfo = getTrendLabel(reg.slope);
 
@@ -335,7 +334,7 @@ export default function PredictionEngine({ userId }: Props) {
       <div className="min-h-screen bg-[#060910] flex items-center justify-center">
         <div className="text-center space-y-4 px-6">
           <p className="text-6xl">🔮</p>
-          <h2 className="text-2xl font-black {textMuted} ">Need More Data</h2>
+          <h2 className="text-2xl font-black text-white">Need More Data</h2>
           <p className="text-gray-600">
             Log at least 5 days to unlock predictions. You have {logs.length} so
             far.
@@ -353,7 +352,7 @@ export default function PredictionEngine({ userId }: Props) {
 
   return (
     <div
-      className="min-h-screen bg-[#060910] {textMuted} "
+      className="min-h-screen bg-[#060910] text-white"
       style={{ fontFamily: "'DM Sans', sans-serif" }}
     >
       <div
@@ -395,7 +394,7 @@ export default function PredictionEngine({ userId }: Props) {
                   onClick={() => setActiveTab(tab)}
                   className={`px-4 py-2 rounded-xl text-xs font-semibold capitalize transition-all ${
                     activeTab === tab
-                      ? "bg-violet-500 {textMuted}  shadow-lg shadow-violet-500/30"
+                      ? "bg-violet-500 text-white shadow-lg shadow-violet-500/30"
                       : "text-gray-500 hover:text-gray-300"
                   }`}
                 >
@@ -743,7 +742,7 @@ export default function PredictionEngine({ userId }: Props) {
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-2">
                         <span className="text-xl">{cat.icon}</span>
-                        <span className="font-bold text-sm {textMuted} ">
+                        <span className="font-bold text-sm text-white">
                           {cat.label}
                         </span>
                       </div>
@@ -861,7 +860,7 @@ export default function PredictionEngine({ userId }: Props) {
                             </span>
                           </div>
                           <div>
-                            <p className="text-sm font-bold {textMuted} ">
+                            <p className="text-sm font-bold text-white">
                               {risk.type}
                             </p>
                             <p className="text-xs text-gray-400 mt-0.5">
@@ -936,7 +935,6 @@ export default function PredictionEngine({ userId }: Props) {
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
-
     </div>
   );
 }
