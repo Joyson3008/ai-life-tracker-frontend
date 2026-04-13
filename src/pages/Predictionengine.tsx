@@ -87,6 +87,7 @@ function getRiskLevel(
   avgScore: number,
 ): { level: string; color: string; desc: string } {
   const delta = predicted7 - avgScore;
+  console.log("Delta:", delta);
   if (predicted7 >= 8)
     return {
       level: "Excellent",
@@ -936,7 +937,7 @@ export default function PredictionEngine({ userId }: Props) {
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
-      console.log(delta);
+
     </div>
   );
 }
