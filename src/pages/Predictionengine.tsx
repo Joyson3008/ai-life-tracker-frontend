@@ -936,6 +936,7 @@ export default function PredictionEngine({ userId }: Props) {
           to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
+      console.log(delta);
     </div>
   );
 }
