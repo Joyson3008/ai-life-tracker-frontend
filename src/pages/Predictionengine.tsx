@@ -82,12 +82,11 @@ function getTrendLabel(slope: number): {
   return { label: "Declining ⚠️", color: "#f43f5e", icon: "↘" };
 }
 
+// ✅ Fixed here — removed unused `delta`
 function getRiskLevel(
   predicted7: number,
   avgScore: number,
 ): { level: string; color: string; desc: string } {
-  const delta = predicted7 - avgScore;
-  console.log("Delta:", delta);
   if (predicted7 >= 8)
     return {
       level: "Excellent",
