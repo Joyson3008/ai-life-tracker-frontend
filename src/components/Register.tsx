@@ -21,20 +21,28 @@ function Register({ onRegisterSuccess }: Props) {
       setError("");
       setLoading(true);
 
-      const res = await fetch(
-        "https://ai-life-tracker.onrender.com/api/users",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: name.trim(),
-            email: email.trim(),
-            password: password.trim(),
-          }),
-        },
-      );
+      const res = await fetch("https://ai-life-tracker.onrender.com/api/users", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    name: name.trim(),
+    email: email.trim(),
+    password: password.trim(),
+  }),
+});
+
+const text = await res.text(); // 🔥 ADD THIS
+console.log("REGISTER RESPONSE:", text); // 🔥 ADD THIS
+
+if (!res.ok) {
+  setError(text); // 🔥 SHOW REAL ERROR
+  return;
+}
+
+// if success
+alert("✅ Registered successfully!");
 
       if (!res.ok) {
         const text = await res.text();
