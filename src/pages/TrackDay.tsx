@@ -52,7 +52,6 @@ const phoneApps = [
   "TikTok",
   "Other",
 ];
-
 const moods = [
   { emoji: "😄", label: "Great", color: "#22c55e" },
   { emoji: "🙂", label: "Good", color: "#84cc16" },
@@ -204,256 +203,6 @@ const bibleBooks = [
   "Revelation",
 ];
 
-// Quran: 114 Surahs with names and verse counts
-const quranSurahs = [
-  { number: 1, name: "Al-Fatiha", englishName: "The Opening", ayahs: 7 },
-  { number: 2, name: "Al-Baqarah", englishName: "The Cow", ayahs: 286 },
-  { number: 3, name: "Ali 'Imran", englishName: "Family of Imran", ayahs: 200 },
-  { number: 4, name: "An-Nisa", englishName: "The Women", ayahs: 176 },
-  { number: 5, name: "Al-Ma'idah", englishName: "The Table", ayahs: 120 },
-  { number: 6, name: "Al-An'am", englishName: "The Cattle", ayahs: 165 },
-  { number: 7, name: "Al-A'raf", englishName: "The Heights", ayahs: 206 },
-  { number: 8, name: "Al-Anfal", englishName: "The Spoils of War", ayahs: 75 },
-  { number: 9, name: "At-Tawbah", englishName: "The Repentance", ayahs: 129 },
-  { number: 10, name: "Yunus", englishName: "Jonah", ayahs: 109 },
-  { number: 11, name: "Hud", englishName: "Hud", ayahs: 123 },
-  { number: 12, name: "Yusuf", englishName: "Joseph", ayahs: 111 },
-  { number: 13, name: "Ar-Ra'd", englishName: "The Thunder", ayahs: 43 },
-  { number: 14, name: "Ibrahim", englishName: "Abraham", ayahs: 52 },
-  { number: 15, name: "Al-Hijr", englishName: "The Rocky Tract", ayahs: 99 },
-  { number: 16, name: "An-Nahl", englishName: "The Bee", ayahs: 128 },
-  { number: 17, name: "Al-Isra", englishName: "The Night Journey", ayahs: 111 },
-  { number: 18, name: "Al-Kahf", englishName: "The Cave", ayahs: 110 },
-  { number: 19, name: "Maryam", englishName: "Mary", ayahs: 98 },
-  { number: 20, name: "Ta-Ha", englishName: "Ta-Ha", ayahs: 135 },
-  { number: 21, name: "Al-Anbiya", englishName: "The Prophets", ayahs: 112 },
-  { number: 22, name: "Al-Hajj", englishName: "The Pilgrimage", ayahs: 78 },
-  { number: 23, name: "Al-Mu'minun", englishName: "The Believers", ayahs: 118 },
-  { number: 24, name: "An-Nur", englishName: "The Light", ayahs: 64 },
-  { number: 25, name: "Al-Furqan", englishName: "The Criterion", ayahs: 77 },
-  { number: 26, name: "Ash-Shu'ara", englishName: "The Poets", ayahs: 227 },
-  { number: 27, name: "An-Naml", englishName: "The Ant", ayahs: 93 },
-  { number: 28, name: "Al-Qasas", englishName: "The Stories", ayahs: 88 },
-  { number: 29, name: "Al-'Ankabut", englishName: "The Spider", ayahs: 69 },
-  { number: 30, name: "Ar-Rum", englishName: "The Romans", ayahs: 60 },
-  { number: 31, name: "Luqman", englishName: "Luqman", ayahs: 34 },
-  { number: 32, name: "As-Sajdah", englishName: "The Prostration", ayahs: 30 },
-  {
-    number: 33,
-    name: "Al-Ahzab",
-    englishName: "The Combined Forces",
-    ayahs: 73,
-  },
-  { number: 34, name: "Saba", englishName: "Sheba", ayahs: 54 },
-  { number: 35, name: "Fatir", englishName: "Originator", ayahs: 45 },
-  { number: 36, name: "Ya-Sin", englishName: "Ya-Sin", ayahs: 83 },
-  {
-    number: 37,
-    name: "As-Saffat",
-    englishName: "Those Ranges in Ranks",
-    ayahs: 182,
-  },
-  { number: 38, name: "Sad", englishName: "The Letter Sad", ayahs: 88 },
-  { number: 39, name: "Az-Zumar", englishName: "The Groups", ayahs: 75 },
-  { number: 40, name: "Ghafir", englishName: "The Forgiver", ayahs: 85 },
-  {
-    number: 41,
-    name: "Fussilat",
-    englishName: "Explained in Detail",
-    ayahs: 54,
-  },
-  {
-    number: 42,
-    name: "Ash-Shuraa",
-    englishName: "The Consultation",
-    ayahs: 53,
-  },
-  {
-    number: 43,
-    name: "Az-Zukhruf",
-    englishName: "The Ornaments of Gold",
-    ayahs: 89,
-  },
-  { number: 44, name: "Ad-Dukhan", englishName: "The Smoke", ayahs: 59 },
-  { number: 45, name: "Al-Jathiyah", englishName: "The Crouching", ayahs: 37 },
-  {
-    number: 46,
-    name: "Al-Ahqaf",
-    englishName: "The Wind-Curved Sandhills",
-    ayahs: 35,
-  },
-  { number: 47, name: "Muhammad", englishName: "Muhammad", ayahs: 38 },
-  { number: 48, name: "Al-Fath", englishName: "The Victory", ayahs: 29 },
-  { number: 49, name: "Al-Hujurat", englishName: "The Rooms", ayahs: 18 },
-  { number: 50, name: "Qaf", englishName: "The Letter Qaf", ayahs: 45 },
-  {
-    number: 51,
-    name: "Adh-Dhariyat",
-    englishName: "The Winnowing Winds",
-    ayahs: 60,
-  },
-  { number: 52, name: "At-Tur", englishName: "The Mount", ayahs: 49 },
-  { number: 53, name: "An-Najm", englishName: "The Star", ayahs: 62 },
-  { number: 54, name: "Al-Qamar", englishName: "The Moon", ayahs: 55 },
-  { number: 55, name: "Ar-Rahman", englishName: "The Beneficent", ayahs: 78 },
-  { number: 56, name: "Al-Waqi'ah", englishName: "The Inevitable", ayahs: 96 },
-  { number: 57, name: "Al-Hadid", englishName: "The Iron", ayahs: 29 },
-  {
-    number: 58,
-    name: "Al-Mujadila",
-    englishName: "The Pleading Woman",
-    ayahs: 22,
-  },
-  { number: 59, name: "Al-Hashr", englishName: "The Exile", ayahs: 24 },
-  {
-    number: 60,
-    name: "Al-Mumtahanah",
-    englishName: "She that is to be Examined",
-    ayahs: 13,
-  },
-  { number: 61, name: "As-Saf", englishName: "The Ranks", ayahs: 14 },
-  { number: 62, name: "Al-Jumu'ah", englishName: "Friday", ayahs: 11 },
-  {
-    number: 63,
-    name: "Al-Munafiqun",
-    englishName: "The Hypocrites",
-    ayahs: 11,
-  },
-  {
-    number: 64,
-    name: "At-Taghabun",
-    englishName: "The Mutual Disillusion",
-    ayahs: 18,
-  },
-  { number: 65, name: "At-Talaq", englishName: "The Divorce", ayahs: 12 },
-  { number: 66, name: "At-Tahrim", englishName: "The Prohibition", ayahs: 12 },
-  { number: 67, name: "Al-Mulk", englishName: "The Sovereignty", ayahs: 30 },
-  { number: 68, name: "Al-Qalam", englishName: "The Pen", ayahs: 52 },
-  { number: 69, name: "Al-Haqqah", englishName: "The Reality", ayahs: 52 },
-  {
-    number: 70,
-    name: "Al-Ma'arij",
-    englishName: "The Ascending Stairways",
-    ayahs: 44,
-  },
-  { number: 71, name: "Nuh", englishName: "Noah", ayahs: 28 },
-  { number: 72, name: "Al-Jinn", englishName: "The Jinn", ayahs: 28 },
-  {
-    number: 73,
-    name: "Al-Muzzammil",
-    englishName: "The Enshrouded One",
-    ayahs: 20,
-  },
-  {
-    number: 74,
-    name: "Al-Muddaththir",
-    englishName: "The Cloaked One",
-    ayahs: 56,
-  },
-  {
-    number: 75,
-    name: "Al-Qiyamah",
-    englishName: "The Resurrection",
-    ayahs: 40,
-  },
-  { number: 76, name: "Al-Insan", englishName: "The Man", ayahs: 31 },
-  { number: 77, name: "Al-Mursalat", englishName: "The Emissaries", ayahs: 50 },
-  { number: 78, name: "An-Naba", englishName: "The Tidings", ayahs: 40 },
-  {
-    number: 79,
-    name: "An-Nazi'at",
-    englishName: "Those who drag forth",
-    ayahs: 46,
-  },
-  { number: 80, name: "Abasa", englishName: "He Frowned", ayahs: 42 },
-  { number: 81, name: "At-Takwir", englishName: "The Overthrowing", ayahs: 29 },
-  { number: 82, name: "Al-Infitar", englishName: "The Cleaving", ayahs: 19 },
-  {
-    number: 83,
-    name: "Al-Mutaffifin",
-    englishName: "The Defrauding",
-    ayahs: 36,
-  },
-  { number: 84, name: "Al-Inshiqaq", englishName: "The Sundering", ayahs: 25 },
-  {
-    number: 85,
-    name: "Al-Buruj",
-    englishName: "The Mansions of the Stars",
-    ayahs: 22,
-  },
-  { number: 86, name: "At-Tariq", englishName: "The Nightcomer", ayahs: 17 },
-  { number: 87, name: "Al-A'la", englishName: "The Most High", ayahs: 19 },
-  {
-    number: 88,
-    name: "Al-Ghashiyah",
-    englishName: "The Overwhelming",
-    ayahs: 26,
-  },
-  { number: 89, name: "Al-Fajr", englishName: "The Dawn", ayahs: 30 },
-  { number: 90, name: "Al-Balad", englishName: "The City", ayahs: 20 },
-  { number: 91, name: "Ash-Shams", englishName: "The Sun", ayahs: 15 },
-  { number: 92, name: "Al-Layl", englishName: "The Night", ayahs: 21 },
-  { number: 93, name: "Ad-Duhaa", englishName: "The Morning Hours", ayahs: 11 },
-  { number: 94, name: "Ash-Sharh", englishName: "The Relief", ayahs: 8 },
-  { number: 95, name: "At-Tin", englishName: "The Fig", ayahs: 8 },
-  { number: 96, name: "Al-'Alaq", englishName: "The Clot", ayahs: 19 },
-  { number: 97, name: "Al-Qadr", englishName: "The Power", ayahs: 5 },
-  { number: 98, name: "Al-Bayyinah", englishName: "The Clear Proof", ayahs: 8 },
-  { number: 99, name: "Az-Zalzalah", englishName: "The Earthquake", ayahs: 8 },
-  { number: 100, name: "Al-'Adiyat", englishName: "The Courser", ayahs: 11 },
-  { number: 101, name: "Al-Qari'ah", englishName: "The Calamity", ayahs: 11 },
-  {
-    number: 102,
-    name: "At-Takathur",
-    englishName: "The Rivalry in World Increase",
-    ayahs: 8,
-  },
-  { number: 103, name: "Al-'Asr", englishName: "The Declining Day", ayahs: 3 },
-  { number: 104, name: "Al-Humazah", englishName: "The Traducer", ayahs: 9 },
-  { number: 105, name: "Al-Fil", englishName: "The Elephant", ayahs: 5 },
-  { number: 106, name: "Quraysh", englishName: "Quraysh", ayahs: 4 },
-  {
-    number: 107,
-    name: "Al-Ma'un",
-    englishName: "The Small Kindnesses",
-    ayahs: 7,
-  },
-  { number: 108, name: "Al-Kawthar", englishName: "The Abundance", ayahs: 3 },
-  {
-    number: 109,
-    name: "Al-Kafirun",
-    englishName: "The Disbelievers",
-    ayahs: 6,
-  },
-  { number: 110, name: "An-Nasr", englishName: "The Divine Support", ayahs: 3 },
-  { number: 111, name: "Al-Masad", englishName: "The Palm Fiber", ayahs: 5 },
-  { number: 112, name: "Al-Ikhlas", englishName: "The Sincerity", ayahs: 4 },
-  { number: 113, name: "Al-Falaq", englishName: "The Daybreak", ayahs: 5 },
-  { number: 114, name: "An-Nas", englishName: "The Mankind", ayahs: 6 },
-];
-
-// Bhagavad Gita: 18 chapters with verse counts
-const gitaChapters = [
-  { chapter: 1, name: "Arjuna Visada Yoga", verses: 47 },
-  { chapter: 2, name: "Sankhya Yoga", verses: 72 },
-  { chapter: 3, name: "Karma Yoga", verses: 43 },
-  { chapter: 4, name: "Jnana Karma Sanyasa Yoga", verses: 42 },
-  { chapter: 5, name: "Karma Sanyasa Yoga", verses: 29 },
-  { chapter: 6, name: "Atma Samyama Yoga", verses: 47 },
-  { chapter: 7, name: "Jnana Vijnana Yoga", verses: 30 },
-  { chapter: 8, name: "Aksara Brahma Yoga", verses: 28 },
-  { chapter: 9, name: "Raja Vidya Yoga", verses: 34 },
-  { chapter: 10, name: "Vibhuti Yoga", verses: 42 },
-  { chapter: 11, name: "Visvarupa Darsana Yoga", verses: 55 },
-  { chapter: 12, name: "Bhakti Yoga", verses: 20 },
-  { chapter: 13, name: "Ksetra Ksetrajna Vibhaga Yoga", verses: 35 },
-  { chapter: 14, name: "Gunatraya Vibhaga Yoga", verses: 27 },
-  { chapter: 15, name: "Purusottama Yoga", verses: 20 },
-  { chapter: 16, name: "Daivasura Sampad Vibhaga Yoga", verses: 24 },
-  { chapter: 17, name: "Sraddhatraya Vibhaga Yoga", verses: 28 },
-  { chapter: 18, name: "Moksa Sanyasa Yoga", verses: 78 },
-];
-
 // ─── SUBCOMPONENTS ─────────────────────────────────────────────────────────────
 
 const SectionCard = ({
@@ -464,6 +213,7 @@ const SectionCard = ({
   className?: string;
 }) => {
   const { darkMode } = useTheme();
+
   return (
     <div
       className={`relative rounded-2xl border backdrop-blur-xl overflow-hidden transition-colors duration-300 ${
@@ -500,644 +250,69 @@ const SectionHeader = ({
   </div>
 );
 
-// ─── SPIRITUAL READER COMPONENT ────────────────────────────────────────────────
+// ─── MAIN COMPONENT ────────────────────────────────────────────────────────────
 
-type SpiritualTab = "bible" | "quran" | "gita";
+export default function TrackDay({ userId }: Props) {
+  const { darkMode } = useTheme();
 
-interface SpiritualReading {
-  bible: string;
-  quran: string;
-  gita: string;
-}
-
-function SpiritualReader({
-  darkMode,
-  onReadingChange,
-}: {
-  darkMode: boolean;
-  onReadingChange: (reading: SpiritualReading) => void;
-}) {
+  // ── Theme-aware tokens ──
+  const bg = darkMode ? "bg-[#060910]" : "bg-slate-100";
+  const text = darkMode ? "text-white" : "text-slate-900";
   const textMuted = darkMode ? "text-gray-400" : "text-slate-500";
   const textFaint = darkMode ? "text-gray-600" : "text-slate-400";
 
+  // Input styles
+  const inputBase = darkMode
+    ? "bg-black/30 border-white/[0.08] text-white placeholder-white/25 focus:border-indigo-500/60 focus:bg-black/40 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)]"
+    : "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:border-indigo-400 focus:bg-white focus:shadow-[0_0_0_3px_rgba(99,102,241,0.10)]";
+
+  const inputClass = `w-full px-4 py-3 rounded-xl border outline-none transition-all duration-200 text-sm ${inputBase}`;
+
+  const textareaClass = `w-full px-4 py-3 rounded-xl border outline-none transition-all duration-200 text-sm resize-none ${inputBase}`;
+
+  // Select styles
   const selectClass = `px-3 py-2.5 rounded-xl border text-sm outline-none cursor-pointer transition-all ${
     darkMode
       ? "bg-black/30 border-white/[0.08] text-white/80 focus:border-indigo-500/50"
       : "bg-white border-slate-200 text-slate-800 focus:border-indigo-400"
   }`;
 
-  const bibleBoxClass = darkMode
-    ? "bg-black/30 border-white/[0.05]"
-    : "bg-slate-50 border-slate-200";
-
-  // ── Active spiritual tab ──
-  const [activeTab, setActiveTab] = useState<SpiritualTab>("bible");
-
-  // ── Shared spiritual readings state ──
-  const [spiritualReading, setSpiritualReading] = useState<SpiritualReading>({
-    bible: "",
-    quran: "",
-    gita: "",
-  });
-
-  const updateReading = (key: SpiritualTab, value: string) => {
-    const updated = { ...spiritualReading, [key]: value };
-    setSpiritualReading(updated);
-    onReadingChange(updated);
-  };
-
-  // ── Bible state ──
-  const [bibleBook, setBibleBook] = useState("John");
-  const [bibleChapter, setBibleChapter] = useState(3);
-  const [bibleContent, setBibleContent] = useState("");
-  const [bibleLoading, setBibleLoading] = useState(false);
-  const [bibleReaderOpen, setBibleReaderOpen] = useState(false);
-  const [bibleError, setBibleError] = useState("");
-
-  // ── Quran state ──
-  const [quranSurah, setQuranSurah] = useState(1);
-  const [quranContent, setQuranContent] = useState<
-    { number: number; text: string; translation: string }[]
-  >([]);
-  const [quranLoading, setQuranLoading] = useState(false);
-  const [quranReaderOpen, setQuranReaderOpen] = useState(false);
-  const [quranError, setQuranError] = useState("");
-
-  // ── Gita state ──
-  const [gitaChapter, setGitaChapter] = useState(1);
-  const [gitaVerse, setGitaVerse] = useState(1);
-  const [gitaContent, setGitaContent] = useState<{
-    slok: string;
-    transliteration: string;
-    tej: { ht: string };
-    siva: { et: string };
-  } | null>(null);
-  const [gitaLoading, setGitaLoading] = useState(false);
-  const [gitaError, setGitaError] = useState("");
-
-  // ── Bible fetch ──
-  const fetchBibleChapter = async () => {
-    setBibleLoading(true);
-    setBibleError("");
-    try {
-      const res = await fetch(
-        `https://bible-api.com/${bibleBook}%20${bibleChapter}`,
-      );
-      if (!res.ok) throw new Error("Failed to fetch");
-      const data = await res.json();
-      const text = data.verses
-        .map((v: any) => `${v.verse}. ${v.text}`)
-        .join("\n");
-      setBibleContent(text);
-      setBibleReaderOpen(true);
-      updateReading("bible", `${bibleBook} ${bibleChapter}`);
-    } catch {
-      setBibleError("Failed to load chapter. Please try again.");
-      setBibleContent("");
-    }
-    setBibleLoading(false);
-  };
-
-  // ── Quran fetch ──
-  const fetchQuranSurah = async () => {
-    setQuranLoading(true);
-    setQuranError("");
-    try {
-      // Fetch Arabic + English translation in parallel
-      const [arabicRes, translationRes] = await Promise.all([
-        fetch(`https://api.alquran.cloud/v1/surah/${quranSurah}`),
-        fetch(`https://api.alquran.cloud/v1/surah/${quranSurah}/en.asad`),
-      ]);
-      if (!arabicRes.ok || !translationRes.ok)
-        throw new Error("Failed to fetch");
-      const arabicData = await arabicRes.json();
-      const translationData = await translationRes.json();
-
-      const verses = arabicData.data.ayahs.map((ayah: any, i: number) => ({
-        number: ayah.numberInSurah,
-        text: ayah.text,
-        translation: translationData.data.ayahs[i]?.text || "",
-      }));
-      setQuranContent(verses);
-      setQuranReaderOpen(true);
-      const surahInfo = quranSurahs.find((s) => s.number === quranSurah);
-      updateReading("quran", `Surah ${quranSurah}: ${surahInfo?.name || ""}`);
-    } catch {
-      setQuranError("Failed to load Surah. Please try again.");
-      setQuranContent([]);
-    }
-    setQuranLoading(false);
-  };
-
-  // ── Gita fetch ──
-  const fetchGitaVerse = async () => {
-    setGitaLoading(true);
-    setGitaError("");
-    try {
-      const res = await fetch(
-        `https://vedicscriptures.github.io/slok/${gitaChapter}/${gitaVerse}`,
-      );
-      if (!res.ok) throw new Error("Failed to fetch");
-      const data = await res.json();
-      setGitaContent(data);
-      updateReading("gita", `Chapter ${gitaChapter}, Verse ${gitaVerse}`);
-    } catch {
-      setGitaError("Failed to load verse. Please try again.");
-      setGitaContent(null);
-    }
-    setGitaLoading(false);
-  };
-
-  const selectedSurahInfo = quranSurahs.find((s) => s.number === quranSurah);
-  const selectedGitaChapter = gitaChapters.find(
-    (c) => c.chapter === gitaChapter,
-  );
-  const maxGitaVerse = selectedGitaChapter?.verses || 47;
-
-  const tabConfig: {
-    key: SpiritualTab;
-    label: string;
-    emoji: string;
-    color: string;
-  }[] = [
-    { key: "bible", label: "Bible", emoji: "✝️", color: "#818cf8" },
-    { key: "quran", label: "Quran", emoji: "☪️", color: "#34d399" },
-    { key: "gita", label: "Gita", emoji: "🕉️", color: "#fb923c" },
-  ];
-
-  return (
-    <div>
-      {/* Tab Switcher */}
-      <div className="flex gap-2 mb-5">
-        {tabConfig.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border text-xs font-semibold transition-all duration-200"
-            style={
-              activeTab === tab.key
-                ? {
-                    background: `${tab.color}20`,
-                    borderColor: `${tab.color}55`,
-                    color: darkMode ? tab.color : tab.color,
-                    boxShadow: `0 0 16px ${tab.color}20`,
-                  }
-                : {
-                    background: darkMode ? "rgba(255,255,255,0.03)" : "#f8fafc",
-                    borderColor: darkMode
-                      ? "rgba(255,255,255,0.08)"
-                      : "#e2e8f0",
-                    color: darkMode ? "rgba(255,255,255,0.4)" : "#94a3b8",
-                  }
-            }
-          >
-            <span>{tab.emoji}</span>
-            {tab.label}
-            {spiritualReading[tab.key] && (
-              <span
-                className="w-1.5 h-1.5 rounded-full"
-                style={{ background: tab.color }}
-              />
-            )}
-          </button>
-        ))}
-      </div>
-
-      {/* ── BIBLE TAB ── */}
-      {activeTab === "bible" && (
-        <div>
-          <div className="flex flex-wrap gap-3 mb-4">
-            <select
-              value={bibleBook}
-              onChange={(e) => {
-                setBibleBook(e.target.value);
-                if (bibleChapter > chapterLimits[e.target.value])
-                  setBibleChapter(1);
-              }}
-              className={selectClass}
-            >
-              <option disabled>── Old Testament ──</option>
-              {bibleBooks.slice(0, 39).map((b) => (
-                <option key={b} value={b}>
-                  {b}
-                </option>
-              ))}
-              <option disabled>── New Testament ──</option>
-              {bibleBooks.slice(39).map((b) => (
-                <option key={b} value={b}>
-                  {b}
-                </option>
-              ))}
-            </select>
-
-            <input
-              type="number"
-              min={1}
-              max={chapterLimits[bibleBook]}
-              value={bibleChapter}
-              onChange={(e) => {
-                let v = Number(e.target.value);
-                v = Math.min(Math.max(v, 1), chapterLimits[bibleBook]);
-                setBibleChapter(v);
-              }}
-              className={`w-20 px-3 py-2.5 rounded-xl border text-sm text-center outline-none transition-all ${
-                darkMode
-                  ? "bg-black/30 border-white/[0.08] text-white/90 focus:border-indigo-500/50"
-                  : "bg-white border-slate-200 text-slate-900 focus:border-indigo-400"
-              }`}
-            />
-
-            <span className={`text-xs self-center ${textFaint}`}>
-              max {chapterLimits[bibleBook]}
-            </span>
-
-            <button
-              onClick={fetchBibleChapter}
-              className="px-5 py-2.5 rounded-xl text-sm font-medium transition-colors"
-              style={{
-                background: "rgba(129,140,248,0.15)",
-                border: "1px solid rgba(129,140,248,0.35)",
-                color: darkMode ? "#a5b4fc" : "#4f46e5",
-              }}
-            >
-              {bibleLoading ? "Loading…" : "Read Chapter"}
-            </button>
-          </div>
-
-          {bibleError && (
-            <p className="text-xs text-red-400 mb-3">{bibleError}</p>
-          )}
-
-          {bibleContent ? (
-            <div>
-              <button
-                onClick={() => setBibleReaderOpen(!bibleReaderOpen)}
-                className={`flex items-center gap-2 text-xs mb-2 transition-colors ${textMuted}`}
-              >
-                <ChevronDown
-                  size={13}
-                  className={`transition-transform ${bibleReaderOpen ? "rotate-180" : ""}`}
-                />
-                {bibleReaderOpen ? "Hide" : "Show"} Chapter · {bibleBook}{" "}
-                {bibleChapter}
-              </button>
-              {bibleReaderOpen && (
-                <div
-                  className={`h-52 overflow-y-auto rounded-xl p-4 text-sm leading-relaxed whitespace-pre-line border ${bibleBoxClass} ${textMuted}`}
-                >
-                  {bibleContent}
-                </div>
-              )}
-            </div>
-          ) : (
-            <div
-              className={`flex items-center justify-center h-28 rounded-xl border border-dashed text-sm ${textFaint} ${
-                darkMode
-                  ? "bg-black/20 border-white/[0.06]"
-                  : "bg-slate-50 border-slate-200"
-              }`}
-            >
-              Select a book &amp; chapter, then click Read
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ── QURAN TAB ── */}
-      {activeTab === "quran" && (
-        <div>
-          <div className="flex flex-wrap gap-3 mb-4">
-            <select
-              value={quranSurah}
-              onChange={(e) => setQuranSurah(Number(e.target.value))}
-              className={`${selectClass} max-w-xs`}
-            >
-              {quranSurahs.map((s) => (
-                <option key={s.number} value={s.number}>
-                  {s.number}. {s.name} — {s.englishName}
-                </option>
-              ))}
-            </select>
-
-            {selectedSurahInfo && (
-              <span className={`text-xs self-center ${textFaint}`}>
-                {selectedSurahInfo.ayahs} verses
-              </span>
-            )}
-
-            <button
-              onClick={fetchQuranSurah}
-              className="px-5 py-2.5 rounded-xl text-sm font-medium transition-colors"
-              style={{
-                background: "rgba(52,211,153,0.15)",
-                border: "1px solid rgba(52,211,153,0.35)",
-                color: darkMode ? "#6ee7b7" : "#059669",
-              }}
-            >
-              {quranLoading ? "Loading…" : "Read Surah"}
-            </button>
-          </div>
-
-          {quranError && (
-            <p className="text-xs text-red-400 mb-3">{quranError}</p>
-          )}
-
-          {quranContent.length > 0 ? (
-            <div>
-              <button
-                onClick={() => setQuranReaderOpen(!quranReaderOpen)}
-                className={`flex items-center gap-2 text-xs mb-2 transition-colors ${textMuted}`}
-              >
-                <ChevronDown
-                  size={13}
-                  className={`transition-transform ${quranReaderOpen ? "rotate-180" : ""}`}
-                />
-                {quranReaderOpen ? "Hide" : "Show"} Surah ·{" "}
-                {selectedSurahInfo?.name}
-              </button>
-              {quranReaderOpen && (
-                <div
-                  className={`h-52 overflow-y-auto rounded-xl p-4 border ${bibleBoxClass}`}
-                >
-                  {quranContent.map((ayah) => (
-                    <div key={ayah.number} className="mb-4">
-                      <div className="flex items-start gap-3">
-                        <span
-                          className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold"
-                          style={{
-                            background: "rgba(52,211,153,0.15)",
-                            color: "#34d399",
-                          }}
-                        >
-                          {ayah.number}
-                        </span>
-                        <div className="flex-1">
-                          <p
-                            className="text-right text-base leading-loose mb-1"
-                            style={{
-                              fontFamily: "'Amiri', 'Scheherazade New', serif",
-                              color: darkMode
-                                ? "rgba(255,255,255,0.85)"
-                                : "#1e293b",
-                              direction: "rtl",
-                            }}
-                          >
-                            {ayah.text}
-                          </p>
-                          <p className={`text-xs leading-relaxed ${textMuted}`}>
-                            {ayah.translation}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          ) : (
-            <div
-              className={`flex items-center justify-center h-28 rounded-xl border border-dashed text-sm ${textFaint} ${
-                darkMode
-                  ? "bg-black/20 border-white/[0.06]"
-                  : "bg-slate-50 border-slate-200"
-              }`}
-            >
-              Select a Surah, then click Read
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ── GITA TAB ── */}
-      {activeTab === "gita" && (
-        <div>
-          <div className="flex flex-wrap gap-3 mb-4">
-            <select
-              value={gitaChapter}
-              onChange={(e) => {
-                setGitaChapter(Number(e.target.value));
-                setGitaVerse(1);
-                setGitaContent(null);
-              }}
-              className={`${selectClass} max-w-xs`}
-            >
-              {gitaChapters.map((c) => (
-                <option key={c.chapter} value={c.chapter}>
-                  Ch {c.chapter}: {c.name}
-                </option>
-              ))}
-            </select>
-
-            <input
-              type="number"
-              min={1}
-              max={maxGitaVerse}
-              value={gitaVerse}
-              onChange={(e) => {
-                let v = Number(e.target.value);
-                v = Math.min(Math.max(v, 1), maxGitaVerse);
-                setGitaVerse(v);
-              }}
-              className={`w-20 px-3 py-2.5 rounded-xl border text-sm text-center outline-none transition-all ${
-                darkMode
-                  ? "bg-black/30 border-white/[0.08] text-white/90 focus:border-orange-500/50"
-                  : "bg-white border-slate-200 text-slate-900 focus:border-orange-400"
-              }`}
-            />
-
-            <span className={`text-xs self-center ${textFaint}`}>
-              verse / {maxGitaVerse}
-            </span>
-
-            <button
-              onClick={fetchGitaVerse}
-              className="px-5 py-2.5 rounded-xl text-sm font-medium transition-colors"
-              style={{
-                background: "rgba(251,146,60,0.15)",
-                border: "1px solid rgba(251,146,60,0.35)",
-                color: darkMode ? "#fdba74" : "#ea580c",
-              }}
-            >
-              {gitaLoading ? "Loading…" : "Read Verse"}
-            </button>
-          </div>
-
-          {gitaError && (
-            <p className="text-xs text-red-400 mb-3">{gitaError}</p>
-          )}
-
-          {gitaContent ? (
-            <div className={`rounded-xl p-5 border ${bibleBoxClass}`}>
-              {/* Sanskrit */}
-              <p
-                className="text-center text-base leading-loose mb-3"
-                style={{
-                  fontFamily: "'Noto Serif Devanagari', serif",
-                  color: darkMode ? "rgba(255,255,255,0.9)" : "#1e293b",
-                }}
-              >
-                {gitaContent.slok}
-              </p>
-
-              {/* Divider */}
-              <div
-                className="w-16 h-px mx-auto mb-3"
-                style={{ background: "rgba(251,146,60,0.3)" }}
-              />
-
-              {/* Transliteration */}
-              {gitaContent.transliteration && (
-                <p
-                  className="text-center text-xs italic mb-3"
-                  style={{
-                    color: darkMode ? "rgba(251,146,60,0.7)" : "#ea580c",
-                  }}
-                >
-                  {gitaContent.transliteration}
-                </p>
-              )}
-
-              {/* Hindi meaning */}
-              {gitaContent.tej?.ht && (
-                <div className="mb-2">
-                  <span
-                    className="text-[10px] uppercase font-semibold tracking-wider"
-                    style={{ color: "rgba(251,146,60,0.6)" }}
-                  >
-                    Hindi
-                  </span>
-                  <p className={`text-sm leading-relaxed mt-1 ${textMuted}`}>
-                    {gitaContent.tej.ht}
-                  </p>
-                </div>
-              )}
-
-              {/* English meaning */}
-              {gitaContent.siva?.et && (
-                <div>
-                  <span
-                    className="text-[10px] uppercase font-semibold tracking-wider"
-                    style={{ color: "rgba(251,146,60,0.6)" }}
-                  >
-                    English
-                  </span>
-                  <p className={`text-sm leading-relaxed mt-1 ${textMuted}`}>
-                    {gitaContent.siva.et}
-                  </p>
-                </div>
-              )}
-
-              <p
-                className="text-[10px] mt-3 text-right"
-                style={{ color: "rgba(251,146,60,0.4)" }}
-              >
-                Chapter {gitaChapter}, Verse {gitaVerse} ·{" "}
-                {selectedGitaChapter?.name}
-              </p>
-            </div>
-          ) : (
-            <div
-              className={`flex items-center justify-center h-28 rounded-xl border border-dashed text-sm ${textFaint} ${
-                darkMode
-                  ? "bg-black/20 border-white/[0.06]"
-                  : "bg-slate-50 border-slate-200"
-              }`}
-            >
-              Select a chapter &amp; verse, then click Read
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Reading summary badges */}
-      {(spiritualReading.bible ||
-        spiritualReading.quran ||
-        spiritualReading.gita) && (
-        <div className="mt-4 flex flex-wrap gap-2">
-          {spiritualReading.bible && (
-            <span
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs"
-              style={{
-                background: "rgba(129,140,248,0.1)",
-                borderColor: "rgba(129,140,248,0.25)",
-                color: darkMode ? "#a5b4fc" : "#4f46e5",
-              }}
-            >
-              ✝️ {spiritualReading.bible}
-            </span>
-          )}
-          {spiritualReading.quran && (
-            <span
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs"
-              style={{
-                background: "rgba(52,211,153,0.1)",
-                borderColor: "rgba(52,211,153,0.25)",
-                color: darkMode ? "#6ee7b7" : "#059669",
-              }}
-            >
-              ☪️ {spiritualReading.quran}
-            </span>
-          )}
-          {spiritualReading.gita && (
-            <span
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs"
-              style={{
-                background: "rgba(251,146,60,0.1)",
-                borderColor: "rgba(251,146,60,0.25)",
-                color: darkMode ? "#fdba74" : "#ea580c",
-              }}
-            >
-              🕉️ {spiritualReading.gita}
-            </span>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── MAIN COMPONENT ────────────────────────────────────────────────────────────
-
-export default function TrackDay({ userId }: Props) {
-  const { darkMode } = useTheme();
-
-  const bg = darkMode ? "bg-[#060910]" : "bg-slate-100";
-  const text = darkMode ? "text-white" : "text-slate-900";
-  const textMuted = darkMode ? "text-gray-400" : "text-slate-500";
-  const textFaint = darkMode ? "text-gray-600" : "text-slate-400";
-
-  const inputBase = darkMode
-    ? "bg-black/30 border-white/[0.08] text-white placeholder-white/25 focus:border-indigo-500/60 focus:bg-black/40 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)]"
-    : "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:border-indigo-400 focus:bg-white focus:shadow-[0_0_0_3px_rgba(99,102,241,0.10)]";
-
-  const inputClass = `w-full px-4 py-3 rounded-xl border outline-none transition-all duration-200 text-sm ${inputBase}`;
-  const textareaClass = `w-full px-4 py-3 rounded-xl border outline-none transition-all duration-200 text-sm resize-none ${inputBase}`;
-
-  
+  // Counter button styles
   const counterBtnClass = `w-7 h-7 rounded-lg border flex items-center justify-center transition-colors ${
     darkMode
       ? "bg-white/5 border-white/10 text-white/60 hover:bg-white/10"
       : "bg-slate-100 border-slate-200 text-slate-500 hover:bg-slate-200"
   }`;
 
+ 
+
+  // Stat chip
   const statChipClass = `flex flex-col items-center px-4 py-3 rounded-xl border transition-colors ${
     darkMode
       ? "bg-white/[0.04] border-white/[0.06]"
       : "bg-white border-slate-200 shadow-sm"
   }`;
 
+  // Goal item
   const goalItemClass = `flex items-center gap-3 px-4 py-3 rounded-xl border mb-2 transition-colors ${
     darkMode
       ? "bg-white/[0.03] border-white/[0.06]"
       : "bg-slate-50 border-slate-200"
   }`;
 
+  // Expense tag
   const expenseTagClass = `inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition-colors ${
     darkMode
       ? "bg-white/[0.04] border-white/[0.07] text-white/60"
       : "bg-slate-100 border-slate-200 text-slate-600"
   }`;
 
+  // Bible reader box
+  const bibleBoxClass = darkMode
+    ? "bg-black/30 border-white/[0.05]"
+    : "bg-slate-50 border-slate-200";
+
+  // Progress bar track
   const progressTrackClass = darkMode ? "bg-white/[0.06]" : "bg-slate-200";
 
   const today = new Date().toLocaleDateString("en-US", {
@@ -1148,11 +323,11 @@ export default function TrackDay({ userId }: Props) {
   });
 
   // ── State ──
-  const [spiritualReading, setSpiritualReading] = useState({
-    bible: "",
-    quran: "",
-    gita: "",
-  });
+  const [bibleBook, setBibleBook] = useState("John");
+  const [bibleChapter, setBibleChapter] = useState(3);
+  const [bibleContent, setBibleContent] = useState("");
+  const [bibleLoading, setBibleLoading] = useState(false);
+  const [bibleReaderOpen, setBibleReaderOpen] = useState(false);
 
   const [sleepHours, setSleepHours] = useState("");
   const [waterIntake, setWaterIntake] = useState("");
@@ -1183,6 +358,7 @@ export default function TrackDay({ userId }: Props) {
   const [diaryTitle, setDiaryTitle] = useState("");
 
   const [form, setForm] = useState({
+    bibleReading: "",
     bookReading: "",
     codingWork: "",
     csTopic: "",
@@ -1198,6 +374,23 @@ export default function TrackDay({ userId }: Props) {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const fetchBibleChapter = async () => {
+    setBibleLoading(true);
+    try {
+      const res = await fetch(
+        `https://bible-api.com/${bibleBook}%20${bibleChapter}`,
+      );
+      const data = await res.json();
+      setBibleContent(
+        data.verses.map((v: any) => `${v.verse}. ${v.text}`).join("\n"),
+      );
+      setBibleReaderOpen(true);
+    } catch {
+      setBibleContent("Error loading chapter");
+    }
+    setBibleLoading(false);
+  };
 
   const addGoal = () => {
     if (!goalInput.trim()) return;
@@ -1269,41 +462,30 @@ export default function TrackDay({ userId }: Props) {
               .join("; ")
           : "";
 
-      const spiritualSummary = [
-        spiritualReading.bible && `Bible: ${spiritualReading.bible}`,
-        spiritualReading.quran && `Quran: ${spiritualReading.quran}`,
-        spiritualReading.gita && `Gita: ${spiritualReading.gita}`,
-      ]
-        .filter(Boolean)
-        .join(", ");
-
-      const res = await fetch(
-        `https://ai-life-tracker.onrender.com/api/daily/${userId}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...form,
-            bibleReading: spiritualSummary || "",
-            expenses: totalExpense,
-            phoneUsage:
-              appList.length > 0
-                ? appList.map((a) => `${a.name} ${a.time}min`).join(", ")
-                : form.phoneUsage,
-            diary: [
-              selectedMood && `Mood: ${selectedMood}`,
-              diaryTitle && `Title: ${diaryTitle}`,
-              form.diary,
-              wellnessSummary && `Wellness — ${wellnessSummary}`,
-              goalSummary && `Goals — ${goalSummary}`,
-              gratitude && `Gratitude: ${gratitude}`,
-              tomorrowPlan && `Tomorrow's plan: ${tomorrowPlan}`,
-            ]
-              .filter(Boolean)
-              .join("\n"),
-          }),
-        },
-      );
+      const res = await fetch(`http://localhost:8080/api/daily/${userId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          bibleReading: `${bibleBook} ${bibleChapter}`,
+          expenses: totalExpense,
+          phoneUsage:
+            appList.length > 0
+              ? appList.map((a) => `${a.name} ${a.time}min`).join(", ")
+              : form.phoneUsage,
+          diary: [
+            selectedMood && `Mood: ${selectedMood}`,
+            diaryTitle && `Title: ${diaryTitle}`,
+            form.diary,
+            wellnessSummary && `Wellness — ${wellnessSummary}`,
+            goalSummary && `Goals — ${goalSummary}`,
+            gratitude && `Gratitude: ${gratitude}`,
+            tomorrowPlan && `Tomorrow's plan: ${tomorrowPlan}`,
+          ]
+            .filter(Boolean)
+            .join("\n"),
+        }),
+      });
       if (!res.ok) throw new Error("Failed");
       setResult(await res.json());
     } catch {
@@ -1320,7 +502,7 @@ export default function TrackDay({ userId }: Props) {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+Devanagari:wght@400;500&family=Amiri:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
         .track-root { font-family: 'Sora', sans-serif; }
         .mono { font-family: 'JetBrains Mono', monospace; }
 
@@ -1365,26 +547,30 @@ export default function TrackDay({ userId }: Props) {
               {today}
             </p>
             <div className="flex items-end justify-between flex-wrap gap-4">
-              <div>
-                <h1
-                  className="text-4xl font-bold tracking-tight"
-                  style={
-                    darkMode
-                      ? {
-                          background:
-                            "linear-gradient(135deg, #ffffff 40%, rgba(255,255,255,0.6))",
-                          WebkitBackgroundClip: "text",
-                          WebkitTextFillColor: "transparent",
-                        }
-                      : { color: "#1e293b" }
-                  }
-                >
-                  Daily Log
-                </h1>
-                <p className={`mt-1 text-sm ${textMuted}`}>
-                  Track what matters. AI will do the rest.
-                </p>
-              </div>
+             <div>
+  <h1
+    className="text-4xl font-bold tracking-tight"
+    style={
+      darkMode
+        ? {
+            background:
+              "linear-gradient(135deg, #ffffff 40%, rgba(255,255,255,0.6))",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }
+        : {
+            color: "#1e293b", // 🔥 solid color for visibility
+          }
+    }
+  >
+    Daily Log
+  </h1>
+
+  <p className={`mt-1 text-sm ${textMuted}`}>
+    Track what matters. AI will do the rest.
+  </p>
+</div>
+              {/* Live mini stats */}
               <div className="flex gap-3 flex-wrap">
                 {totalExpenses > 0 && (
                   <div className={statChipClass}>
@@ -1422,6 +608,7 @@ export default function TrackDay({ userId }: Props) {
                 label="Wellness & Vitals"
                 accent="#f43f5e"
               />
+
               <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-5">
                 {/* Sleep */}
                 <div>
@@ -1515,13 +702,21 @@ export default function TrackDay({ userId }: Props) {
                       placeholder="min"
                       value={exerciseMin}
                       onChange={(e) => setExerciseMin(e.target.value)}
-                      className={`w-16 px-3 py-2 rounded-xl border text-sm outline-none text-center transition-all ${darkMode ? "bg-black/30 border-white/[0.08] text-white placeholder-white/20 focus:border-rose-500/50" : "bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-rose-400"}`}
+                      className={`w-16 px-3 py-2 rounded-xl border text-sm outline-none text-center transition-all ${
+                        darkMode
+                          ? "bg-black/30 border-white/[0.08] text-white placeholder-white/20 focus:border-rose-500/50"
+                          : "bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-rose-400"
+                      }`}
                     />
                     <input
                       placeholder="type"
                       value={exerciseType}
                       onChange={(e) => setExerciseType(e.target.value)}
-                      className={`flex-1 px-3 py-2 rounded-xl border text-sm outline-none transition-all ${darkMode ? "bg-black/30 border-white/[0.08] text-white placeholder-white/20 focus:border-rose-500/50" : "bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-rose-400"}`}
+                      className={`flex-1 px-3 py-2 rounded-xl border text-sm outline-none transition-all ${
+                        darkMode
+                          ? "bg-black/30 border-white/[0.08] text-white placeholder-white/20 focus:border-rose-500/50"
+                          : "bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-rose-400"
+                      }`}
                     />
                   </div>
                 </div>
@@ -1618,6 +813,7 @@ export default function TrackDay({ userId }: Props) {
                 label="Today's Goals"
                 accent="#6366f1"
               />
+
               {todayGoals.length > 0 && (
                 <div className="mb-4">
                   <div
@@ -1634,7 +830,13 @@ export default function TrackDay({ userId }: Props) {
                   {todayGoals.map((g, i) => (
                     <div key={i} className={goalItemClass}>
                       <div
-                        className={`w-[18px] h-[18px] rounded-[6px] border-[1.5px] cursor-pointer flex-shrink-0 flex items-center justify-center transition-all ${goalsDone[i] ? "bg-indigo-500 border-indigo-500" : darkMode ? "border-white/20" : "border-slate-300"}`}
+                        className={`w-[18px] h-[18px] rounded-[6px] border-[1.5px] cursor-pointer flex-shrink-0 flex items-center justify-center transition-all ${
+                          goalsDone[i]
+                            ? "bg-indigo-500 border-indigo-500"
+                            : darkMode
+                              ? "border-white/20"
+                              : "border-slate-300"
+                        }`}
                         onClick={() => toggleGoal(i)}
                       >
                         {goalsDone[i] && (
@@ -1669,6 +871,7 @@ export default function TrackDay({ userId }: Props) {
                   ))}
                 </div>
               )}
+
               <div className="flex gap-2">
                 <input
                   placeholder="Add a goal for today…"
@@ -1691,17 +894,103 @@ export default function TrackDay({ userId }: Props) {
               </div>
             </SectionCard>
 
-            {/* ── 3. SPIRITUAL (Bible + Quran + Gita) ── */}
+            {/* ── 3. SPIRITUAL ── */}
             <SectionCard>
               <SectionHeader
                 icon={<BookOpen size={16} />}
-                label="Spiritual Reading"
+                label="Spiritual"
                 accent="#818cf8"
               />
-              <SpiritualReader
-                darkMode={darkMode}
-                onReadingChange={setSpiritualReading}
-              />
+
+              <div className="flex flex-wrap gap-3 mb-4">
+                <select
+                  value={bibleBook}
+                  onChange={(e) => {
+                    setBibleBook(e.target.value);
+                    if (bibleChapter > chapterLimits[e.target.value])
+                      setBibleChapter(1);
+                  }}
+                  className={selectClass}
+                >
+                  <option disabled>── Old Testament ──</option>
+                  {bibleBooks.slice(0, 39).map((b) => (
+                    <option key={b} value={b}>
+                      {b}
+                    </option>
+                  ))}
+                  <option disabled>── New Testament ──</option>
+                  {bibleBooks.slice(39).map((b) => (
+                    <option key={b} value={b}>
+                      {b}
+                    </option>
+                  ))}
+                </select>
+
+                <input
+                  type="number"
+                  min={1}
+                  max={chapterLimits[bibleBook]}
+                  value={bibleChapter}
+                  onChange={(e) => {
+                    let v = Number(e.target.value);
+                    v = Math.min(Math.max(v, 1), chapterLimits[bibleBook]);
+                    setBibleChapter(v);
+                  }}
+                  className={`w-20 px-3 py-2.5 rounded-xl border text-sm text-center outline-none transition-all ${
+                    darkMode
+                      ? "bg-black/30 border-white/[0.08] text-white/90 focus:border-indigo-500/50"
+                      : "bg-white border-slate-200 text-slate-900 focus:border-indigo-400"
+                  }`}
+                />
+
+                <span className={`text-xs self-center ${textFaint}`}>
+                  max {chapterLimits[bibleBook]}
+                </span>
+
+                <button
+                  onClick={fetchBibleChapter}
+                  className="px-5 py-2.5 rounded-xl text-sm font-medium transition-colors"
+                  style={{
+                    background: "rgba(99,102,241,0.15)",
+                    border: "1px solid rgba(99,102,241,0.35)",
+                    color: darkMode ? "#a5b4fc" : "#4f46e5",
+                  }}
+                >
+                  {bibleLoading ? "Loading…" : "Read Chapter"}
+                </button>
+              </div>
+
+              {bibleContent ? (
+                <div>
+                  <button
+                    onClick={() => setBibleReaderOpen(!bibleReaderOpen)}
+                    className={`flex items-center gap-2 text-xs mb-2 transition-colors ${textMuted} hover:${text}`}
+                  >
+                    <ChevronDown
+                      size={13}
+                      className={`transition-transform ${bibleReaderOpen ? "rotate-180" : ""}`}
+                    />
+                    {bibleReaderOpen ? "Hide" : "Show"} Chapter
+                  </button>
+                  {bibleReaderOpen && (
+                    <div
+                      className={`h-44 overflow-y-auto rounded-xl p-4 text-sm leading-relaxed whitespace-pre-line border ${bibleBoxClass} ${textMuted}`}
+                    >
+                      {bibleContent}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div
+                  className={`flex items-center justify-center h-28 rounded-xl border border-dashed text-sm ${textFaint} ${
+                    darkMode
+                      ? "bg-black/20 border-white/[0.06]"
+                      : "bg-slate-50 border-slate-200"
+                  }`}
+                >
+                  Select a book &amp; chapter, then click Read
+                </div>
+              )}
             </SectionCard>
 
             {/* ── 4. LEARNING ── */}
@@ -1757,6 +1046,8 @@ export default function TrackDay({ userId }: Props) {
                 label="Daily Journal"
                 accent="#eab308"
               />
+
+              {/* Mood */}
               <div className="mb-5">
                 <label className={`text-xs mb-3 block ${textMuted}`}>
                   How are you feeling?
@@ -1797,6 +1088,9 @@ export default function TrackDay({ userId }: Props) {
                 placeholder="Give today a title…"
                 onChange={(e) => setDiaryTitle(e.target.value)}
                 className={`${inputClass} mb-3 text-base font-medium`}
+                style={{
+                  borderColor: darkMode ? "rgba(255,255,255,0.08)" : "#e2e8f0",
+                }}
               />
 
               <textarea
@@ -1846,7 +1140,9 @@ export default function TrackDay({ userId }: Props) {
                 label="Lifestyle"
                 accent="#ec4899"
               />
+
               <div className="grid md:grid-cols-2 gap-6">
+                {/* Movie */}
                 <div>
                   <label className={`text-xs mb-2 block ${textMuted}`}>
                     Movie / Show watched
@@ -1858,6 +1154,8 @@ export default function TrackDay({ userId }: Props) {
                     className={inputClass}
                   />
                 </div>
+
+                {/* Phone usage */}
                 <div>
                   <label className={`text-xs mb-2 block ${textMuted}`}>
                     📱 Screen time by app
@@ -1906,7 +1204,11 @@ export default function TrackDay({ userId }: Props) {
                       placeholder="mins"
                       value={appTime}
                       onChange={(e) => setAppTime(e.target.value)}
-                      className={`w-24 px-3 py-2.5 rounded-xl border text-sm outline-none text-center transition-all ${darkMode ? "bg-black/30 border-white/[0.08] text-white/90 placeholder-white/20 focus:border-pink-500/50" : "bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-pink-400"}`}
+                      className={`w-24 px-3 py-2.5 rounded-xl border text-sm outline-none text-center transition-all ${
+                        darkMode
+                          ? "bg-black/30 border-white/[0.08] text-white/90 placeholder-white/20 focus:border-pink-500/50"
+                          : "bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-pink-400"
+                      }`}
                     />
                     <button
                       onClick={addAppUsage}
@@ -1946,6 +1248,7 @@ export default function TrackDay({ userId }: Props) {
                 label="Expenses"
                 accent="#10b981"
               />
+
               <div className="grid grid-cols-5 gap-2 mb-4">
                 {expenseCategories.map((cat) => (
                   <button
