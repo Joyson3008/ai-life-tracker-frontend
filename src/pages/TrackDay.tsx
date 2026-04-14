@@ -635,7 +635,7 @@ function SpiritualReader({
     setGitaError("");
     try {
       const res = await fetch(
-        `https://bhagavadgitaapi.in/slok/${gitaChapter}/${gitaVerse}/`,
+       `https://vedicscriptures.github.io/slok/${gitaChapter}/${gitaVerse}`,
       );
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
