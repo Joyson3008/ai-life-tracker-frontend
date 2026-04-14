@@ -3,7 +3,6 @@ import AIResult from "../components/AIResult";
 import { useTheme } from "../context/ThemeContext";
 import {
   BookOpen,
-  
   GraduationCap,
   Laptop,
   Film,
@@ -43,8 +42,15 @@ const expenseCategories = [
 ];
 
 const phoneApps = [
-  "Instagram", "YouTube", "WhatsApp", "Facebook", "X",
-  "Twitter", "Reddit", "TikTok", "Other",
+  "Instagram",
+  "YouTube",
+  "WhatsApp",
+  "Facebook",
+  "X",
+  "Twitter",
+  "Reddit",
+  "TikTok",
+  "Other",
 ];
 
 const moods = [
@@ -61,32 +67,141 @@ const waterOptions = ["0–1L", "1–2L", "2–3L", "3L+"];
 const focusModes = ["Deep Work", "Meetings", "Learning", "Errands", "Mixed"];
 
 const chapterLimits: Record<string, number> = {
-  Genesis: 50, Exodus: 40, Leviticus: 27, Numbers: 36, Deuteronomy: 34,
-  Joshua: 24, Judges: 21, Ruth: 4, "1 Samuel": 31, "2 Samuel": 24,
-  "1 Kings": 22, "2 Kings": 25, "1 Chronicles": 29, "2 Chronicles": 36,
-  Ezra: 10, Nehemiah: 13, Esther: 10, Job: 42, Psalms: 150, Proverbs: 31,
-  Ecclesiastes: 12, "Song of Solomon": 8, Isaiah: 66, Jeremiah: 52,
-  Lamentations: 5, Ezekiel: 48, Daniel: 12, Hosea: 14, Joel: 3, Amos: 9,
-  Obadiah: 1, Jonah: 4, Micah: 7, Nahum: 3, Habakkuk: 3, Zephaniah: 3,
-  Haggai: 2, Zechariah: 14, Malachi: 4, Matthew: 28, Mark: 16, Luke: 24,
-  John: 21, Acts: 28, Romans: 16, "1 Corinthians": 16, "2 Corinthians": 13,
-  Galatians: 6, Ephesians: 6, Philippians: 4, Colossians: 4,
-  "1 Thessalonians": 5, "2 Thessalonians": 3, "1 Timothy": 6, "2 Timothy": 4,
-  Titus: 3, Philemon: 1, Hebrews: 13, James: 5, "1 Peter": 5, "2 Peter": 3,
-  "1 John": 5, "2 John": 1, "3 John": 1, Jude: 1, Revelation: 22,
+  Genesis: 50,
+  Exodus: 40,
+  Leviticus: 27,
+  Numbers: 36,
+  Deuteronomy: 34,
+  Joshua: 24,
+  Judges: 21,
+  Ruth: 4,
+  "1 Samuel": 31,
+  "2 Samuel": 24,
+  "1 Kings": 22,
+  "2 Kings": 25,
+  "1 Chronicles": 29,
+  "2 Chronicles": 36,
+  Ezra: 10,
+  Nehemiah: 13,
+  Esther: 10,
+  Job: 42,
+  Psalms: 150,
+  Proverbs: 31,
+  Ecclesiastes: 12,
+  "Song of Solomon": 8,
+  Isaiah: 66,
+  Jeremiah: 52,
+  Lamentations: 5,
+  Ezekiel: 48,
+  Daniel: 12,
+  Hosea: 14,
+  Joel: 3,
+  Amos: 9,
+  Obadiah: 1,
+  Jonah: 4,
+  Micah: 7,
+  Nahum: 3,
+  Habakkuk: 3,
+  Zephaniah: 3,
+  Haggai: 2,
+  Zechariah: 14,
+  Malachi: 4,
+  Matthew: 28,
+  Mark: 16,
+  Luke: 24,
+  John: 21,
+  Acts: 28,
+  Romans: 16,
+  "1 Corinthians": 16,
+  "2 Corinthians": 13,
+  Galatians: 6,
+  Ephesians: 6,
+  Philippians: 4,
+  Colossians: 4,
+  "1 Thessalonians": 5,
+  "2 Thessalonians": 3,
+  "1 Timothy": 6,
+  "2 Timothy": 4,
+  Titus: 3,
+  Philemon: 1,
+  Hebrews: 13,
+  James: 5,
+  "1 Peter": 5,
+  "2 Peter": 3,
+  "1 John": 5,
+  "2 John": 1,
+  "3 John": 1,
+  Jude: 1,
+  Revelation: 22,
 };
 
 const bibleBooks = [
-  "Genesis","Exodus","Leviticus","Numbers","Deuteronomy","Joshua","Judges",
-  "Ruth","1 Samuel","2 Samuel","1 Kings","2 Kings","1 Chronicles","2 Chronicles",
-  "Ezra","Nehemiah","Esther","Job","Psalms","Proverbs","Ecclesiastes",
-  "Song of Solomon","Isaiah","Jeremiah","Lamentations","Ezekiel","Daniel",
-  "Hosea","Joel","Amos","Obadiah","Jonah","Micah","Nahum","Habakkuk",
-  "Zephaniah","Haggai","Zechariah","Malachi","Matthew","Mark","Luke","John",
-  "Acts","Romans","1 Corinthians","2 Corinthians","Galatians","Ephesians",
-  "Philippians","Colossians","1 Thessalonians","2 Thessalonians","1 Timothy",
-  "2 Timothy","Titus","Philemon","Hebrews","James","1 Peter","2 Peter",
-  "1 John","2 John","3 John","Jude","Revelation",
+  "Genesis",
+  "Exodus",
+  "Leviticus",
+  "Numbers",
+  "Deuteronomy",
+  "Joshua",
+  "Judges",
+  "Ruth",
+  "1 Samuel",
+  "2 Samuel",
+  "1 Kings",
+  "2 Kings",
+  "1 Chronicles",
+  "2 Chronicles",
+  "Ezra",
+  "Nehemiah",
+  "Esther",
+  "Job",
+  "Psalms",
+  "Proverbs",
+  "Ecclesiastes",
+  "Song of Solomon",
+  "Isaiah",
+  "Jeremiah",
+  "Lamentations",
+  "Ezekiel",
+  "Daniel",
+  "Hosea",
+  "Joel",
+  "Amos",
+  "Obadiah",
+  "Jonah",
+  "Micah",
+  "Nahum",
+  "Habakkuk",
+  "Zephaniah",
+  "Haggai",
+  "Zechariah",
+  "Malachi",
+  "Matthew",
+  "Mark",
+  "Luke",
+  "John",
+  "Acts",
+  "Romans",
+  "1 Corinthians",
+  "2 Corinthians",
+  "Galatians",
+  "Ephesians",
+  "Philippians",
+  "Colossians",
+  "1 Thessalonians",
+  "2 Thessalonians",
+  "1 Timothy",
+  "2 Timothy",
+  "Titus",
+  "Philemon",
+  "Hebrews",
+  "James",
+  "1 Peter",
+  "2 Peter",
+  "1 John",
+  "2 John",
+  "3 John",
+  "Jude",
+  "Revelation",
 ];
 
 // Quran: 114 Surahs with names and verse counts
@@ -123,62 +238,157 @@ const quranSurahs = [
   { number: 30, name: "Ar-Rum", englishName: "The Romans", ayahs: 60 },
   { number: 31, name: "Luqman", englishName: "Luqman", ayahs: 34 },
   { number: 32, name: "As-Sajdah", englishName: "The Prostration", ayahs: 30 },
-  { number: 33, name: "Al-Ahzab", englishName: "The Combined Forces", ayahs: 73 },
+  {
+    number: 33,
+    name: "Al-Ahzab",
+    englishName: "The Combined Forces",
+    ayahs: 73,
+  },
   { number: 34, name: "Saba", englishName: "Sheba", ayahs: 54 },
   { number: 35, name: "Fatir", englishName: "Originator", ayahs: 45 },
   { number: 36, name: "Ya-Sin", englishName: "Ya-Sin", ayahs: 83 },
-  { number: 37, name: "As-Saffat", englishName: "Those Ranges in Ranks", ayahs: 182 },
+  {
+    number: 37,
+    name: "As-Saffat",
+    englishName: "Those Ranges in Ranks",
+    ayahs: 182,
+  },
   { number: 38, name: "Sad", englishName: "The Letter Sad", ayahs: 88 },
   { number: 39, name: "Az-Zumar", englishName: "The Groups", ayahs: 75 },
   { number: 40, name: "Ghafir", englishName: "The Forgiver", ayahs: 85 },
-  { number: 41, name: "Fussilat", englishName: "Explained in Detail", ayahs: 54 },
-  { number: 42, name: "Ash-Shuraa", englishName: "The Consultation", ayahs: 53 },
-  { number: 43, name: "Az-Zukhruf", englishName: "The Ornaments of Gold", ayahs: 89 },
+  {
+    number: 41,
+    name: "Fussilat",
+    englishName: "Explained in Detail",
+    ayahs: 54,
+  },
+  {
+    number: 42,
+    name: "Ash-Shuraa",
+    englishName: "The Consultation",
+    ayahs: 53,
+  },
+  {
+    number: 43,
+    name: "Az-Zukhruf",
+    englishName: "The Ornaments of Gold",
+    ayahs: 89,
+  },
   { number: 44, name: "Ad-Dukhan", englishName: "The Smoke", ayahs: 59 },
   { number: 45, name: "Al-Jathiyah", englishName: "The Crouching", ayahs: 37 },
-  { number: 46, name: "Al-Ahqaf", englishName: "The Wind-Curved Sandhills", ayahs: 35 },
+  {
+    number: 46,
+    name: "Al-Ahqaf",
+    englishName: "The Wind-Curved Sandhills",
+    ayahs: 35,
+  },
   { number: 47, name: "Muhammad", englishName: "Muhammad", ayahs: 38 },
   { number: 48, name: "Al-Fath", englishName: "The Victory", ayahs: 29 },
   { number: 49, name: "Al-Hujurat", englishName: "The Rooms", ayahs: 18 },
   { number: 50, name: "Qaf", englishName: "The Letter Qaf", ayahs: 45 },
-  { number: 51, name: "Adh-Dhariyat", englishName: "The Winnowing Winds", ayahs: 60 },
+  {
+    number: 51,
+    name: "Adh-Dhariyat",
+    englishName: "The Winnowing Winds",
+    ayahs: 60,
+  },
   { number: 52, name: "At-Tur", englishName: "The Mount", ayahs: 49 },
   { number: 53, name: "An-Najm", englishName: "The Star", ayahs: 62 },
   { number: 54, name: "Al-Qamar", englishName: "The Moon", ayahs: 55 },
   { number: 55, name: "Ar-Rahman", englishName: "The Beneficent", ayahs: 78 },
   { number: 56, name: "Al-Waqi'ah", englishName: "The Inevitable", ayahs: 96 },
   { number: 57, name: "Al-Hadid", englishName: "The Iron", ayahs: 29 },
-  { number: 58, name: "Al-Mujadila", englishName: "The Pleading Woman", ayahs: 22 },
+  {
+    number: 58,
+    name: "Al-Mujadila",
+    englishName: "The Pleading Woman",
+    ayahs: 22,
+  },
   { number: 59, name: "Al-Hashr", englishName: "The Exile", ayahs: 24 },
-  { number: 60, name: "Al-Mumtahanah", englishName: "She that is to be Examined", ayahs: 13 },
+  {
+    number: 60,
+    name: "Al-Mumtahanah",
+    englishName: "She that is to be Examined",
+    ayahs: 13,
+  },
   { number: 61, name: "As-Saf", englishName: "The Ranks", ayahs: 14 },
   { number: 62, name: "Al-Jumu'ah", englishName: "Friday", ayahs: 11 },
-  { number: 63, name: "Al-Munafiqun", englishName: "The Hypocrites", ayahs: 11 },
-  { number: 64, name: "At-Taghabun", englishName: "The Mutual Disillusion", ayahs: 18 },
+  {
+    number: 63,
+    name: "Al-Munafiqun",
+    englishName: "The Hypocrites",
+    ayahs: 11,
+  },
+  {
+    number: 64,
+    name: "At-Taghabun",
+    englishName: "The Mutual Disillusion",
+    ayahs: 18,
+  },
   { number: 65, name: "At-Talaq", englishName: "The Divorce", ayahs: 12 },
   { number: 66, name: "At-Tahrim", englishName: "The Prohibition", ayahs: 12 },
   { number: 67, name: "Al-Mulk", englishName: "The Sovereignty", ayahs: 30 },
   { number: 68, name: "Al-Qalam", englishName: "The Pen", ayahs: 52 },
   { number: 69, name: "Al-Haqqah", englishName: "The Reality", ayahs: 52 },
-  { number: 70, name: "Al-Ma'arij", englishName: "The Ascending Stairways", ayahs: 44 },
+  {
+    number: 70,
+    name: "Al-Ma'arij",
+    englishName: "The Ascending Stairways",
+    ayahs: 44,
+  },
   { number: 71, name: "Nuh", englishName: "Noah", ayahs: 28 },
   { number: 72, name: "Al-Jinn", englishName: "The Jinn", ayahs: 28 },
-  { number: 73, name: "Al-Muzzammil", englishName: "The Enshrouded One", ayahs: 20 },
-  { number: 74, name: "Al-Muddaththir", englishName: "The Cloaked One", ayahs: 56 },
-  { number: 75, name: "Al-Qiyamah", englishName: "The Resurrection", ayahs: 40 },
+  {
+    number: 73,
+    name: "Al-Muzzammil",
+    englishName: "The Enshrouded One",
+    ayahs: 20,
+  },
+  {
+    number: 74,
+    name: "Al-Muddaththir",
+    englishName: "The Cloaked One",
+    ayahs: 56,
+  },
+  {
+    number: 75,
+    name: "Al-Qiyamah",
+    englishName: "The Resurrection",
+    ayahs: 40,
+  },
   { number: 76, name: "Al-Insan", englishName: "The Man", ayahs: 31 },
   { number: 77, name: "Al-Mursalat", englishName: "The Emissaries", ayahs: 50 },
   { number: 78, name: "An-Naba", englishName: "The Tidings", ayahs: 40 },
-  { number: 79, name: "An-Nazi'at", englishName: "Those who drag forth", ayahs: 46 },
+  {
+    number: 79,
+    name: "An-Nazi'at",
+    englishName: "Those who drag forth",
+    ayahs: 46,
+  },
   { number: 80, name: "Abasa", englishName: "He Frowned", ayahs: 42 },
   { number: 81, name: "At-Takwir", englishName: "The Overthrowing", ayahs: 29 },
   { number: 82, name: "Al-Infitar", englishName: "The Cleaving", ayahs: 19 },
-  { number: 83, name: "Al-Mutaffifin", englishName: "The Defrauding", ayahs: 36 },
+  {
+    number: 83,
+    name: "Al-Mutaffifin",
+    englishName: "The Defrauding",
+    ayahs: 36,
+  },
   { number: 84, name: "Al-Inshiqaq", englishName: "The Sundering", ayahs: 25 },
-  { number: 85, name: "Al-Buruj", englishName: "The Mansions of the Stars", ayahs: 22 },
+  {
+    number: 85,
+    name: "Al-Buruj",
+    englishName: "The Mansions of the Stars",
+    ayahs: 22,
+  },
   { number: 86, name: "At-Tariq", englishName: "The Nightcomer", ayahs: 17 },
   { number: 87, name: "Al-A'la", englishName: "The Most High", ayahs: 19 },
-  { number: 88, name: "Al-Ghashiyah", englishName: "The Overwhelming", ayahs: 26 },
+  {
+    number: 88,
+    name: "Al-Ghashiyah",
+    englishName: "The Overwhelming",
+    ayahs: 26,
+  },
   { number: 89, name: "Al-Fajr", englishName: "The Dawn", ayahs: 30 },
   { number: 90, name: "Al-Balad", englishName: "The City", ayahs: 20 },
   { number: 91, name: "Ash-Shams", englishName: "The Sun", ayahs: 15 },
@@ -192,14 +402,29 @@ const quranSurahs = [
   { number: 99, name: "Az-Zalzalah", englishName: "The Earthquake", ayahs: 8 },
   { number: 100, name: "Al-'Adiyat", englishName: "The Courser", ayahs: 11 },
   { number: 101, name: "Al-Qari'ah", englishName: "The Calamity", ayahs: 11 },
-  { number: 102, name: "At-Takathur", englishName: "The Rivalry in World Increase", ayahs: 8 },
+  {
+    number: 102,
+    name: "At-Takathur",
+    englishName: "The Rivalry in World Increase",
+    ayahs: 8,
+  },
   { number: 103, name: "Al-'Asr", englishName: "The Declining Day", ayahs: 3 },
   { number: 104, name: "Al-Humazah", englishName: "The Traducer", ayahs: 9 },
   { number: 105, name: "Al-Fil", englishName: "The Elephant", ayahs: 5 },
   { number: 106, name: "Quraysh", englishName: "Quraysh", ayahs: 4 },
-  { number: 107, name: "Al-Ma'un", englishName: "The Small Kindnesses", ayahs: 7 },
+  {
+    number: 107,
+    name: "Al-Ma'un",
+    englishName: "The Small Kindnesses",
+    ayahs: 7,
+  },
   { number: 108, name: "Al-Kawthar", englishName: "The Abundance", ayahs: 3 },
-  { number: 109, name: "Al-Kafirun", englishName: "The Disbelievers", ayahs: 6 },
+  {
+    number: 109,
+    name: "Al-Kafirun",
+    englishName: "The Disbelievers",
+    ayahs: 6,
+  },
   { number: 110, name: "An-Nasr", englishName: "The Divine Support", ayahs: 3 },
   { number: 111, name: "Al-Masad", englishName: "The Palm Fiber", ayahs: 5 },
   { number: 112, name: "Al-Ikhlas", englishName: "The Sincerity", ayahs: 4 },
@@ -269,7 +494,9 @@ const SectionHeader = ({
     >
       <span style={{ color: accent }}>{icon}</span>
     </div>
-    <span className="font-semibold tracking-wide text-sm uppercase">{label}</span>
+    <span className="font-semibold tracking-wide text-sm uppercase">
+      {label}
+    </span>
   </div>
 );
 
@@ -329,7 +556,9 @@ function SpiritualReader({
 
   // ── Quran state ──
   const [quranSurah, setQuranSurah] = useState(1);
-  const [quranContent, setQuranContent] = useState<{ number: number; text: string; translation: string }[]>([]);
+  const [quranContent, setQuranContent] = useState<
+    { number: number; text: string; translation: string }[]
+  >([]);
   const [quranLoading, setQuranLoading] = useState(false);
   const [quranReaderOpen, setQuranReaderOpen] = useState(false);
   const [quranError, setQuranError] = useState("");
@@ -351,10 +580,14 @@ function SpiritualReader({
     setBibleLoading(true);
     setBibleError("");
     try {
-      const res = await fetch(`https://bible-api.com/${bibleBook}%20${bibleChapter}`);
+      const res = await fetch(
+        `https://bible-api.com/${bibleBook}%20${bibleChapter}`,
+      );
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
-      const text = data.verses.map((v: any) => `${v.verse}. ${v.text}`).join("\n");
+      const text = data.verses
+        .map((v: any) => `${v.verse}. ${v.text}`)
+        .join("\n");
       setBibleContent(text);
       setBibleReaderOpen(true);
       updateReading("bible", `${bibleBook} ${bibleChapter}`);
@@ -375,7 +608,8 @@ function SpiritualReader({
         fetch(`https://api.alquran.cloud/v1/surah/${quranSurah}`),
         fetch(`https://api.alquran.cloud/v1/surah/${quranSurah}/en.asad`),
       ]);
-      if (!arabicRes.ok || !translationRes.ok) throw new Error("Failed to fetch");
+      if (!arabicRes.ok || !translationRes.ok)
+        throw new Error("Failed to fetch");
       const arabicData = await arabicRes.json();
       const translationData = await translationRes.json();
 
@@ -401,7 +635,7 @@ function SpiritualReader({
     setGitaError("");
     try {
       const res = await fetch(
-        `https://bhagavadgitaapi.in/slok/${gitaChapter}/${gitaVerse}/`
+        `https://vedicscriptures.github.io/slok/${gitaChapter}/${gitaVerse}`,
       );
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
@@ -415,10 +649,17 @@ function SpiritualReader({
   };
 
   const selectedSurahInfo = quranSurahs.find((s) => s.number === quranSurah);
-  const selectedGitaChapter = gitaChapters.find((c) => c.chapter === gitaChapter);
+  const selectedGitaChapter = gitaChapters.find(
+    (c) => c.chapter === gitaChapter,
+  );
   const maxGitaVerse = selectedGitaChapter?.verses || 47;
 
-  const tabConfig: { key: SpiritualTab; label: string; emoji: string; color: string }[] = [
+  const tabConfig: {
+    key: SpiritualTab;
+    label: string;
+    emoji: string;
+    color: string;
+  }[] = [
     { key: "bible", label: "Bible", emoji: "✝️", color: "#818cf8" },
     { key: "quran", label: "Quran", emoji: "☪️", color: "#34d399" },
     { key: "gita", label: "Gita", emoji: "🕉️", color: "#fb923c" },
@@ -443,7 +684,9 @@ function SpiritualReader({
                   }
                 : {
                     background: darkMode ? "rgba(255,255,255,0.03)" : "#f8fafc",
-                    borderColor: darkMode ? "rgba(255,255,255,0.08)" : "#e2e8f0",
+                    borderColor: darkMode
+                      ? "rgba(255,255,255,0.08)"
+                      : "#e2e8f0",
                     color: darkMode ? "rgba(255,255,255,0.4)" : "#94a3b8",
                   }
             }
@@ -468,17 +711,22 @@ function SpiritualReader({
               value={bibleBook}
               onChange={(e) => {
                 setBibleBook(e.target.value);
-                if (bibleChapter > chapterLimits[e.target.value]) setBibleChapter(1);
+                if (bibleChapter > chapterLimits[e.target.value])
+                  setBibleChapter(1);
               }}
               className={selectClass}
             >
               <option disabled>── Old Testament ──</option>
               {bibleBooks.slice(0, 39).map((b) => (
-                <option key={b} value={b}>{b}</option>
+                <option key={b} value={b}>
+                  {b}
+                </option>
               ))}
               <option disabled>── New Testament ──</option>
               {bibleBooks.slice(39).map((b) => (
-                <option key={b} value={b}>{b}</option>
+                <option key={b} value={b}>
+                  {b}
+                </option>
               ))}
             </select>
 
@@ -530,7 +778,8 @@ function SpiritualReader({
                   size={13}
                   className={`transition-transform ${bibleReaderOpen ? "rotate-180" : ""}`}
                 />
-                {bibleReaderOpen ? "Hide" : "Show"} Chapter · {bibleBook} {bibleChapter}
+                {bibleReaderOpen ? "Hide" : "Show"} Chapter · {bibleBook}{" "}
+                {bibleChapter}
               </button>
               {bibleReaderOpen && (
                 <div
@@ -543,7 +792,9 @@ function SpiritualReader({
           ) : (
             <div
               className={`flex items-center justify-center h-28 rounded-xl border border-dashed text-sm ${textFaint} ${
-                darkMode ? "bg-black/20 border-white/[0.06]" : "bg-slate-50 border-slate-200"
+                darkMode
+                  ? "bg-black/20 border-white/[0.06]"
+                  : "bg-slate-50 border-slate-200"
               }`}
             >
               Select a book &amp; chapter, then click Read
@@ -601,7 +852,8 @@ function SpiritualReader({
                   size={13}
                   className={`transition-transform ${quranReaderOpen ? "rotate-180" : ""}`}
                 />
-                {quranReaderOpen ? "Hide" : "Show"} Surah · {selectedSurahInfo?.name}
+                {quranReaderOpen ? "Hide" : "Show"} Surah ·{" "}
+                {selectedSurahInfo?.name}
               </button>
               {quranReaderOpen && (
                 <div
@@ -624,7 +876,9 @@ function SpiritualReader({
                             className="text-right text-base leading-loose mb-1"
                             style={{
                               fontFamily: "'Amiri', 'Scheherazade New', serif",
-                              color: darkMode ? "rgba(255,255,255,0.85)" : "#1e293b",
+                              color: darkMode
+                                ? "rgba(255,255,255,0.85)"
+                                : "#1e293b",
                               direction: "rtl",
                             }}
                           >
@@ -643,7 +897,9 @@ function SpiritualReader({
           ) : (
             <div
               className={`flex items-center justify-center h-28 rounded-xl border border-dashed text-sm ${textFaint} ${
-                darkMode ? "bg-black/20 border-white/[0.06]" : "bg-slate-50 border-slate-200"
+                darkMode
+                  ? "bg-black/20 border-white/[0.06]"
+                  : "bg-slate-50 border-slate-200"
               }`}
             >
               Select a Surah, then click Read
@@ -711,9 +967,7 @@ function SpiritualReader({
           )}
 
           {gitaContent ? (
-            <div
-              className={`rounded-xl p-5 border ${bibleBoxClass}`}
-            >
+            <div className={`rounded-xl p-5 border ${bibleBoxClass}`}>
               {/* Sanskrit */}
               <p
                 className="text-center text-base leading-loose mb-3"
@@ -735,7 +989,9 @@ function SpiritualReader({
               {gitaContent.transliteration && (
                 <p
                   className="text-center text-xs italic mb-3"
-                  style={{ color: darkMode ? "rgba(251,146,60,0.7)" : "#ea580c" }}
+                  style={{
+                    color: darkMode ? "rgba(251,146,60,0.7)" : "#ea580c",
+                  }}
                 >
                   {gitaContent.transliteration}
                 </p>
@@ -775,13 +1031,16 @@ function SpiritualReader({
                 className="text-[10px] mt-3 text-right"
                 style={{ color: "rgba(251,146,60,0.4)" }}
               >
-                Chapter {gitaChapter}, Verse {gitaVerse} · {selectedGitaChapter?.name}
+                Chapter {gitaChapter}, Verse {gitaVerse} ·{" "}
+                {selectedGitaChapter?.name}
               </p>
             </div>
           ) : (
             <div
               className={`flex items-center justify-center h-28 rounded-xl border border-dashed text-sm ${textFaint} ${
-                darkMode ? "bg-black/20 border-white/[0.06]" : "bg-slate-50 border-slate-200"
+                darkMode
+                  ? "bg-black/20 border-white/[0.06]"
+                  : "bg-slate-50 border-slate-200"
               }`}
             >
               Select a chapter &amp; verse, then click Read
@@ -791,7 +1050,9 @@ function SpiritualReader({
       )}
 
       {/* Reading summary badges */}
-      {(spiritualReading.bible || spiritualReading.quran || spiritualReading.gita) && (
+      {(spiritualReading.bible ||
+        spiritualReading.quran ||
+        spiritualReading.gita) && (
         <div className="mt-4 flex flex-wrap gap-2">
           {spiritualReading.bible && (
             <span
@@ -852,12 +1113,7 @@ export default function TrackDay({ userId }: Props) {
   const inputClass = `w-full px-4 py-3 rounded-xl border outline-none transition-all duration-200 text-sm ${inputBase}`;
   const textareaClass = `w-full px-4 py-3 rounded-xl border outline-none transition-all duration-200 text-sm resize-none ${inputBase}`;
 
-  const selectClass = `px-3 py-2.5 rounded-xl border text-sm outline-none cursor-pointer transition-all ${
-    darkMode
-      ? "bg-black/30 border-white/[0.08] text-white/80 focus:border-indigo-500/50"
-      : "bg-white border-slate-200 text-slate-800 focus:border-indigo-400"
-  }`;
-
+  
   const counterBtnClass = `w-7 h-7 rounded-lg border flex items-center justify-center transition-colors ${
     darkMode
       ? "bg-white/5 border-white/10 text-white/60 hover:bg-white/10"
@@ -885,12 +1141,17 @@ export default function TrackDay({ userId }: Props) {
   const progressTrackClass = darkMode ? "bg-white/[0.06]" : "bg-slate-200";
 
   const today = new Date().toLocaleDateString("en-US", {
-    weekday: "long", month: "long", day: "numeric", year: "numeric",
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
   });
 
   // ── State ──
   const [spiritualReading, setSpiritualReading] = useState({
-    bible: "", quran: "", gita: "",
+    bible: "",
+    quran: "",
+    gita: "",
   });
 
   const [sleepHours, setSleepHours] = useState("");
@@ -909,7 +1170,9 @@ export default function TrackDay({ userId }: Props) {
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [expenseAmount, setExpenseAmount] = useState("");
-  const [expenseList, setExpenseList] = useState<{ category: string; amount: number }[]>([]);
+  const [expenseList, setExpenseList] = useState<
+    { category: string; amount: number }[]
+  >([]);
 
   const [selectedApp, setSelectedApp] = useState("");
   const [appTime, setAppTime] = useState("");
@@ -920,14 +1183,21 @@ export default function TrackDay({ userId }: Props) {
   const [diaryTitle, setDiaryTitle] = useState("");
 
   const [form, setForm] = useState({
-    bookReading: "", codingWork: "", csTopic: "", collegeActivity: "",
-    diary: "", expenses: "", movie: "", phoneUsage: "",
+    bookReading: "",
+    codingWork: "",
+    csTopic: "",
+    collegeActivity: "",
+    diary: "",
+    expenses: "",
+    movie: "",
+    phoneUsage: "",
   });
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const addGoal = () => {
     if (!goalInput.trim()) return;
@@ -948,15 +1218,24 @@ export default function TrackDay({ userId }: Props) {
   };
 
   const addExpense = () => {
-    if (!selectedCategory || !expenseAmount) { alert("Select category and amount"); return; }
-    setExpenseList([...expenseList, { category: selectedCategory, amount: Number(expenseAmount) }]);
+    if (!selectedCategory || !expenseAmount) {
+      alert("Select category and amount");
+      return;
+    }
+    setExpenseList([
+      ...expenseList,
+      { category: selectedCategory, amount: Number(expenseAmount) },
+    ]);
     setExpenseAmount("");
     setSelectedCategory("");
   };
 
   const addAppUsage = () => {
     const name = selectedApp === "Other" ? customApp : selectedApp;
-    if (!name || !appTime) { alert("Select app and time"); return; }
+    if (!name || !appTime) {
+      alert("Select app and time");
+      return;
+    }
     setAppList([...appList, { name, time: Number(appTime) }]);
     setSelectedApp("");
     setAppTime("");
@@ -974,22 +1253,29 @@ export default function TrackDay({ userId }: Props) {
       const wellnessSummary = [
         sleepHours && `Sleep: ${sleepHours}`,
         waterIntake && `Water: ${waterIntake}`,
-        exerciseMin && `Exercise: ${exerciseMin}min${exerciseType ? ` (${exerciseType})` : ""}`,
+        exerciseMin &&
+          `Exercise: ${exerciseMin}min${exerciseType ? ` (${exerciseType})` : ""}`,
         morningRoutine && "Morning routine: completed",
         caffeineCount && `Caffeine: ${caffeineCount} cup(s)`,
         focusMode && `Focus mode: ${focusMode}`,
-      ].filter(Boolean).join(", ");
+      ]
+        .filter(Boolean)
+        .join(", ");
 
       const goalSummary =
         todayGoals.length > 0
-          ? todayGoals.map((g, i) => `${goalsDone[i] ? "✓" : "✗"} ${g}`).join("; ")
+          ? todayGoals
+              .map((g, i) => `${goalsDone[i] ? "✓" : "✗"} ${g}`)
+              .join("; ")
           : "";
 
       const spiritualSummary = [
         spiritualReading.bible && `Bible: ${spiritualReading.bible}`,
         spiritualReading.quran && `Quran: ${spiritualReading.quran}`,
         spiritualReading.gita && `Gita: ${spiritualReading.gita}`,
-      ].filter(Boolean).join(", ");
+      ]
+        .filter(Boolean)
+        .join(", ");
 
       const res = await fetch(
         `https://ai-life-tracker.onrender.com/api/daily/${userId}`,
@@ -1012,7 +1298,9 @@ export default function TrackDay({ userId }: Props) {
               goalSummary && `Goals — ${goalSummary}`,
               gratitude && `Gratitude: ${gratitude}`,
               tomorrowPlan && `Tomorrow's plan: ${tomorrowPlan}`,
-            ].filter(Boolean).join("\n"),
+            ]
+              .filter(Boolean)
+              .join("\n"),
           }),
         },
       );
@@ -1069,10 +1357,11 @@ export default function TrackDay({ userId }: Props) {
         }}
       >
         <div className="max-w-4xl mx-auto px-5 py-10 pb-24">
-
           {/* ── HEADER ── */}
           <div className="mb-10">
-            <p className={`mono text-xs uppercase tracking-widest mb-1 ${textFaint}`}>
+            <p
+              className={`mono text-xs uppercase tracking-widest mb-1 ${textFaint}`}
+            >
               {today}
             </p>
             <div className="flex items-end justify-between flex-wrap gap-4">
@@ -1082,7 +1371,8 @@ export default function TrackDay({ userId }: Props) {
                   style={
                     darkMode
                       ? {
-                          background: "linear-gradient(135deg, #ffffff 40%, rgba(255,255,255,0.6))",
+                          background:
+                            "linear-gradient(135deg, #ffffff 40%, rgba(255,255,255,0.6))",
                           WebkitBackgroundClip: "text",
                           WebkitTextFillColor: "transparent",
                         }
@@ -1098,13 +1388,17 @@ export default function TrackDay({ userId }: Props) {
               <div className="flex gap-3 flex-wrap">
                 {totalExpenses > 0 && (
                   <div className={statChipClass}>
-                    <span className="text-emerald-500 font-semibold text-sm mono">₹{totalExpenses}</span>
+                    <span className="text-emerald-500 font-semibold text-sm mono">
+                      ₹{totalExpenses}
+                    </span>
                     <span className={`text-xs ${textFaint}`}>spent</span>
                   </div>
                 )}
                 {totalScreenMin > 0 && (
                   <div className={statChipClass}>
-                    <span className="text-pink-500 font-semibold text-sm mono">{totalScreenMin}m</span>
+                    <span className="text-pink-500 font-semibold text-sm mono">
+                      {totalScreenMin}m
+                    </span>
                     <span className={`text-xs ${textFaint}`}>screen</span>
                   </div>
                 )}
@@ -1121,14 +1415,19 @@ export default function TrackDay({ userId }: Props) {
           </div>
 
           <div className="space-y-5">
-
             {/* ── 1. WELLNESS & VITALS ── */}
             <SectionCard>
-              <SectionHeader icon={<HeartPulse size={16} />} label="Wellness & Vitals" accent="#f43f5e" />
+              <SectionHeader
+                icon={<HeartPulse size={16} />}
+                label="Wellness & Vitals"
+                accent="#f43f5e"
+              />
               <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-5">
                 {/* Sleep */}
                 <div>
-                  <label className={`text-xs mb-2 flex items-center gap-1 ${textMuted}`}>
+                  <label
+                    className={`text-xs mb-2 flex items-center gap-1 ${textMuted}`}
+                  >
                     <Moon size={11} /> Sleep
                   </label>
                   <div className="flex flex-wrap gap-1">
@@ -1139,17 +1438,35 @@ export default function TrackDay({ userId }: Props) {
                         className="pill-btn"
                         style={
                           sleepHours === s
-                            ? { background: "rgba(99,102,241,0.15)", borderColor: "rgba(99,102,241,0.5)", color: darkMode ? "#a5b4fc" : "#4f46e5" }
-                            : { background: darkMode ? "rgba(255,255,255,0.05)" : "#f8fafc", borderColor: darkMode ? "rgba(255,255,255,0.08)" : "#e2e8f0", color: darkMode ? "rgba(255,255,255,0.5)" : "#64748b" }
+                            ? {
+                                background: "rgba(99,102,241,0.15)",
+                                borderColor: "rgba(99,102,241,0.5)",
+                                color: darkMode ? "#a5b4fc" : "#4f46e5",
+                              }
+                            : {
+                                background: darkMode
+                                  ? "rgba(255,255,255,0.05)"
+                                  : "#f8fafc",
+                                borderColor: darkMode
+                                  ? "rgba(255,255,255,0.08)"
+                                  : "#e2e8f0",
+                                color: darkMode
+                                  ? "rgba(255,255,255,0.5)"
+                                  : "#64748b",
+                              }
                         }
-                      >{s}</button>
+                      >
+                        {s}
+                      </button>
                     ))}
                   </div>
                 </div>
 
                 {/* Water */}
                 <div>
-                  <label className={`text-xs mb-2 flex items-center gap-1 ${textMuted}`}>
+                  <label
+                    className={`text-xs mb-2 flex items-center gap-1 ${textMuted}`}
+                  >
                     <Droplets size={11} /> Water
                   </label>
                   <div className="flex flex-wrap gap-1">
@@ -1160,27 +1477,49 @@ export default function TrackDay({ userId }: Props) {
                         className="pill-btn"
                         style={
                           waterIntake === w
-                            ? { background: "rgba(99,102,241,0.15)", borderColor: "rgba(99,102,241,0.5)", color: darkMode ? "#a5b4fc" : "#4f46e5" }
-                            : { background: darkMode ? "rgba(255,255,255,0.05)" : "#f8fafc", borderColor: darkMode ? "rgba(255,255,255,0.08)" : "#e2e8f0", color: darkMode ? "rgba(255,255,255,0.5)" : "#64748b" }
+                            ? {
+                                background: "rgba(99,102,241,0.15)",
+                                borderColor: "rgba(99,102,241,0.5)",
+                                color: darkMode ? "#a5b4fc" : "#4f46e5",
+                              }
+                            : {
+                                background: darkMode
+                                  ? "rgba(255,255,255,0.05)"
+                                  : "#f8fafc",
+                                borderColor: darkMode
+                                  ? "rgba(255,255,255,0.08)"
+                                  : "#e2e8f0",
+                                color: darkMode
+                                  ? "rgba(255,255,255,0.5)"
+                                  : "#64748b",
+                              }
                         }
-                      >{w}</button>
+                      >
+                        {w}
+                      </button>
                     ))}
                   </div>
                 </div>
 
                 {/* Exercise */}
                 <div>
-                  <label className={`text-xs mb-2 flex items-center gap-1 ${textMuted}`}>
+                  <label
+                    className={`text-xs mb-2 flex items-center gap-1 ${textMuted}`}
+                  >
                     <Dumbbell size={11} /> Exercise
                   </label>
                   <div className="flex gap-2">
                     <input
-                      type="number" min={0} placeholder="min" value={exerciseMin}
+                      type="number"
+                      min={0}
+                      placeholder="min"
+                      value={exerciseMin}
                       onChange={(e) => setExerciseMin(e.target.value)}
                       className={`w-16 px-3 py-2 rounded-xl border text-sm outline-none text-center transition-all ${darkMode ? "bg-black/30 border-white/[0.08] text-white placeholder-white/20 focus:border-rose-500/50" : "bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-rose-400"}`}
                     />
                     <input
-                      placeholder="type" value={exerciseType}
+                      placeholder="type"
+                      value={exerciseType}
                       onChange={(e) => setExerciseType(e.target.value)}
                       className={`flex-1 px-3 py-2 rounded-xl border text-sm outline-none transition-all ${darkMode ? "bg-black/30 border-white/[0.08] text-white placeholder-white/20 focus:border-rose-500/50" : "bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-rose-400"}`}
                     />
@@ -1189,13 +1528,31 @@ export default function TrackDay({ userId }: Props) {
 
                 {/* Caffeine & Morning */}
                 <div>
-                  <label className={`text-xs mb-2 flex items-center gap-1 ${textMuted}`}>
+                  <label
+                    className={`text-xs mb-2 flex items-center gap-1 ${textMuted}`}
+                  >
                     <Coffee size={11} /> Caffeine & Routine
                   </label>
                   <div className="flex items-center gap-2 mb-2">
-                    <button onClick={() => setCaffeineCount(Math.max(0, caffeineCount - 1))} className={counterBtnClass}>−</button>
-                    <span className={`mono text-sm w-4 text-center font-semibold ${text}`}>{caffeineCount}</span>
-                    <button onClick={() => setCaffeineCount(caffeineCount + 1)} className={counterBtnClass}>+</button>
+                    <button
+                      onClick={() =>
+                        setCaffeineCount(Math.max(0, caffeineCount - 1))
+                      }
+                      className={counterBtnClass}
+                    >
+                      −
+                    </button>
+                    <span
+                      className={`mono text-sm w-4 text-center font-semibold ${text}`}
+                    >
+                      {caffeineCount}
+                    </span>
+                    <button
+                      onClick={() => setCaffeineCount(caffeineCount + 1)}
+                      className={counterBtnClass}
+                    >
+                      +
+                    </button>
                     <span className={`text-xs ${textFaint}`}>cups</span>
                   </div>
                   <label className="flex items-center gap-2 cursor-pointer">
@@ -1203,16 +1560,22 @@ export default function TrackDay({ userId }: Props) {
                       onClick={() => setMorningRoutine(!morningRoutine)}
                       className={`w-9 h-5 rounded-full transition-all duration-200 relative ${morningRoutine ? "bg-indigo-500" : darkMode ? "bg-white/10" : "bg-slate-200"}`}
                     >
-                      <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all duration-200 ${morningRoutine ? "left-4" : "left-0.5"}`} />
+                      <div
+                        className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-all duration-200 ${morningRoutine ? "left-4" : "left-0.5"}`}
+                      />
                     </div>
-                    <span className={`text-xs ${textMuted}`}>Morning routine</span>
+                    <span className={`text-xs ${textMuted}`}>
+                      Morning routine
+                    </span>
                   </label>
                 </div>
               </div>
 
               {/* Focus Mode */}
               <div>
-                <label className={`text-xs mb-2 flex items-center gap-1 ${textMuted}`}>
+                <label
+                  className={`text-xs mb-2 flex items-center gap-1 ${textMuted}`}
+                >
                   <Wind size={11} /> Today's Focus Mode
                 </label>
                 <div className="flex flex-wrap gap-2">
@@ -1223,10 +1586,26 @@ export default function TrackDay({ userId }: Props) {
                       className="pill-btn"
                       style={
                         focusMode === m
-                          ? { background: "rgba(99,102,241,0.15)", borderColor: "rgba(99,102,241,0.5)", color: darkMode ? "#a5b4fc" : "#4f46e5" }
-                          : { background: darkMode ? "rgba(255,255,255,0.05)" : "#f8fafc", borderColor: darkMode ? "rgba(255,255,255,0.08)" : "#e2e8f0", color: darkMode ? "rgba(255,255,255,0.5)" : "#64748b" }
+                          ? {
+                              background: "rgba(99,102,241,0.15)",
+                              borderColor: "rgba(99,102,241,0.5)",
+                              color: darkMode ? "#a5b4fc" : "#4f46e5",
+                            }
+                          : {
+                              background: darkMode
+                                ? "rgba(255,255,255,0.05)"
+                                : "#f8fafc",
+                              borderColor: darkMode
+                                ? "rgba(255,255,255,0.08)"
+                                : "#e2e8f0",
+                              color: darkMode
+                                ? "rgba(255,255,255,0.5)"
+                                : "#64748b",
+                            }
                       }
-                    >{m}</button>
+                    >
+                      {m}
+                    </button>
                   ))}
                 </div>
               </div>
@@ -1234,10 +1613,16 @@ export default function TrackDay({ userId }: Props) {
 
             {/* ── 2. GOALS ── */}
             <SectionCard>
-              <SectionHeader icon={<Target size={16} />} label="Today's Goals" accent="#6366f1" />
+              <SectionHeader
+                icon={<Target size={16} />}
+                label="Today's Goals"
+                accent="#6366f1"
+              />
               {todayGoals.length > 0 && (
                 <div className="mb-4">
-                  <div className={`h-1.5 rounded-full mb-3 overflow-hidden ${progressTrackClass}`}>
+                  <div
+                    className={`h-1.5 rounded-full mb-3 overflow-hidden ${progressTrackClass}`}
+                  >
                     <div
                       className="h-full rounded-full transition-all duration-500"
                       style={{
@@ -1253,13 +1638,31 @@ export default function TrackDay({ userId }: Props) {
                         onClick={() => toggleGoal(i)}
                       >
                         {goalsDone[i] && (
-                          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                            <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                          <svg
+                            width="10"
+                            height="8"
+                            viewBox="0 0 10 8"
+                            fill="none"
+                          >
+                            <path
+                              d="M1 4L3.5 6.5L9 1"
+                              stroke="white"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
                           </svg>
                         )}
                       </div>
-                      <span className={`flex-1 text-sm ${goalsDone[i] ? `line-through ${textFaint}` : text}`}>{g}</span>
-                      <button onClick={() => removeGoal(i)} className={`transition-colors ${darkMode ? "text-white/20 hover:text-red-400" : "text-slate-300 hover:text-red-400"}`}>
+                      <span
+                        className={`flex-1 text-sm ${goalsDone[i] ? `line-through ${textFaint}` : text}`}
+                      >
+                        {g}
+                      </span>
+                      <button
+                        onClick={() => removeGoal(i)}
+                        className={`transition-colors ${darkMode ? "text-white/20 hover:text-red-400" : "text-slate-300 hover:text-red-400"}`}
+                      >
                         <Trash2 size={13} />
                       </button>
                     </div>
@@ -1268,7 +1671,8 @@ export default function TrackDay({ userId }: Props) {
               )}
               <div className="flex gap-2">
                 <input
-                  placeholder="Add a goal for today…" value={goalInput}
+                  placeholder="Add a goal for today…"
+                  value={goalInput}
                   onChange={(e) => setGoalInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && addGoal()}
                   className={inputClass}
@@ -1276,7 +1680,11 @@ export default function TrackDay({ userId }: Props) {
                 <button
                   onClick={addGoal}
                   className="px-4 py-3 rounded-xl font-medium text-sm flex items-center gap-1.5 flex-shrink-0 transition-colors"
-                  style={{ background: "rgba(99,102,241,0.15)", border: "1px solid rgba(99,102,241,0.35)", color: darkMode ? "#a5b4fc" : "#4f46e5" }}
+                  style={{
+                    background: "rgba(99,102,241,0.15)",
+                    border: "1px solid rgba(99,102,241,0.35)",
+                    color: darkMode ? "#a5b4fc" : "#4f46e5",
+                  }}
                 >
                   <Plus size={14} /> Add
                 </button>
@@ -1285,7 +1693,11 @@ export default function TrackDay({ userId }: Props) {
 
             {/* ── 3. SPIRITUAL (Bible + Quran + Gita) ── */}
             <SectionCard>
-              <SectionHeader icon={<BookOpen size={16} />} label="Spiritual Reading" accent="#818cf8" />
+              <SectionHeader
+                icon={<BookOpen size={16} />}
+                label="Spiritual Reading"
+                accent="#818cf8"
+              />
               <SpiritualReader
                 darkMode={darkMode}
                 onReadingChange={setSpiritualReading}
@@ -1294,27 +1706,61 @@ export default function TrackDay({ userId }: Props) {
 
             {/* ── 4. LEARNING ── */}
             <SectionCard>
-              <SectionHeader icon={<GraduationCap size={16} />} label="Learning" accent="#a855f7" />
+              <SectionHeader
+                icon={<GraduationCap size={16} />}
+                label="Learning"
+                accent="#a855f7"
+              />
               <div className="grid md:grid-cols-2 gap-3">
-                <input name="bookReading" placeholder="Book you're reading…" onChange={handleChange} className={inputClass} />
-                <input name="csTopic" placeholder="CS topic studied…" onChange={handleChange} className={inputClass} />
+                <input
+                  name="bookReading"
+                  placeholder="Book you're reading…"
+                  onChange={handleChange}
+                  className={inputClass}
+                />
+                <input
+                  name="csTopic"
+                  placeholder="CS topic studied…"
+                  onChange={handleChange}
+                  className={inputClass}
+                />
               </div>
             </SectionCard>
 
             {/* ── 5. PRODUCTIVITY ── */}
             <SectionCard>
-              <SectionHeader icon={<Laptop size={16} />} label="Productivity" accent="#22c55e" />
+              <SectionHeader
+                icon={<Laptop size={16} />}
+                label="Productivity"
+                accent="#22c55e"
+              />
               <div className="grid md:grid-cols-2 gap-3">
-                <input name="codingWork" placeholder="What did you build/code?" onChange={handleChange} className={inputClass} />
-                <input name="collegeActivity" placeholder="College / class activity…" onChange={handleChange} className={inputClass} />
+                <input
+                  name="codingWork"
+                  placeholder="What did you build/code?"
+                  onChange={handleChange}
+                  className={inputClass}
+                />
+                <input
+                  name="collegeActivity"
+                  placeholder="College / class activity…"
+                  onChange={handleChange}
+                  className={inputClass}
+                />
               </div>
             </SectionCard>
 
             {/* ── 6. JOURNAL ── */}
             <SectionCard>
-              <SectionHeader icon={<NotebookPen size={16} />} label="Daily Journal" accent="#eab308" />
+              <SectionHeader
+                icon={<NotebookPen size={16} />}
+                label="Daily Journal"
+                accent="#eab308"
+              />
               <div className="mb-5">
-                <label className={`text-xs mb-3 block ${textMuted}`}>How are you feeling?</label>
+                <label className={`text-xs mb-3 block ${textMuted}`}>
+                  How are you feeling?
+                </label>
                 <div className="flex flex-wrap gap-2">
                   {moods.map((m) => (
                     <button
@@ -1323,8 +1769,22 @@ export default function TrackDay({ userId }: Props) {
                       className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm font-medium transition-all duration-150 ${selectedMood === m.emoji ? "scale-105" : ""}`}
                       style={
                         selectedMood === m.emoji
-                          ? { background: `${m.color}20`, borderColor: `${m.color}55`, color: m.color }
-                          : { background: darkMode ? "rgba(255,255,255,0.03)" : "#f8fafc", borderColor: darkMode ? "rgba(255,255,255,0.08)" : "#e2e8f0", color: darkMode ? "rgba(255,255,255,0.4)" : "#94a3b8" }
+                          ? {
+                              background: `${m.color}20`,
+                              borderColor: `${m.color}55`,
+                              color: m.color,
+                            }
+                          : {
+                              background: darkMode
+                                ? "rgba(255,255,255,0.03)"
+                                : "#f8fafc",
+                              borderColor: darkMode
+                                ? "rgba(255,255,255,0.08)"
+                                : "#e2e8f0",
+                              color: darkMode
+                                ? "rgba(255,255,255,0.4)"
+                                : "#94a3b8",
+                            }
                       }
                     >
                       {m.emoji} {m.label}
@@ -1340,7 +1800,8 @@ export default function TrackDay({ userId }: Props) {
               />
 
               <textarea
-                name="diary" rows={5}
+                name="diary"
+                rows={5}
                 placeholder="Write your thoughts — what did you experience, learn, or struggle with?"
                 onChange={handleChange}
                 className={textareaClass}
@@ -1348,21 +1809,31 @@ export default function TrackDay({ userId }: Props) {
 
               <div className="mt-4 grid md:grid-cols-2 gap-3">
                 <div>
-                  <label className={`text-xs mb-2 flex items-center gap-1.5 ${textMuted}`}>
+                  <label
+                    className={`text-xs mb-2 flex items-center gap-1.5 ${textMuted}`}
+                  >
                     <Star size={11} /> 3 things you're grateful for
                   </label>
                   <textarea
-                    value={gratitude} onChange={(e) => setGratitude(e.target.value)}
-                    placeholder="1. …  2. …  3. …" rows={3} className={textareaClass}
+                    value={gratitude}
+                    onChange={(e) => setGratitude(e.target.value)}
+                    placeholder="1. …  2. …  3. …"
+                    rows={3}
+                    className={textareaClass}
                   />
                 </div>
                 <div>
-                  <label className={`text-xs mb-2 flex items-center gap-1.5 ${textMuted}`}>
+                  <label
+                    className={`text-xs mb-2 flex items-center gap-1.5 ${textMuted}`}
+                  >
                     <Sun size={11} /> Plan for tomorrow
                   </label>
                   <textarea
-                    value={tomorrowPlan} onChange={(e) => setTomorrowPlan(e.target.value)}
-                    placeholder="Top 3 priorities for tomorrow…" rows={3} className={textareaClass}
+                    value={tomorrowPlan}
+                    onChange={(e) => setTomorrowPlan(e.target.value)}
+                    placeholder="Top 3 priorities for tomorrow…"
+                    rows={3}
+                    className={textareaClass}
                   />
                 </div>
               </div>
@@ -1370,14 +1841,27 @@ export default function TrackDay({ userId }: Props) {
 
             {/* ── 7. LIFESTYLE ── */}
             <SectionCard>
-              <SectionHeader icon={<Film size={16} />} label="Lifestyle" accent="#ec4899" />
+              <SectionHeader
+                icon={<Film size={16} />}
+                label="Lifestyle"
+                accent="#ec4899"
+              />
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className={`text-xs mb-2 block ${textMuted}`}>Movie / Show watched</label>
-                  <input name="movie" placeholder="Movie or episode…" onChange={handleChange} className={inputClass} />
+                  <label className={`text-xs mb-2 block ${textMuted}`}>
+                    Movie / Show watched
+                  </label>
+                  <input
+                    name="movie"
+                    placeholder="Movie or episode…"
+                    onChange={handleChange}
+                    className={inputClass}
+                  />
                 </div>
                 <div>
-                  <label className={`text-xs mb-2 block ${textMuted}`}>📱 Screen time by app</label>
+                  <label className={`text-xs mb-2 block ${textMuted}`}>
+                    📱 Screen time by app
+                  </label>
                   <div className="flex flex-wrap gap-1.5 mb-3">
                     {phoneApps.map((a) => (
                       <button
@@ -1386,29 +1870,52 @@ export default function TrackDay({ userId }: Props) {
                         className="pill-btn"
                         style={
                           selectedApp === a
-                            ? { background: "rgba(236,72,153,0.15)", borderColor: "rgba(236,72,153,0.4)", color: darkMode ? "#f9a8d4" : "#db2777" }
-                            : { background: darkMode ? "rgba(255,255,255,0.05)" : "#f8fafc", borderColor: darkMode ? "rgba(255,255,255,0.08)" : "#e2e8f0", color: darkMode ? "rgba(255,255,255,0.5)" : "#64748b" }
+                            ? {
+                                background: "rgba(236,72,153,0.15)",
+                                borderColor: "rgba(236,72,153,0.4)",
+                                color: darkMode ? "#f9a8d4" : "#db2777",
+                              }
+                            : {
+                                background: darkMode
+                                  ? "rgba(255,255,255,0.05)"
+                                  : "#f8fafc",
+                                borderColor: darkMode
+                                  ? "rgba(255,255,255,0.08)"
+                                  : "#e2e8f0",
+                                color: darkMode
+                                  ? "rgba(255,255,255,0.5)"
+                                  : "#64748b",
+                              }
                         }
-                      >{a}</button>
+                      >
+                        {a}
+                      </button>
                     ))}
                   </div>
                   {selectedApp === "Other" && (
                     <input
-                      placeholder="App name…" value={customApp}
+                      placeholder="App name…"
+                      value={customApp}
                       onChange={(e: any) => setCustomApp(e.target.value)}
                       className={`${inputClass} mb-2`}
                     />
                   )}
                   <div className="flex gap-2">
                     <input
-                      type="number" placeholder="mins" value={appTime}
+                      type="number"
+                      placeholder="mins"
+                      value={appTime}
                       onChange={(e) => setAppTime(e.target.value)}
                       className={`w-24 px-3 py-2.5 rounded-xl border text-sm outline-none text-center transition-all ${darkMode ? "bg-black/30 border-white/[0.08] text-white/90 placeholder-white/20 focus:border-pink-500/50" : "bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-pink-400"}`}
                     />
                     <button
                       onClick={addAppUsage}
                       className="px-4 py-2.5 rounded-xl text-sm font-medium transition-colors"
-                      style={{ background: "rgba(236,72,153,0.12)", border: "1px solid rgba(236,72,153,0.3)", color: darkMode ? "#f9a8d4" : "#db2777" }}
+                      style={{
+                        background: "rgba(236,72,153,0.12)",
+                        border: "1px solid rgba(236,72,153,0.3)",
+                        color: darkMode ? "#f9a8d4" : "#db2777",
+                      }}
                     >
                       + Add
                     </button>
@@ -1417,10 +1924,13 @@ export default function TrackDay({ userId }: Props) {
                     <div className="mt-3 flex flex-wrap gap-2">
                       {appList.map((a, i) => (
                         <span key={i} className={expenseTagClass}>
-                          {a.name} <span className="mono text-pink-500">{a.time}m</span>
+                          {a.name}{" "}
+                          <span className="mono text-pink-500">{a.time}m</span>
                         </span>
                       ))}
-                      <span className={`${expenseTagClass} text-pink-500 font-semibold mono`}>
+                      <span
+                        className={`${expenseTagClass} text-pink-500 font-semibold mono`}
+                      >
                         {totalScreenMin}m total
                       </span>
                     </div>
@@ -1431,7 +1941,11 @@ export default function TrackDay({ userId }: Props) {
 
             {/* ── 8. EXPENSES ── */}
             <SectionCard>
-              <SectionHeader icon={<Wallet size={16} />} label="Expenses" accent="#10b981" />
+              <SectionHeader
+                icon={<Wallet size={16} />}
+                label="Expenses"
+                accent="#10b981"
+              />
               <div className="grid grid-cols-5 gap-2 mb-4">
                 {expenseCategories.map((cat) => (
                   <button
@@ -1440,8 +1954,22 @@ export default function TrackDay({ userId }: Props) {
                     className={`py-2.5 px-2 rounded-xl border text-xs font-medium flex flex-col items-center gap-1 transition-all duration-150 ${selectedCategory === cat.name ? "scale-[1.04]" : ""}`}
                     style={
                       selectedCategory === cat.name
-                        ? { background: `${cat.color}20`, borderColor: `${cat.color}55`, color: darkMode ? "white" : cat.color }
-                        : { background: darkMode ? "rgba(255,255,255,0.03)" : "#f8fafc", borderColor: darkMode ? "rgba(255,255,255,0.07)" : "#e2e8f0", color: darkMode ? "rgba(255,255,255,0.45)" : "#94a3b8" }
+                        ? {
+                            background: `${cat.color}20`,
+                            borderColor: `${cat.color}55`,
+                            color: darkMode ? "white" : cat.color,
+                          }
+                        : {
+                            background: darkMode
+                              ? "rgba(255,255,255,0.03)"
+                              : "#f8fafc",
+                            borderColor: darkMode
+                              ? "rgba(255,255,255,0.07)"
+                              : "#e2e8f0",
+                            color: darkMode
+                              ? "rgba(255,255,255,0.45)"
+                              : "#94a3b8",
+                          }
                     }
                   >
                     <span className="text-base">{cat.icon}</span>
@@ -1452,17 +1980,27 @@ export default function TrackDay({ userId }: Props) {
 
               <div className="flex gap-3">
                 <div className="relative flex-1">
-                  <span className={`absolute left-4 top-1/2 -translate-y-1/2 text-sm ${textFaint}`}>₹</span>
+                  <span
+                    className={`absolute left-4 top-1/2 -translate-y-1/2 text-sm ${textFaint}`}
+                  >
+                    ₹
+                  </span>
                   <input
-                    type="number" value={expenseAmount}
+                    type="number"
+                    value={expenseAmount}
                     onChange={(e) => setExpenseAmount(e.target.value)}
-                    placeholder="Amount" className={`${inputClass} pl-8`}
+                    placeholder="Amount"
+                    className={`${inputClass} pl-8`}
                   />
                 </div>
                 <button
                   onClick={addExpense}
                   className="px-5 py-3 rounded-xl text-sm font-semibold transition-colors"
-                  style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.3)", color: darkMode ? "#6ee7b7" : "#059669" }}
+                  style={{
+                    background: "rgba(16,185,129,0.12)",
+                    border: "1px solid rgba(16,185,129,0.3)",
+                    color: darkMode ? "#6ee7b7" : "#059669",
+                  }}
                 >
                   Add
                 </button>
@@ -1473,17 +2011,33 @@ export default function TrackDay({ userId }: Props) {
                   <div className="flex flex-wrap gap-2 mb-3">
                     {expenseList.map((e, i) => (
                       <span key={i} className={expenseTagClass}>
-                        {expenseCategories.find((c) => c.name === e.category)?.icon} {e.category}
-                        <span className="mono text-emerald-500 font-semibold"> ₹{e.amount}</span>
+                        {
+                          expenseCategories.find((c) => c.name === e.category)
+                            ?.icon
+                        }{" "}
+                        {e.category}
+                        <span className="mono text-emerald-500 font-semibold">
+                          {" "}
+                          ₹{e.amount}
+                        </span>
                       </span>
                     ))}
                   </div>
                   <div
                     className="flex items-center justify-between px-4 py-3 rounded-xl"
-                    style={{ background: darkMode ? "rgba(16,185,129,0.08)" : "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.2)" }}
+                    style={{
+                      background: darkMode
+                        ? "rgba(16,185,129,0.08)"
+                        : "rgba(16,185,129,0.06)",
+                      border: "1px solid rgba(16,185,129,0.2)",
+                    }}
                   >
-                    <span className={`text-sm ${textMuted}`}>Total spent today</span>
-                    <span className="mono font-semibold text-emerald-500">₹{totalExpenses}</span>
+                    <span className={`text-sm ${textMuted}`}>
+                      Total spent today
+                    </span>
+                    <span className="mono font-semibold text-emerald-500">
+                      ₹{totalExpenses}
+                    </span>
                   </div>
                 </div>
               )}
@@ -1492,12 +2046,31 @@ export default function TrackDay({ userId }: Props) {
 
           {/* ── SUBMIT ── */}
           <div className="mt-12 flex flex-col items-center gap-4">
-            <button onClick={handleSubmit} disabled={loading} className="submit-btn">
+            <button
+              onClick={handleSubmit}
+              disabled={loading}
+              className="submit-btn"
+            >
               {loading ? (
                 <span className="flex items-center gap-3">
-                  <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                  <svg
+                    className="animate-spin w-4 h-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                    />
                   </svg>
                   Analyzing your day…
                 </span>
@@ -1518,7 +2091,14 @@ export default function TrackDay({ userId }: Props) {
               <AIResult
                 result={result}
                 onDownload={() =>
-                  generatePDF(result, form, expenseList, appList, selectedMood, diaryTitle)
+                  generatePDF(
+                    result,
+                    form,
+                    expenseList,
+                    appList,
+                    selectedMood,
+                    diaryTitle,
+                  )
                 }
               />
             </div>
