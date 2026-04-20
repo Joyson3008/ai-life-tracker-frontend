@@ -85,16 +85,7 @@ export const generatePDF = async (
     </div>`;
 
   // Wellness vitals row (icon + label + value)
-  const vitalRow = (icon: string, label: string, value: string, accent: string) => `
-    <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #1a1f35;">
-      <div style="width:32px;height:32px;border-radius:10px;background:${accent}20;border:1px solid ${accent}40;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">
-        ${icon}
-      </div>
-      <div style="flex:1;">
-        <div style="font-size:9px;font-weight:700;letter-spacing:1.2px;color:#4b5683;text-transform:uppercase;">${label}</div>
-        <div style="font-size:13px;font-weight:600;color:#e2e8f0;margin-top:2px;">${value}</div>
-      </div>
-    </div>`;
+
 
   // Wellness grid item (2-col grid)
   const vitalGridItem = (icon: string, label: string, value: string, accent: string) => `
