@@ -2090,16 +2090,29 @@ export default function TrackDay({ userId }: Props) {
             <div className="mt-12">
               <AIResult
                 result={result}
-                onDownload={() =>
-                  generatePDF(
-                    result,
-                    form,
-                    expenseList,
-                    appList,
-                    selectedMood,
-                    diaryTitle,
-                  )
-                }
+   // AFTER — passes all wellness, goals, gratitude, tomorrowPlan
+onDownload={() =>
+  generatePDF(
+    result,
+    form,
+    expenseList,
+    appList,
+    selectedMood,
+    diaryTitle,
+    {
+      sleepHours,
+      waterIntake,
+      exerciseMin,
+      exerciseType,
+      morningRoutine,
+      caffeineCount,
+      focusMode,
+    },
+    todayGoals.map((text, i) => ({ text, done: goalsDone[i] ?? false })),
+    gratitude,
+    tomorrowPlan,
+  )
+}
               />
             </div>
           )}
