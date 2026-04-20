@@ -1521,7 +1521,7 @@ export default function TrackDay({ userId }: Props) {
                       placeholder="type"
                       value={exerciseType}
                       onChange={(e) => setExerciseType(e.target.value)}
-                      className={`flex-1 px-3 py-2 rounded-xl border text-sm outline-none transition-all ${darkMode ? "bg-black/30 border-white/[0.08] text-white placeholder-white/20 focus:border-rose-500/50" : "bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-rose-400"}`}
+                      className={`w-16 flex-1 px-3 py-2 rounded-xl border text-sm outline-none transition-all ${darkMode ? "bg-black/30 border-white/[0.08] text-white placeholder-white/20 focus:border-rose-500/50" : "bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-rose-400"}`}
                     />
                   </div>
                 </div>
