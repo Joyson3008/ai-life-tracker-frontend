@@ -47,9 +47,9 @@ const phoneApps = [
   "WhatsApp",
   "Facebook",
   "X",
-  "Twitter",
+  "ChatGPT",
   "Reddit",
-  "TikTok",
+  "Gaming",
   "Other",
 ];
 
