@@ -19,6 +19,7 @@ const navItems = [
   { to: "/goals", icon: Target, label: "Goals" },
   { to: "/predict", icon: Sparkles, label: "Insights" },
   { to: "/weekly", icon: TrendingUp, label: "Weekly" },
+  
   { to: "/profile", icon: User, label: "Profile" },
 ];
 
