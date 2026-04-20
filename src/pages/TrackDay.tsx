@@ -31,13 +31,13 @@ type Props = { userId: number };
 const expenseCategories = [
   { name: "Food", icon: "🍽️", color: "#f97316" },
   { name: "Travel", icon: "🚗", color: "#3b82f6" },
-  { name: "Shopping", icon: "🛒", color: "#ec4899" },
-  { name: "Education", icon: "📚", color: "#a855f7" },
+  { name: "Shop", icon: "🛒", color: "#ec4899" },
+  { name: "Edu", icon: "📚", color: "#a855f7" },
   { name: "Rent", icon: "🏠", color: "#22c55e" },
   { name: "Bills", icon: "💡", color: "#eab308" },
-  { name: "Entertainment", icon: "🎬", color: "#ef4444" },
+  { name: "Moive", icon: "🎬", color: "#ef4444" },
   { name: "Health", icon: "❤️‍🩹", color: "#f43f5e" },
-  { name: "Software", icon: "💻", color: "#6366f1" },
+  { name: "Elec-", icon: "💻", color: "#6366f1" },
   { name: "Others", icon: "📦", color: "#6b7280" },
 ];
 
