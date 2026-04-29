@@ -27,8 +27,10 @@ const navItems = [
 const mobileNavItems = [
   { to: "/", icon: LayoutDashboard, label: "Home" },
   { to: "/track", icon: PenLine, label: "Track" },
+  { to: "/calendar", icon: CalendarDays, label: "Calendar" }, // ✅ added
   { to: "/goals", icon: Target, label: "Goals" },
   { to: "/predict", icon: Sparkles, label: "Insights" },
+  { to: "/weekly", icon: TrendingUp, label: "Weekly" }, // ✅ added
   { to: "/profile", icon: User, label: "Profile" },
 ];
 
