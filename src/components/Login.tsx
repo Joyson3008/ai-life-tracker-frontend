@@ -1,546 +1,254 @@
 import { useState } from "react";
+import type { FormEvent } from "react";
+import { useTheme } from "../context/ThemeContext";
 
 type Props = {
   setUserId: (id: number) => void;
   goToRegister: () => void;
 };
 
-function Login({ setUserId, goToRegister }: Props) {
+function Icon({
+  name,
+}: {
+  name: "mail" | "lock" | "eye" | "eyeOff" | "sun" | "moon";
+}) {
+  const paths = {
+    mail: (
+      <>
+        <rect x="3" y="5" width="18" height="14" rx="2" />
+        <path d="m3 7 9 6 9-6" />
+      </>
+    ),
+    lock: (
+      <>
+        <rect x="4" y="10" width="16" height="11" rx="2" />
+        <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+      </>
+    ),
+    eye: (
+      <>
+        <path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z" />
+        <circle cx="12" cy="12" r="2.5" />
+      </>
+    ),
+    eyeOff: (
+      <>
+        <path d="m3 3 18 18" />
+        <path d="M10.6 6.2A10.8 10.8 0 0 1 12 6c6.1 0 9.5 6 9.5 6a17.5 17.5 0 0 1-3.1 3.8M6.1 6.1A17.3 17.3 0 0 0 2.5 12S5.9 18 12 18c1.3 0 2.4-.3 3.4-.7" />
+        <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+      </>
+    ),
+    sun: (
+      <>
+        <circle cx="12" cy="12" r="3.5" />
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+      </>
+    ),
+    moon: (
+      <path d="M20.5 14.4A8.5 8.5 0 0 1 9.6 3.5 8.5 8.5 0 1 0 20.5 14.4Z" />
+    ),
+  };
+
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.9"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {paths[name]}
+    </svg>
+  );
+}
+
+export default function Login({ setUserId, goToRegister }: Props) {
+  const { darkMode, toggleDarkMode } = useTheme();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [focused, setFocused] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      alert("⚠️ Email and password required");
+  const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!email.trim() || !password) {
+      setError("Enter your email address and password to continue.");
       return;
     }
+
     try {
+      setError("");
       setLoading(true);
-      const res = await fetch(
+      const response = await fetch(
         "https://ai-life-tracker.onrender.com/api/users/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: email.trim(),
-            password: password.trim(),
-          }),
+          body: JSON.stringify({ email: email.trim(), password }),
         },
       );
-      if (!res.ok) {
-        const text = await res.text();
-        alert("❌ Login failed: " + text);
+
+      if (!response.ok) {
+        const message = await response.text();
+        setError(
+          message ||
+            "We couldn't sign you in. Check your details and try again.",
+        );
         return;
       }
-      const data = await res.json();
-      setUserId(data.id);
-      localStorage.setItem("userId", data.id);
-    } catch (error) {
-      console.error(error);
-      alert("❌ Something went wrong");
+
+      const user = await response.json();
+      setUserId(user.id);
+      localStorage.setItem("userId", String(user.id));
+    } catch (requestError) {
+      console.error("Login error:", requestError);
+      setError(
+        "Something went wrong. Please check your connection and try again.",
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <>
+    <main className={`oneui-login ${darkMode ? "oneui-dark" : "oneui-light"}`}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
-
-        .auth-root {
-          font-family: 'Outfit', sans-serif;
-          min-height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #05070f;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .auth-root::before {
-          content: '';
-          position: absolute;
-          width: 900px; height: 900px;
-          top: -300px; left: 50%;
-          transform: translateX(-50%);
-          background: radial-gradient(ellipse, rgba(99,60,220,0.18) 0%, rgba(138,80,255,0.08) 40%, transparent 70%);
-          pointer-events: none;
-        }
-
-        .auth-root::after {
-          content: '';
-          position: absolute;
-          width: 600px; height: 600px;
-          bottom: -200px; right: -100px;
-          background: radial-gradient(ellipse, rgba(56,189,248,0.1) 0%, transparent 70%);
-          pointer-events: none;
-        }
-
-        .grid-bg {
-          position: absolute;
-          inset: 0;
-          background-image:
-            linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-          background-size: 48px 48px;
-          mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
-        }
-
-        .orb {
-          position: absolute;
-          border-radius: 50%;
-          filter: blur(60px);
-          pointer-events: none;
-          animation: orbFloat 8s ease-in-out infinite;
-        }
-        .orb-1 { width: 300px; height: 300px; top: 10%; left: 5%; background: rgba(99,60,220,0.12); animation-delay: 0s; }
-        .orb-2 { width: 200px; height: 200px; bottom: 15%; right: 8%; background: rgba(56,189,248,0.1); animation-delay: -3s; }
-        .orb-3 { width: 150px; height: 150px; top: 60%; left: 15%; background: rgba(168,85,247,0.08); animation-delay: -5s; }
-
-        @keyframes orbFloat {
-          0%, 100% { transform: translateY(0px) scale(1); }
-          50% { transform: translateY(-20px) scale(1.05); }
-        }
-
-        .auth-card {
-          position: relative;
-          width: 100%;
-          max-width: 440px;
-          margin: 24px;
-          padding: 48px 44px;
-          border-radius: 28px;
-          background: linear-gradient(145deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.02) 100%);
-          border: 1px solid rgba(255,255,255,0.09);
-          backdrop-filter: blur(24px);
-          box-shadow:
-            0 32px 80px rgba(0,0,0,0.5),
-            0 0 0 1px rgba(255,255,255,0.04) inset,
-            0 1px 0 rgba(255,255,255,0.08) inset;
-          animation: cardReveal 0.6s cubic-bezier(0.16,1,0.3,1) both;
-        }
-
-        @keyframes cardReveal {
-          from { opacity: 0; transform: translateY(24px) scale(0.97); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .logo-wrap {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          margin-bottom: 36px;
-          animation: cardReveal 0.6s 0.1s cubic-bezier(0.16,1,0.3,1) both;
-        }
-
-        .logo-img {
-          width: 88px;
-          height: 88px;
-          object-fit: contain;
-          filter: drop-shadow(0 0 24px rgba(138,80,255,0.5)) drop-shadow(0 0 48px rgba(99,60,220,0.3));
-          animation: logoPulse 4s ease-in-out infinite;
-        }
-
-        @keyframes logoPulse {
-          0%, 100% { filter: drop-shadow(0 0 20px rgba(138,80,255,0.45)) drop-shadow(0 0 40px rgba(99,60,220,0.25)); }
-          50% { filter: drop-shadow(0 0 32px rgba(138,80,255,0.7)) drop-shadow(0 0 64px rgba(99,60,220,0.4)); }
-        }
-
-        .logo-title {
-          margin-top: 14px;
-          font-size: 22px;
-          font-weight: 800;
-          letter-spacing: -0.02em;
-          background: linear-gradient(135deg, #c4b5fd 0%, #818cf8 40%, #67e8f9 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-
-        .logo-sub {
-          margin-top: 4px;
-          font-size: 12px;
-          color: rgba(255,255,255,0.3);
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          font-weight: 500;
-        }
-
-        .form-heading {
-          text-align: center;
-          margin-bottom: 28px;
-          animation: cardReveal 0.6s 0.15s cubic-bezier(0.16,1,0.3,1) both;
-        }
-
-        .form-heading h2 {
-          font-size: 26px;
-          font-weight: 700;
-          color: white;
-          letter-spacing: -0.02em;
-          margin-bottom: 6px;
-        }
-
-        .form-heading p {
-          font-size: 13.5px;
-          color: rgba(255,255,255,0.35);
-          font-weight: 400;
-        }
-
-        .field-wrap {
-          margin-bottom: 16px;
-          animation: cardReveal 0.6s 0.2s cubic-bezier(0.16,1,0.3,1) both;
-        }
-
-        .field-label {
-          display: block;
-          font-size: 11.5px;
-          font-weight: 600;
-          color: rgba(255,255,255,0.4);
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          margin-bottom: 8px;
-        }
-
-        .field-inner {
-          position: relative;
-        }
-
-        .field-icon {
-          position: absolute;
-          left: 16px;
-          top: 50%;
-          transform: translateY(-50%);
-          color: rgba(255,255,255,0.25);
-          pointer-events: none;
-          transition: color 0.2s;
-        }
-
-        .field-inner.focused .field-icon {
-          color: #a78bfa;
-        }
-
-        .auth-input {
-          width: 100%;
-          padding: 14px 16px 14px 44px;
-          border-radius: 14px;
-          background: rgba(255,255,255,0.04);
-          border: 1.5px solid rgba(255,255,255,0.08);
-          color: white;
-          font-size: 14.5px;
-          font-family: 'Outfit', sans-serif;
-          font-weight: 400;
-          outline: none;
-          transition: all 0.2s ease;
-          box-sizing: border-box;
-        }
-
-        .auth-input::placeholder { color: rgba(255,255,255,0.2); }
-
-        .auth-input:focus {
-          border-color: rgba(167,139,250,0.6);
-          background: rgba(167,139,250,0.07);
-          box-shadow: 0 0 0 4px rgba(167,139,250,0.1);
-        }
-
-        .eye-btn {
-          position: absolute;
-          right: 14px;
-          top: 50%;
-          transform: translateY(-50%);
-          background: none;
-          border: none;
-          color: rgba(255,255,255,0.25);
-          cursor: pointer;
-          padding: 4px;
-          transition: color 0.2s;
-          font-size: 16px;
-          line-height: 1;
-        }
-        .eye-btn:hover { color: rgba(255,255,255,0.6); }
-
-        .submit-btn {
-          width: 100%;
-          margin-top: 8px;
-          padding: 15px;
-          border-radius: 14px;
-          font-size: 15px;
-          font-weight: 700;
-          font-family: 'Outfit', sans-serif;
-          letter-spacing: 0.02em;
-          color: white;
-          background: linear-gradient(135deg, #7c3aed 0%, #6366f1 50%, #38bdf8 100%);
-          border: none;
-          cursor: pointer;
-          position: relative;
-          overflow: hidden;
-          transition: all 0.25s ease;
-          box-shadow: 0 8px 28px rgba(99,102,241,0.4), 0 0 0 1px rgba(255,255,255,0.08) inset;
-          animation: cardReveal 0.6s 0.25s cubic-bezier(0.16,1,0.3,1) both;
-        }
-
-        .submit-btn::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
-        }
-
-        .submit-btn:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 14px 40px rgba(99,102,241,0.55), 0 0 0 1px rgba(255,255,255,0.1) inset;
-        }
-
-        .submit-btn:active:not(:disabled) {
-          transform: translateY(0);
-        }
-
-        .submit-btn:disabled {
-          opacity: 0.65;
-          cursor: not-allowed;
-        }
-
-        .btn-shimmer {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
-          transform: translateX(-100%);
-          animation: shimmer 2.5s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(200%); }
-        }
-
-        .divider {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          margin: 24px 0 20px;
-          animation: cardReveal 0.6s 0.3s cubic-bezier(0.16,1,0.3,1) both;
-        }
-
-        .divider-line {
-          flex: 1;
-          height: 1px;
-          background: rgba(255,255,255,0.08);
-        }
-
-        .divider-text {
-          font-size: 11px;
-          color: rgba(255,255,255,0.25);
-          font-weight: 500;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-        }
-
-        .toggle-link {
-          text-align: center;
-          font-size: 13.5px;
-          color: rgba(255,255,255,0.35);
-          cursor: pointer;
-          transition: color 0.2s;
-          animation: cardReveal 0.6s 0.35s cubic-bezier(0.16,1,0.3,1) both;
-        }
-
-        .toggle-link span {
-          color: #a78bfa;
-          font-weight: 600;
-          transition: color 0.2s;
-        }
-
-        .toggle-link:hover { color: rgba(255,255,255,0.55); }
-        .toggle-link:hover span { color: #c4b5fd; }
-
-        .badge-row {
-          display: flex;
-          justify-content: center;
-          gap: 10px;
-          margin-top: 28px;
-          animation: cardReveal 0.6s 0.4s cubic-bezier(0.16,1,0.3,1) both;
-        }
-
-        .badge {
-          display: flex;
-          align-items: center;
-          gap: 5px;
-          padding: 5px 10px;
-          border-radius: 999px;
-          background: rgba(255,255,255,0.04);
-          border: 1px solid rgba(255,255,255,0.07);
-          font-size: 10.5px;
-          color: rgba(255,255,255,0.3);
-          font-weight: 500;
-        }
-
-        .badge-dot {
-          width: 5px; height: 5px;
-          border-radius: 50%;
-        }
-
-        .spinner {
-          display: inline-block;
-          width: 16px; height: 16px;
-          border: 2.5px solid rgba(255,255,255,0.3);
-          border-top-color: white;
-          border-radius: 50%;
-          animation: spin 0.7s linear infinite;
-          margin-right: 8px;
-          vertical-align: middle;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .oneui-login { --bg: #f7f7fa; --surface: #ffffff; --surface-subtle: #f0f0f5; --text: #17171b; --muted: #6f707a; --line: #dfdfe5; --accent: #4f46e5; --accent-pressed: #3730a3; --field: #f1f1f5; --error: #b3261e; min-height: 100svh; background: var(--bg); color: var(--text); font-family: Inter, Roboto, Arial, sans-serif; }
+        .oneui-dark { --bg: #141419; --surface: #202025; --surface-subtle: #2b2b31; --text: #f5f5f7; --muted: #acaeb8; --line: #383840; --accent: #aeb1ff; --accent-pressed: #c5c7ff; --field: #2b2b31; --error: #ffb4ab; }
+        .oneui-shell { width: min(100%, 520px); min-height: 100svh; margin: 0 auto; display: flex; flex-direction: column; padding: max(20px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom)); box-sizing: border-box; }
+        .oneui-topbar { display: flex; justify-content: flex-end; min-height: 48px; }
+        .theme-button, .icon-button { width: 48px; height: 48px; border: 0; border-radius: 50%; display: inline-grid; place-items: center; color: var(--text); background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .theme-button:hover, .icon-button:hover { background: var(--surface-subtle); }
+        .theme-button:focus-visible, .icon-button:focus-visible, .oneui-button:focus-visible, .create-account:focus-visible, .oneui-input:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 48%, transparent); outline-offset: 2px; }
+        .theme-button svg, .icon-button svg, .field-icon svg { width: 21px; height: 21px; }
+        .oneui-intro { padding: 34px 4px 30px; }
+        .eyebrow { display: block; margin: 0 0 12px; color: var(--accent); font-size: 14px; font-weight: 700; letter-spacing: .02em; }
+        .oneui-intro h1 { max-width: 360px; margin: 0; font-size: clamp(34px, 9vw, 44px); line-height: 1.08; letter-spacing: -.045em; font-weight: 750; }
+        .oneui-intro p { max-width: 350px; margin: 14px 0 0; color: var(--muted); font-size: 16px; line-height: 1.5; }
+        .oneui-panel { margin-top: auto; padding: 28px 20px 22px; border: 1px solid var(--line); border-radius: 28px; background: var(--surface); box-shadow: 0 6px 18px rgba(0,0,0,.04); }
+        .oneui-panel h2 { margin: 0 0 22px; font-size: 22px; letter-spacing: -.025em; }
+        .field { margin-top: 16px; }
+        .field label { display: block; margin: 0 0 8px; font-size: 14px; font-weight: 650; }
+        .field-control { position: relative; }
+        .field-icon { position: absolute; left: 16px; top: 50%; display: grid; place-items: center; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+        .oneui-input { width: 100%; min-height: 52px; padding: 0 48px; box-sizing: border-box; border: 1px solid transparent; border-radius: 14px; background: var(--field); color: var(--text); font: inherit; font-size: 16px; transition: border-color .18s ease, background .18s ease; }
+        .oneui-input::placeholder { color: var(--muted); opacity: .82; }
+        .oneui-input:focus { border-color: var(--accent); background: var(--surface); }
+        .password-input { padding-right: 54px; }
+        .password-toggle { position: absolute; right: 2px; top: 2px; }
+        .error-message { margin: 16px 0 0; padding: 12px 14px; border-radius: 12px; background: color-mix(in srgb, var(--error) 12%, transparent); color: var(--error); font-size: 14px; line-height: 1.4; }
+        .oneui-button { width: 100%; min-height: 52px; margin-top: 24px; border: 0; border-radius: 15px; background: var(--accent); color: ${darkMode ? "#202025" : "#ffffff"}; font: inherit; font-size: 16px; font-weight: 750; cursor: pointer; transition: transform .15s ease, background .15s ease; }
+        .oneui-button:hover:not(:disabled) { background: var(--accent-pressed); }
+        .oneui-button:active:not(:disabled) { transform: scale(.98); }
+        .oneui-button:disabled { opacity: .58; cursor: progress; }
+        .new-account { margin: 22px 0 0; color: var(--muted); text-align: center; font-size: 14px; }
+        .create-account { margin-left: 5px; padding: 4px; border: 0; background: transparent; color: var(--accent); font: inherit; font-weight: 750; cursor: pointer; }
+        .privacy-note { margin: 20px 4px 0; color: var(--muted); text-align: center; font-size: 12px; line-height: 1.45; }
+        @media (min-width: 700px) { .oneui-login { display: grid; place-items: center; padding: 28px; } .oneui-shell { min-height: auto; padding: 18px; border: 1px solid var(--line); border-radius: 36px; background: var(--surface); box-shadow: 0 18px 46px rgba(0,0,0,.10); } .oneui-panel { margin-top: 0; padding: 28px; border: 0; box-shadow: none; background: transparent; } .oneui-intro { padding: 24px 12px 30px; } }
+        @media (prefers-reduced-motion: reduce) { .oneui-login * { transition: none !important; } }
       `}</style>
 
-      <div className="auth-root">
-        <div className="grid-bg" />
-        <div className="orb orb-1" />
-        <div className="orb orb-2" />
-        <div className="orb orb-3" />
-
-        <div className="auth-card">
-          {/* Logo */}
-          <div className="logo-wrap">
-            <img
-              src="/1776168907036_image.png"
-              alt="AI Life Tracker"
-              className="logo-img"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = "none";
-              }}
-            />
-            <div className="logo-title">AI Life Tracker</div>
-            <div className="logo-sub">Your intelligent daily companion</div>
-          </div>
-
-          {/* Heading */}
-          <div className="form-heading">
-            <h2>Welcome back 👋</h2>
-            <p>Sign in to continue your journey</p>
-          </div>
-
-          {/* Email */}
-          <div className="field-wrap">
-            <label className="field-label">Email address</label>
-            <div
-              className={`field-inner ${focused === "email" ? "focused" : ""}`}
-            >
-              <span className="field-icon">
-                <svg
-                  width="16"
-                  height="16"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </span>
-              <input
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onFocus={() => setFocused("email")}
-                onBlur={() => setFocused(null)}
-                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-                className="auth-input"
-              />
-            </div>
-          </div>
-
-          {/* Password */}
-          <div className="field-wrap" style={{ marginBottom: 24 }}>
-            <label className="field-label">Password</label>
-            <div
-              className={`field-inner ${focused === "password" ? "focused" : ""}`}
-            >
-              <span className="field-icon">
-                <svg
-                  width="16"
-                  height="16"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                  <path d="M7 11V7a5 5 0 0110 0v4" />
-                </svg>
-              </span>
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onFocus={() => setFocused("password")}
-                onBlur={() => setFocused(null)}
-                onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-                className="auth-input"
-                style={{ paddingRight: "44px" }}
-              />
-              <button
-                className="eye-btn"
-                onClick={() => setShowPassword(!showPassword)}
-                type="button"
-              >
-                {showPassword ? "🙈" : "👁️"}
-              </button>
-            </div>
-          </div>
-
-          {/* Submit */}
+      <div className="oneui-shell">
+        <header className="oneui-topbar">
           <button
-            className="submit-btn"
-            onClick={handleLogin}
-            disabled={loading}
+            className="theme-button"
+            type="button"
+            onClick={toggleDarkMode}
+            aria-label={
+              darkMode ? "Switch to light mode" : "Switch to dark mode"
+            }
+            title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
           >
-            <span className="btn-shimmer" />
-            {loading ? (
-              <>
-                <span className="spinner" />
-                Signing in…
-              </>
-            ) : (
-              <>✨ Sign In</>
-            )}
+            <Icon name={darkMode ? "sun" : "moon"} />
           </button>
+        </header>
 
-          {/* Divider */}
-          <div className="divider">
-            <div className="divider-line" />
-            <span className="divider-text">New here?</span>
-            <div className="divider-line" />
-          </div>
+        <section className="oneui-intro" aria-labelledby="login-page-title">
+          <span className="eyebrow">AI Life Tracker</span>
+          <h1 id="login-page-title">
+            A better day starts with a small check-in.
+          </h1>
+          <p>
+            See your habits clearly and make steady progress, one day at a time.
+          </p>
+        </section>
 
-          {/* Toggle */}
-          <div className="toggle-link" onClick={goToRegister}>
-            Don't have an account? <span>Create one →</span>
-          </div>
-
-          {/* Trust badges */}
-          <div className="badge-row">
-            <div className="badge">
-              <div className="badge-dot" style={{ background: "#34d399" }} />
-              Secure
+        <section className="oneui-panel" aria-labelledby="sign-in-title">
+          <h2 id="sign-in-title">Sign in</h2>
+          <form onSubmit={handleLogin} noValidate>
+            <div className="field">
+              <label htmlFor="login-email">Email address</label>
+              <div className="field-control">
+                <span className="field-icon">
+                  <Icon name="mail" />
+                </span>
+                <input
+                  id="login-email"
+                  className="oneui-input"
+                  type="email"
+                  autoComplete="email"
+                  inputMode="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  aria-describedby={error ? "login-error" : undefined}
+                />
+              </div>
             </div>
-            <div className="badge">
-              <div className="badge-dot" style={{ background: "#818cf8" }} />
-              AI-Powered
+            <div className="field">
+              <label htmlFor="login-password">Password</label>
+              <div className="field-control">
+                <span className="field-icon">
+                  <Icon name="lock" />
+                </span>
+                <input
+                  id="login-password"
+                  className="oneui-input password-input"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  aria-describedby={error ? "login-error" : undefined}
+                />
+                <button
+                  className="icon-button password-toggle"
+                  type="button"
+                  onClick={() => setShowPassword((visible) => !visible)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  <Icon name={showPassword ? "eyeOff" : "eye"} />
+                </button>
+              </div>
             </div>
-            <div className="badge">
-              <div className="badge-dot" style={{ background: "#f472b6" }} />
-              Private
-            </div>
-          </div>
-        </div>
+            {error && (
+              <p id="login-error" className="error-message" role="alert">
+                {error}
+              </p>
+            )}
+            <button className="oneui-button" type="submit" disabled={loading}>
+              {loading ? "Signing in..." : "Sign in"}
+            </button>
+          </form>
+          <p className="new-account">
+            New to AI Life Tracker?
+            <button
+              className="create-account"
+              type="button"
+              onClick={goToRegister}
+            >
+              Create account
+            </button>
+          </p>
+          <p className="privacy-note">
+            Your daily reflections are personal. We keep the sign-in experience
+            simple and secure.
+          </p>
+        </section>
       </div>
-    </>
+    </main>
   );
 }
-
-export default Login;
