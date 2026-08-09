@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useTheme } from "../context/ThemeContext";
-import appLogo from "../assets/ikigAI.jpeg";
+import appLogo from "../assets/ikigai-logo.png";
 
 type Props = { setUserId: (id: number) => void; goToRegister: () => void };
 
@@ -124,7 +124,7 @@ export default function Login({ setUserId, goToRegister }: Props) {
         <header className="apple-nav">
           <span className="brand">
             <img className="brand-logo" src={appLogo} alt="ikigAI" />
-            ikigAI
+            IKIG-AI
           </span>
           <button
             className="icon-button"

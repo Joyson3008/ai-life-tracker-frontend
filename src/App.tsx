@@ -20,30 +20,13 @@ function App() {
 
   // ✅ AUTH SCREEN
   if (!userId) {
-    if (!showRegister) {
-      return (
-        <Login
-          setUserId={setUserId}
-          goToRegister={() => setShowRegister(true)}
-        />
-      );
-    }
-
-    return (
-      <div className="relative min-h-screen bg-[#0B0F19] text-white overflow-hidden">
-        {/* Background Glow */}
-        <div className="absolute inset-0">
-          <div className="absolute w-[500px] h-[500px] bg-purple-600/30 blur-[120px] top-[-100px] left-[-100px]" />
-          <div className="absolute w-[400px] h-[400px] bg-indigo-600/30 blur-[120px] bottom-[-100px] right-[-100px]" />
-        </div>
-
-        <div className="relative flex items-center justify-center min-h-screen px-6">
-          <Register
-            onRegisterSuccess={() => setShowRegister(false)}
-            goToLogin={() => setShowRegister(false)}
-          />
-        </div>
-      </div>
+    return showRegister ? (
+      <Register
+        onRegisterSuccess={() => setShowRegister(false)}
+        goToLogin={() => setShowRegister(false)}
+      />
+    ) : (
+      <Login setUserId={setUserId} goToRegister={() => setShowRegister(true)} />
     );
   }
 

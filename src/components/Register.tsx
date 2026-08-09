@@ -1,589 +1,280 @@
 import { useState } from "react";
+import type { FormEvent } from "react";
+import { useTheme } from "../context/ThemeContext";
+import appLogo from "../assets/ikigai-logo.png";
 
-type Props = {
-  onRegisterSuccess: () => void;
-  goToLogin: () => void;
-};
+type Props = { onRegisterSuccess: () => void; goToLogin: () => void };
+type IconName = "person" | "mail" | "lock" | "eye" | "eyeOff" | "sun" | "moon";
 
-function Register({ onRegisterSuccess, goToLogin }: Props) {
+function Icon({ name }: { name: IconName }) {
+  const paths = {
+    person: (
+      <>
+        <circle cx="12" cy="8" r="3.5" />
+        <path d="M5 20c.5-3.2 3-5 7-5s6.5 1.8 7 5" />
+      </>
+    ),
+    mail: (
+      <>
+        <rect x="3" y="5" width="18" height="14" rx="2" />
+        <path d="m3 7 9 6 9-6" />
+      </>
+    ),
+    lock: (
+      <>
+        <rect x="4" y="10" width="16" height="11" rx="2" />
+        <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+      </>
+    ),
+    eye: (
+      <>
+        <path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z" />
+        <circle cx="12" cy="12" r="2.5" />
+      </>
+    ),
+    eyeOff: (
+      <>
+        <path d="m3 3 18 18" />
+        <path d="M10.6 6.2A10.8 10.8 0 0 1 12 6c6.1 0 9.5 6 9.5 6a17.5 17.5 0 0 1-3.1 3.8M6.1 6.1A17.3 17.3 0 0 0 2.5 12S5.9 18 12 18c1.3 0 2.4-.3 3.4-.7" />
+        <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+      </>
+    ),
+    sun: (
+      <>
+        <circle cx="12" cy="12" r="3.5" />
+        <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+      </>
+    ),
+    moon: (
+      <path d="M20.5 14.4A8.5 8.5 0 0 1 9.6 3.5 8.5 8.5 0 1 0 20.5 14.4Z" />
+    ),
+  };
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {paths[name]}
+    </svg>
+  );
+}
+
+export default function Register({ onRegisterSuccess, goToLogin }: Props) {
+  const { darkMode, toggleDarkMode } = useTheme();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [focused, setFocused] = useState<string | null>(null);
-  const [strength, setStrength] = useState(0);
+  const [error, setError] = useState("");
 
-  const checkStrength = (val: string) => {
-    let s = 0;
-    if (val.length >= 8) s++;
-    if (/[A-Z]/.test(val)) s++;
-    if (/[0-9]/.test(val)) s++;
-    if (/[^A-Za-z0-9]/.test(val)) s++;
-    setStrength(s);
-  };
-
+  const strength = [
+    password.length >= 8,
+    /[A-Z]/.test(password),
+    /[0-9]/.test(password),
+    /[^A-Za-z0-9]/.test(password),
+  ].filter(Boolean).length;
   const strengthLabel = ["", "Weak", "Fair", "Good", "Strong"][strength];
-  const strengthColor = ["", "#f43f5e", "#f97316", "#eab308", "#22c55e"][strength];
+  const strengthColor = ["", "#e75b52", "#ef8b2c", "#3e88ee", "#24a148"][
+    strength
+  ];
 
-  const handleRegister = async () => {
-    if (!name || !email || !password) {
-      alert("⚠️ All fields required");
+  const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!name.trim() || !email.trim() || !password) {
+      setError("Enter your name, email address, and password to continue.");
+      return;
+    }
+    if (password.length < 8) {
+      setError("Choose a password with at least 8 characters.");
       return;
     }
     try {
+      setError("");
       setLoading(true);
-      const res = await fetch("https://ai-life-tracker.onrender.com/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
-      });
-      const text = await res.text();
-      if (!res.ok) { alert("❌ " + text); return; }
-      alert("✅ Registered successfully!");
+      const response = await fetch(
+        "https://ai-life-tracker.onrender.com/api/users",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: name.trim(),
+            email: email.trim(),
+            password,
+          }),
+        },
+      );
+      const message = await response.text();
+      if (!response.ok) {
+        setError(
+          message || "We couldn't create your account. Please try again.",
+        );
+        return;
+      }
       onRegisterSuccess();
-    } catch {
-      alert("❌ Error registering");
+    } catch (requestError) {
+      console.error("Registration error:", requestError);
+      setError("Something went wrong. Check your connection and try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <>
+    <main
+      className={`samsung-register ${darkMode ? "samsung-dark" : "samsung-light"}`}
+    >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap');
-
-        .auth-root {
-          font-family: 'Outfit', sans-serif;
-          min-height: 100vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: #05070f;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .auth-root::before {
-          content: '';
-          position: absolute;
-          width: 900px; height: 900px;
-          top: -300px; left: 50%;
-          transform: translateX(-50%);
-          background: radial-gradient(ellipse, rgba(56,189,248,0.12) 0%, rgba(99,60,220,0.08) 40%, transparent 70%);
-          pointer-events: none;
-        }
-
-        .auth-root::after {
-          content: '';
-          position: absolute;
-          width: 600px; height: 600px;
-          bottom: -200px; left: -100px;
-          background: radial-gradient(ellipse, rgba(168,85,247,0.1) 0%, transparent 70%);
-          pointer-events: none;
-        }
-
-        .grid-bg {
-          position: absolute;
-          inset: 0;
-          background-image:
-            linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-          background-size: 48px 48px;
-          mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
-        }
-
-        .orb {
-          position: absolute;
-          border-radius: 50%;
-          filter: blur(60px);
-          pointer-events: none;
-          animation: orbFloat 8s ease-in-out infinite;
-        }
-        .orb-1 { width: 280px; height: 280px; top: 8%; right: 6%; background: rgba(56,189,248,0.1); animation-delay: 0s; }
-        .orb-2 { width: 220px; height: 220px; bottom: 10%; left: 5%; background: rgba(99,60,220,0.12); animation-delay: -4s; }
-        .orb-3 { width: 160px; height: 160px; top: 55%; right: 12%; background: rgba(244,63,94,0.07); animation-delay: -2s; }
-
-        @keyframes orbFloat {
-          0%, 100% { transform: translateY(0px) scale(1); }
-          50% { transform: translateY(-20px) scale(1.05); }
-        }
-
-        .auth-card {
-          position: relative;
-          width: 100%;
-          max-width: 440px;
-          margin: 24px;
-          padding: 44px 44px;
-          border-radius: 28px;
-          background: linear-gradient(145deg, rgba(255,255,255,0.055) 0%, rgba(255,255,255,0.02) 100%);
-          border: 1px solid rgba(255,255,255,0.09);
-          backdrop-filter: blur(24px);
-          box-shadow:
-            0 32px 80px rgba(0,0,0,0.5),
-            0 0 0 1px rgba(255,255,255,0.04) inset,
-            0 1px 0 rgba(255,255,255,0.08) inset;
-          animation: cardReveal 0.6s cubic-bezier(0.16,1,0.3,1) both;
-        }
-
-        @keyframes cardReveal {
-          from { opacity: 0; transform: translateY(24px) scale(0.97); }
-          to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .logo-wrap {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          margin-bottom: 32px;
-          animation: cardReveal 0.6s 0.1s cubic-bezier(0.16,1,0.3,1) both;
-        }
-
-        .logo-img {
-          width: 80px;
-          height: 80px;
-          object-fit: contain;
-          filter: drop-shadow(0 0 20px rgba(138,80,255,0.5)) drop-shadow(0 0 40px rgba(56,189,248,0.25));
-          animation: logoPulse 4s ease-in-out infinite;
-        }
-
-        @keyframes logoPulse {
-          0%, 100% { filter: drop-shadow(0 0 18px rgba(138,80,255,0.45)) drop-shadow(0 0 36px rgba(56,189,248,0.2)); }
-          50% { filter: drop-shadow(0 0 28px rgba(138,80,255,0.65)) drop-shadow(0 0 56px rgba(56,189,248,0.35)); }
-        }
-
-        .logo-title {
-          margin-top: 12px;
-          font-size: 21px;
-          font-weight: 800;
-          letter-spacing: -0.02em;
-          background: linear-gradient(135deg, #67e8f9 0%, #818cf8 50%, #c4b5fd 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-
-        .logo-sub {
-          margin-top: 4px;
-          font-size: 11.5px;
-          color: rgba(255,255,255,0.28);
-          letter-spacing: 0.12em;
-          text-transform: uppercase;
-          font-weight: 500;
-        }
-
-        .form-heading {
-          text-align: center;
-          margin-bottom: 26px;
-          animation: cardReveal 0.6s 0.15s cubic-bezier(0.16,1,0.3,1) both;
-        }
-
-        .form-heading h2 {
-          font-size: 25px;
-          font-weight: 700;
-          color: white;
-          letter-spacing: -0.02em;
-          margin-bottom: 5px;
-        }
-
-        .form-heading p {
-          font-size: 13px;
-          color: rgba(255,255,255,0.33);
-          font-weight: 400;
-        }
-
-        .field-wrap {
-          margin-bottom: 14px;
-        }
-
-        .field-wrap:nth-child(1) { animation: cardReveal 0.6s 0.18s cubic-bezier(0.16,1,0.3,1) both; }
-        .field-wrap:nth-child(2) { animation: cardReveal 0.6s 0.22s cubic-bezier(0.16,1,0.3,1) both; }
-        .field-wrap:nth-child(3) { animation: cardReveal 0.6s 0.26s cubic-bezier(0.16,1,0.3,1) both; }
-
-        .field-label {
-          display: block;
-          font-size: 11px;
-          font-weight: 600;
-          color: rgba(255,255,255,0.38);
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          margin-bottom: 7px;
-        }
-
-        .field-inner {
-          position: relative;
-        }
-
-        .field-icon {
-          position: absolute;
-          left: 16px;
-          top: 50%;
-          transform: translateY(-50%);
-          color: rgba(255,255,255,0.22);
-          pointer-events: none;
-          transition: color 0.2s;
-        }
-
-        .field-inner.focused .field-icon {
-          color: #67e8f9;
-        }
-
-        .auth-input {
-          width: 100%;
-          padding: 13px 16px 13px 44px;
-          border-radius: 14px;
-          background: rgba(255,255,255,0.04);
-          border: 1.5px solid rgba(255,255,255,0.08);
-          color: white;
-          font-size: 14px;
-          font-family: 'Outfit', sans-serif;
-          font-weight: 400;
-          outline: none;
-          transition: all 0.2s ease;
-          box-sizing: border-box;
-        }
-
-        .auth-input::placeholder { color: rgba(255,255,255,0.18); }
-
-        .auth-input:focus {
-          border-color: rgba(103,232,249,0.5);
-          background: rgba(103,232,249,0.05);
-          box-shadow: 0 0 0 4px rgba(103,232,249,0.08);
-        }
-
-        .eye-btn {
-          position: absolute;
-          right: 14px;
-          top: 50%;
-          transform: translateY(-50%);
-          background: none;
-          border: none;
-          color: rgba(255,255,255,0.25);
-          cursor: pointer;
-          padding: 4px;
-          transition: color 0.2s;
-          font-size: 15px;
-          line-height: 1;
-        }
-        .eye-btn:hover { color: rgba(255,255,255,0.6); }
-
-        .strength-bar-wrap {
-          margin-top: 8px;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .strength-bars {
-          display: flex;
-          gap: 4px;
-          flex: 1;
-        }
-
-        .strength-bar {
-          flex: 1;
-          height: 3px;
-          border-radius: 999px;
-          background: rgba(255,255,255,0.08);
-          transition: background 0.3s ease;
-        }
-
-        .strength-label {
-          font-size: 11px;
-          font-weight: 600;
-          min-width: 36px;
-          text-align: right;
-          transition: color 0.3s;
-        }
-
-        .submit-btn {
-          width: 100%;
-          margin-top: 20px;
-          padding: 15px;
-          border-radius: 14px;
-          font-size: 15px;
-          font-weight: 700;
-          font-family: 'Outfit', sans-serif;
-          letter-spacing: 0.02em;
-          color: white;
-          background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #a855f7 100%);
-          border: none;
-          cursor: pointer;
-          position: relative;
-          overflow: hidden;
-          transition: all 0.25s ease;
-          box-shadow: 0 8px 28px rgba(14,165,233,0.35), 0 0 0 1px rgba(255,255,255,0.08) inset;
-          animation: cardReveal 0.6s 0.3s cubic-bezier(0.16,1,0.3,1) both;
-        }
-
-        .submit-btn::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
-        }
-
-        .submit-btn:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 14px 40px rgba(14,165,233,0.45), 0 0 0 1px rgba(255,255,255,0.1) inset;
-        }
-
-        .submit-btn:active:not(:disabled) { transform: translateY(0); }
-        .submit-btn:disabled { opacity: 0.65; cursor: not-allowed; }
-
-        .btn-shimmer {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
-          transform: translateX(-100%);
-          animation: shimmer 2.5s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(200%); }
-        }
-
-        .perks-row {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-          margin: 22px 0 0;
-          padding: 18px;
-          border-radius: 16px;
-          background: rgba(255,255,255,0.025);
-          border: 1px solid rgba(255,255,255,0.06);
-          animation: cardReveal 0.6s 0.35s cubic-bezier(0.16,1,0.3,1) both;
-        }
-
-        .perk {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          font-size: 12.5px;
-          color: rgba(255,255,255,0.4);
-        }
-
-        .perk-icon {
-          width: 26px; height: 26px;
-          border-radius: 8px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 13px;
-          flex-shrink: 0;
-        }
-
-        .divider {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          margin: 20px 0 16px;
-          animation: cardReveal 0.6s 0.38s cubic-bezier(0.16,1,0.3,1) both;
-        }
-
-        .divider-line {
-          flex: 1;
-          height: 1px;
-          background: rgba(255,255,255,0.07);
-        }
-
-        .divider-text {
-          font-size: 11px;
-          color: rgba(255,255,255,0.22);
-          font-weight: 500;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-        }
-
-        .toggle-link {
-          text-align: center;
-          font-size: 13.5px;
-          color: rgba(255,255,255,0.35);
-          cursor: pointer;
-          transition: color 0.2s;
-          animation: cardReveal 0.6s 0.4s cubic-bezier(0.16,1,0.3,1) both;
-        }
-
-        .toggle-link span {
-          color: #67e8f9;
-          font-weight: 600;
-          transition: color 0.2s;
-        }
-
-        .toggle-link:hover { color: rgba(255,255,255,0.55); }
-        .toggle-link:hover span { color: #a5f3fc; }
-
-        .spinner {
-          display: inline-block;
-          width: 16px; height: 16px;
-          border: 2.5px solid rgba(255,255,255,0.3);
-          border-top-color: white;
-          border-radius: 50%;
-          animation: spin 0.7s linear infinite;
-          margin-right: 8px;
-          vertical-align: middle;
-        }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .samsung-register { --bg:#f6f7fb;--surface:#fff;--field:#edf1f8;--text:#18191d;--muted:#6f727b;--blue:#2378e3;--blue-soft:#dceaff;--line:#dbe0e9;--error:#bc2f28;min-height:100svh;background:var(--bg);color:var(--text);font-family:Roboto,"Segoe UI",Arial,sans-serif; }.samsung-dark { --bg:#101114;--surface:#1d1e22;--field:#292b31;--text:#f3f4f7;--muted:#b1b4bd;--blue:#8ab4ff;--blue-soft:#293a56;--line:#34363d;--error:#ffb4ab; }
+        .samsung-shell { width:min(100%,480px);min-height:100svh;margin:0 auto;display:flex;flex-direction:column;box-sizing:border-box;padding:max(16px,env(safe-area-inset-top)) 20px 0; }.samsung-topbar { min-height:48px;display:flex;justify-content:flex-end; }.theme-button,.password-button { width:48px;height:48px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;color:var(--blue);background:transparent;cursor:pointer; }.theme-button svg,.password-button svg,.field-icon svg { width:21px;height:21px; }.theme-button:hover,.password-button:hover { background:var(--blue-soft); }
+        .view-area { padding:22px 8px 34px; }.identity { display:flex;align-items:center;gap:16px;margin-bottom:34px;font-size:30px;font-weight:750;letter-spacing:-.045em; }.identity img { width:118px;height:118px;object-fit:cover;flex:0 0 118px; }.view-area h1 { max-width:350px;margin:0;font-size:clamp(34px,9vw,42px);line-height:1.06;letter-spacing:-.05em;font-weight:750; }.view-area p { max-width:340px;margin:14px 0 0;color:var(--muted);font-size:17px;line-height:1.45; }
+        .interaction-area { margin:0 -20px;padding:28px 20px max(30px,env(safe-area-inset-bottom));border-radius:32px 32px 0 0;background:var(--surface);box-shadow:0 -8px 30px rgba(0,0,0,.035); }.interaction-area h2 { margin:0 0 20px;font-size:24px;letter-spacing:-.03em; }.form-field { margin-top:14px; }.form-field label { display:block;margin:0 0 8px 2px;font-size:14px;font-weight:650; }.field-box { min-height:56px;display:flex;align-items:center;border-radius:16px;background:var(--field);transition:background .16s ease; }.field-box:focus-within { background:var(--blue-soft); }.field-icon { width:54px;flex:0 0 54px;display:grid;place-items:center;color:var(--muted); }.field-box:focus-within .field-icon { color:var(--blue); }.register-input { width:100%;min-height:56px;padding:0 14px 0 0;border:0;outline:0;background:transparent;color:var(--text);font:inherit;font-size:16px;caret-color:var(--blue); }.register-input::placeholder { color:var(--muted); }.register-input::selection { background:color-mix(in srgb,var(--blue) 30%,transparent); }.password-input { padding-right:48px; }.password-box { position:relative; }.password-button { position:absolute;right:4px;top:4px;color:var(--muted); }.strength { display:flex;align-items:center;gap:10px;margin:10px 2px 0; }.strength-bars { flex:1;display:flex;gap:4px; }.strength-bar { height:4px;flex:1;border-radius:999px;background:var(--line); }.strength-label { width:40px;text-align:right;font-size:12px;font-weight:650; }
+        .error-message { margin:14px 2px 0;color:var(--error);font-size:14px;line-height:1.35; }.create-button { width:100%;min-height:52px;margin-top:24px;border:0;border-radius:16px;background:var(--blue);color:${darkMode ? "#101114" : "#fff"};font:inherit;font-size:16px;font-weight:750;cursor:pointer;transition:transform .14s ease,filter .14s ease; }.create-button:hover:not(:disabled) { filter:brightness(.96); }.create-button:active:not(:disabled) { transform:scale(.985); }.create-button:disabled { opacity:.55;cursor:progress; }.signin-link { margin:22px 0 0;color:var(--muted);text-align:center;font-size:15px; }.signin-link button { margin-left:4px;padding:4px;border:0;color:var(--blue);background:transparent;font:inherit;font-weight:700;cursor:pointer; }.fine-print { margin:16px 8px 0;color:var(--muted);text-align:center;font-size:12px;line-height:1.45; }.theme-button:focus-visible,.password-button:focus-visible,.create-button:focus-visible,.signin-link button:focus-visible { outline:3px solid color-mix(in srgb,var(--blue) 42%,transparent);outline-offset:2px; }.register-input:focus-visible { outline:0; }
+        @media (min-width:700px) { .samsung-register { display:grid;place-items:center;padding:28px; }.samsung-shell { min-height:780px;border-radius:36px;overflow:hidden;background:var(--bg);box-shadow:0 20px 56px rgba(0,0,0,.16); }.interaction-area { margin:0 -20px;padding-left:28px;padding-right:28px; } } @media (prefers-reduced-motion:reduce) { .samsung-register * { transition:none !important; } }
       `}</style>
-
-      <div className="auth-root">
-        <div className="grid-bg" />
-        <div className="orb orb-1" />
-        <div className="orb orb-2" />
-        <div className="orb orb-3" />
-
-        <div className="auth-card">
-
-          {/* Logo */}
-          <div className="logo-wrap">
-            <img
-              src="/1776168907036_image.png"
-              alt="AI Life Tracker"
-              className="logo-img"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = 'none';
-              }}
-            />
-            <div className="logo-title">AI Life Tracker</div>
-            <div className="logo-sub">Your intelligent daily companion</div>
-          </div>
-
-          {/* Heading */}
-          <div className="form-heading">
-            <h2>Start your journey 🚀</h2>
-            <p>Create your account — it takes 30 seconds</p>
-          </div>
-
-          {/* Name */}
-          <div className="field-wrap">
-            <label className="field-label">Full name</label>
-            <div className={`field-inner ${focused === 'name' ? 'focused' : ''}`}>
-              <span className="field-icon">
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-                  <circle cx="12" cy="7" r="4"/>
-                </svg>
-              </span>
-              <input
-                type="text"
-                placeholder="Your name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                onFocus={() => setFocused('name')}
-                onBlur={() => setFocused(null)}
-                className="auth-input"
-              />
-            </div>
-          </div>
-
-          {/* Email */}
-          <div className="field-wrap">
-            <label className="field-label">Email address</label>
-            <div className={`field-inner ${focused === 'email' ? 'focused' : ''}`}>
-              <span className="field-icon">
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                </svg>
-              </span>
-              <input
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onFocus={() => setFocused('email')}
-                onBlur={() => setFocused(null)}
-                className="auth-input"
-              />
-            </div>
-          </div>
-
-          {/* Password */}
-          <div className="field-wrap" style={{ marginBottom: password ? 6 : 14 }}>
-            <label className="field-label">Password</label>
-            <div className={`field-inner ${focused === 'password' ? 'focused' : ''}`}>
-              <span className="field-icon">
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                  <path d="M7 11V7a5 5 0 0110 0v4"/>
-                </svg>
-              </span>
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Min. 8 characters"
-                value={password}
-                onChange={(e) => { setPassword(e.target.value); checkStrength(e.target.value); }}
-                onFocus={() => setFocused('password')}
-                onBlur={() => setFocused(null)}
-                onKeyDown={(e) => e.key === 'Enter' && handleRegister()}
-                className="auth-input"
-                style={{ paddingRight: '44px' }}
-              />
-              <button className="eye-btn" onClick={() => setShowPassword(!showPassword)} type="button">
-                {showPassword ? "🙈" : "👁️"}
-              </button>
-            </div>
-          </div>
-
-          {/* Strength meter */}
-          {password && (
-            <div className="strength-bar-wrap" style={{ marginBottom: 14 }}>
-              <div className="strength-bars">
-                {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className="strength-bar"
-                    style={{ background: i <= strength ? strengthColor : undefined }}
-                  />
-                ))}
-              </div>
-              <span className="strength-label" style={{ color: strengthColor }}>
-                {strengthLabel}
-              </span>
-            </div>
-          )}
-
-          {/* Submit */}
-          <button className="submit-btn" onClick={handleRegister} disabled={loading}>
-            <span className="btn-shimmer" />
-            {loading ? (
-              <><span className="spinner" />Creating account…</>
-            ) : (
-              <>🌟 Create Account</>
-            )}
+      <div className="samsung-shell">
+        <header className="samsung-topbar">
+          <button
+            className="theme-button"
+            type="button"
+            onClick={toggleDarkMode}
+            aria-label={
+              darkMode ? "Switch to light mode" : "Switch to dark mode"
+            }
+          >
+            <Icon name={darkMode ? "sun" : "moon"} />
           </button>
-
-          {/* Perks */}
-          <div className="perks-row">
-            {[
-              { icon: "🤖", color: "rgba(99,102,241,0.2)", text: "AI-powered daily insights & scoring" },
-              { icon: "📊", color: "rgba(34,197,94,0.15)", text: "Track habits, expenses & wellness" },
-              { icon: "🔒", color: "rgba(56,189,248,0.15)", text: "Your data stays private & secure" },
-            ].map((p, i) => (
-              <div className="perk" key={i}>
-                <div className="perk-icon" style={{ background: p.color }}>{p.icon}</div>
-                {p.text}
+        </header>
+        <section className="view-area" aria-labelledby="register-title">
+          <div className="identity">
+            <img src={appLogo} alt="ikigAI logo" />
+            ikigAI
+          </div>
+          <h1 id="register-title">Build a life that feels like yours.</h1>
+          <p>
+            Start with a small daily check-in. Your progress becomes clearer
+            over time.
+          </p>
+        </section>
+        <section
+          className="interaction-area"
+          aria-labelledby="create-account-title"
+        >
+          <h2 id="create-account-title">Create account</h2>
+          <form onSubmit={handleRegister} noValidate>
+            <div className="form-field">
+              <label htmlFor="register-name">Your name</label>
+              <div className="field-box">
+                <span className="field-icon">
+                  <Icon name="person" />
+                </span>
+                <input
+                  id="register-name"
+                  className="register-input"
+                  type="text"
+                  autoComplete="name"
+                  placeholder="What should we call you?"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  aria-describedby={error ? "register-error" : undefined}
+                />
               </div>
-            ))}
-          </div>
-
-          {/* Divider */}
-          <div className="divider">
-            <div className="divider-line" />
-            <span className="divider-text">Already a member?</span>
-            <div className="divider-line" />
-          </div>
-
-          {/* Toggle */}
-          <div className="toggle-link" onClick={goToLogin}>
-            Already have an account?{" "}
-            <span>Sign in →</span>
-          </div>
-        </div>
+            </div>
+            <div className="form-field">
+              <label htmlFor="register-email">Email address</label>
+              <div className="field-box">
+                <span className="field-icon">
+                  <Icon name="mail" />
+                </span>
+                <input
+                  id="register-email"
+                  className="register-input"
+                  type="email"
+                  autoComplete="email"
+                  inputMode="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  aria-describedby={error ? "register-error" : undefined}
+                />
+              </div>
+            </div>
+            <div className="form-field">
+              <label htmlFor="register-password">Password</label>
+              <div className="field-box password-box">
+                <span className="field-icon">
+                  <Icon name="lock" />
+                </span>
+                <input
+                  id="register-password"
+                  className="register-input password-input"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  placeholder="At least 8 characters"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  aria-describedby={
+                    error ? "register-error password-strength" : " "
+                  }
+                />
+                <button
+                  className="password-button"
+                  type="button"
+                  onClick={() => setShowPassword((visible) => !visible)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  <Icon name={showPassword ? "eyeOff" : "eye"} />
+                </button>
+              </div>
+              {password && (
+                <div className="strength" id="password-strength">
+                  <div className="strength-bars">
+                    {[1, 2, 3, 4].map((level) => (
+                      <span
+                        key={level}
+                        className="strength-bar"
+                        style={{
+                          background:
+                            level <= strength ? strengthColor : undefined,
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <span
+                    className="strength-label"
+                    style={{ color: strengthColor }}
+                  >
+                    {strengthLabel}
+                  </span>
+                </div>
+              )}
+            </div>
+            {error && (
+              <p id="register-error" className="error-message" role="alert">
+                {error}
+              </p>
+            )}
+            <button className="create-button" type="submit" disabled={loading}>
+              {loading ? "Creating account..." : "Create account"}
+            </button>
+          </form>
+          <p className="signin-link">
+            Already have an account?
+            <button type="button" onClick={goToLogin}>
+              Sign in
+            </button>
+          </p>
+          <p className="fine-print">
+            By creating an account, you can start a private record of your daily
+            growth.
+          </p>
+        </section>
       </div>
-    </>
+    </main>
   );
 }
-
-export default Register;
