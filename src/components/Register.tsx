@@ -3,7 +3,11 @@ import type { FormEvent } from "react";
 import { useTheme } from "../context/ThemeContext";
 import appLogo from "../assets/ikigai-logo.png";
 
-type Props = { onRegisterSuccess: () => void; goToLogin: () => void };
+type Props = {
+  onRegisterSuccess: () => void;
+  goToLogin: () => void;
+};
+
 type IconName = "person" | "mail" | "lock" | "eye" | "eyeOff" | "sun" | "moon";
 
 function Icon({ name }: { name: IconName }) {
@@ -14,24 +18,28 @@ function Icon({ name }: { name: IconName }) {
         <path d="M5 20c.5-3.2 3-5 7-5s6.5 1.8 7 5" />
       </>
     ),
+
     mail: (
       <>
         <rect x="3" y="5" width="18" height="14" rx="2" />
         <path d="m3 7 9 6 9-6" />
       </>
     ),
+
     lock: (
       <>
         <rect x="4" y="10" width="16" height="11" rx="2" />
         <path d="M8 10V7a4 4 0 0 1 8 0v3" />
       </>
     ),
+
     eye: (
       <>
         <path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z" />
         <circle cx="12" cy="12" r="2.5" />
       </>
     ),
+
     eyeOff: (
       <>
         <path d="m3 3 18 18" />
@@ -39,16 +47,19 @@ function Icon({ name }: { name: IconName }) {
         <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
       </>
     ),
+
     sun: (
       <>
         <circle cx="12" cy="12" r="3.5" />
         <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
       </>
     ),
+
     moon: (
       <path d="M20.5 14.4A8.5 8.5 0 0 1 9.6 3.5 8.5 8.5 0 1 0 20.5 14.4Z" />
     ),
   };
+
   return (
     <svg
       aria-hidden="true"
@@ -66,6 +77,7 @@ function Icon({ name }: { name: IconName }) {
 
 export default function Register({ onRegisterSuccess, goToLogin }: Props) {
   const { darkMode, toggleDarkMode } = useTheme();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -79,29 +91,37 @@ export default function Register({ onRegisterSuccess, goToLogin }: Props) {
     /[0-9]/.test(password),
     /[^A-Za-z0-9]/.test(password),
   ].filter(Boolean).length;
+
   const strengthLabel = ["", "Weak", "Fair", "Good", "Strong"][strength];
-  const strengthColor = ["", "#e75b52", "#ef8b2c", "#3e88ee", "#24a148"][
+
+  const strengthColor = ["", "#d83933", "#d77a1f", "#007aff", "#248a3d"][
     strength
   ];
 
   const handleRegister = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     if (!name.trim() || !email.trim() || !password) {
       setError("Enter your name, email address, and password to continue.");
       return;
     }
+
     if (password.length < 8) {
       setError("Choose a password with at least 8 characters.");
       return;
     }
+
     try {
       setError("");
       setLoading(true);
+
       const response = await fetch(
         "https://ai-life-tracker.onrender.com/api/users",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({
             name: name.trim(),
             email: email.trim(),
@@ -109,13 +129,16 @@ export default function Register({ onRegisterSuccess, goToLogin }: Props) {
           }),
         },
       );
+
       const message = await response.text();
+
       if (!response.ok) {
         setError(
           message || "We couldn't create your account. Please try again.",
         );
         return;
       }
+
       onRegisterSuccess();
     } catch (requestError) {
       console.error("Registration error:", requestError);
@@ -127,20 +150,496 @@ export default function Register({ onRegisterSuccess, goToLogin }: Props) {
 
   return (
     <main
-      className={`samsung-register ${darkMode ? "samsung-dark" : "samsung-light"}`}
+      className={`ikigai-register ${
+        darkMode ? "ikigai-register-dark" : "ikigai-register-light"
+      }`}
     >
       <style>{`
-        .samsung-register { --bg:#f6f7fb;--surface:#fff;--field:#edf1f8;--text:#18191d;--muted:#6f727b;--blue:#2378e3;--blue-soft:#dceaff;--line:#dbe0e9;--error:#bc2f28;min-height:100svh;background:var(--bg);color:var(--text);font-family:Roboto,"Segoe UI",Arial,sans-serif; }.samsung-dark { --bg:#101114;--surface:#1d1e22;--field:#292b31;--text:#f3f4f7;--muted:#b1b4bd;--blue:#8ab4ff;--blue-soft:#293a56;--line:#34363d;--error:#ffb4ab; }
-        .samsung-shell { width:min(100%,480px);min-height:100svh;margin:0 auto;display:flex;flex-direction:column;box-sizing:border-box;padding:max(16px,env(safe-area-inset-top)) 20px 0; }.samsung-topbar { min-height:48px;display:flex;justify-content:flex-end; }.theme-button,.password-button { width:48px;height:48px;padding:0;border:0;border-radius:50%;display:grid;place-items:center;color:var(--blue);background:transparent;cursor:pointer; }.theme-button svg,.password-button svg,.field-icon svg { width:21px;height:21px; }.theme-button:hover,.password-button:hover { background:var(--blue-soft); }
-        .view-area { padding:22px 8px 34px; }.identity { display:flex;align-items:center;gap:16px;margin-bottom:34px;font-size:30px;font-weight:750;letter-spacing:-.045em; }.identity img { width:118px;height:118px;object-fit:cover;flex:0 0 118px; }.view-area h1 { max-width:350px;margin:0;font-size:clamp(34px,9vw,42px);line-height:1.06;letter-spacing:-.05em;font-weight:750; }.view-area p { max-width:340px;margin:14px 0 0;color:var(--muted);font-size:17px;line-height:1.45; }
-        .interaction-area { margin:0 -20px;padding:28px 20px max(30px,env(safe-area-inset-bottom));border-radius:32px 32px 0 0;background:var(--surface);box-shadow:0 -8px 30px rgba(0,0,0,.035); }.interaction-area h2 { margin:0 0 20px;font-size:24px;letter-spacing:-.03em; }.form-field { margin-top:14px; }.form-field label { display:block;margin:0 0 8px 2px;font-size:14px;font-weight:650; }.field-box { min-height:56px;display:flex;align-items:center;border-radius:16px;background:var(--field);transition:background .16s ease; }.field-box:focus-within { background:var(--blue-soft); }.field-icon { width:54px;flex:0 0 54px;display:grid;place-items:center;color:var(--muted); }.field-box:focus-within .field-icon { color:var(--blue); }.register-input { width:100%;min-height:56px;padding:0 14px 0 0;border:0;outline:0;background:transparent;color:var(--text);font:inherit;font-size:16px;caret-color:var(--blue); }.register-input::placeholder { color:var(--muted); }.register-input::selection { background:color-mix(in srgb,var(--blue) 30%,transparent); }.password-input { padding-right:48px; }.password-box { position:relative; }.password-button { position:absolute;right:4px;top:4px;color:var(--muted); }.strength { display:flex;align-items:center;gap:10px;margin:10px 2px 0; }.strength-bars { flex:1;display:flex;gap:4px; }.strength-bar { height:4px;flex:1;border-radius:999px;background:var(--line); }.strength-label { width:40px;text-align:right;font-size:12px;font-weight:650; }
-        .error-message { margin:14px 2px 0;color:var(--error);font-size:14px;line-height:1.35; }.create-button { width:100%;min-height:52px;margin-top:24px;border:0;border-radius:16px;background:var(--blue);color:${darkMode ? "#101114" : "#fff"};font:inherit;font-size:16px;font-weight:750;cursor:pointer;transition:transform .14s ease,filter .14s ease; }.create-button:hover:not(:disabled) { filter:brightness(.96); }.create-button:active:not(:disabled) { transform:scale(.985); }.create-button:disabled { opacity:.55;cursor:progress; }.signin-link { margin:22px 0 0;color:var(--muted);text-align:center;font-size:15px; }.signin-link button { margin-left:4px;padding:4px;border:0;color:var(--blue);background:transparent;font:inherit;font-weight:700;cursor:pointer; }.fine-print { margin:16px 8px 0;color:var(--muted);text-align:center;font-size:12px;line-height:1.45; }.theme-button:focus-visible,.password-button:focus-visible,.create-button:focus-visible,.signin-link button:focus-visible { outline:3px solid color-mix(in srgb,var(--blue) 42%,transparent);outline-offset:2px; }.register-input:focus-visible { outline:0; }
-        @media (min-width:700px) { .samsung-register { display:grid;place-items:center;padding:28px; }.samsung-shell { min-height:780px;border-radius:36px;overflow:hidden;background:var(--bg);box-shadow:0 20px 56px rgba(0,0,0,.16); }.interaction-area { margin:0 -20px;padding-left:28px;padding-right:28px; } } @media (prefers-reduced-motion:reduce) { .samsung-register * { transition:none !important; } }
+        .ikigai-register {
+          --page: #f2f2f7;
+          --surface: #fff;
+          --text: #1c1c1e;
+          --secondary: #6d6d72;
+          --separator: #c6c6c8;
+          --blue: #007aff;
+          --blue-pressed: #0069d9;
+          --error: #c7322b;
+
+          min-height: 100svh;
+          background: var(--page);
+          color: var(--text);
+          font-family:
+            -apple-system,
+            BlinkMacSystemFont,
+            "SF Pro Text",
+            "Helvetica Neue",
+            Arial,
+            sans-serif;
+        }
+
+        .ikigai-register-dark {
+          --page: #000;
+          --surface: #1c1c1e;
+          --text: #f5f5f7;
+          --secondary: #a1a1a6;
+          --separator: #3a3a3c;
+          --blue: #0a84ff;
+          --blue-pressed: #409cff;
+          --error: #ff6961;
+        }
+
+        .ikigai-register-shell {
+          width: min(100%, 430px);
+          min-height: 100svh;
+          margin: 0 auto;
+
+          padding:
+            max(16px, env(safe-area-inset-top))
+            20px
+            max(30px, env(safe-area-inset-bottom));
+
+          box-sizing: border-box;
+
+          display: flex;
+          flex-direction: column;
+        }
+
+        /* HEADER */
+
+        .ikigai-register-nav {
+          min-height: 48px;
+
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .ikigai-register-brand {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          color: var(--text);
+
+          font-size: 17px;
+          font-weight: 650;
+
+          letter-spacing: -0.025em;
+        }
+
+        /* IMPORTANT: resized to match Login */
+
+        .ikigai-register-logo {
+          width: 32px;
+          height: 32px;
+
+          flex: 0 0 32px;
+
+          border-radius: 8px;
+
+          object-fit: cover;
+
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14);
+        }
+
+        .ikigai-register-theme {
+          width: 44px;
+          height: 44px;
+
+          padding: 0;
+
+          display: grid;
+          place-items: center;
+
+          border: 0;
+          border-radius: 50%;
+
+          color: var(--blue);
+          background: transparent;
+
+          cursor: pointer;
+        }
+
+        .ikigai-register-theme:hover {
+          background: color-mix(
+            in srgb,
+            var(--blue) 10%,
+            transparent
+          );
+        }
+
+        .ikigai-register-theme svg {
+          width: 20px;
+          height: 20px;
+        }
+
+        /* INTRO */
+
+        .ikigai-register-intro {
+          padding: 38px 0 30px;
+        }
+
+        .ikigai-register-intro h1 {
+          max-width: 340px;
+
+          margin: 0;
+
+          font-size: clamp(34px, 9vw, 40px);
+          line-height: 1.08;
+
+          letter-spacing: -0.045em;
+
+          font-weight: 700;
+        }
+
+        .ikigai-register-intro p {
+          max-width: 340px;
+
+          margin: 13px 0 0;
+
+          color: var(--secondary);
+
+          font-size: 17px;
+          line-height: 1.42;
+
+          letter-spacing: -0.01em;
+        }
+
+        /* FORM */
+
+        .ikigai-register-content {
+          margin-top: auto;
+        }
+
+        .ikigai-register-content h2 {
+          margin: 0 0 14px;
+          padding-left: 2px;
+
+          font-size: 22px;
+          line-height: 1.25;
+
+          letter-spacing: -0.025em;
+
+          font-weight: 700;
+        }
+
+        .ikigai-register-field {
+          margin-top: 12px;
+        }
+
+        .ikigai-register-field label {
+          display: block;
+
+          margin: 0 0 7px;
+          padding-left: 2px;
+
+          font-size: 14px;
+          font-weight: 600;
+        }
+
+        .ikigai-register-input-box {
+          position: relative;
+
+          min-height: 56px;
+
+          display: flex;
+          align-items: center;
+
+          border-radius: 14px;
+
+          background: var(--surface);
+
+          border: 1px solid var(--separator);
+
+          transition:
+            background 0.16s ease,
+            border-color 0.16s ease;
+        }
+
+        .ikigai-register-input-box:focus-within {
+          background: color-mix(
+            in srgb,
+            var(--blue) 10%,
+            var(--surface)
+          );
+
+          border-color: transparent;
+        }
+
+        .ikigai-register-field-icon {
+          width: 54px;
+          flex: 0 0 54px;
+
+          display: grid;
+          place-items: center;
+
+          color: var(--secondary);
+        }
+
+        .ikigai-register-field-icon svg {
+          width: 20px;
+          height: 20px;
+        }
+
+        .ikigai-register-input-box:focus-within
+          .ikigai-register-field-icon {
+          color: var(--blue);
+        }
+
+        .ikigai-register-input {
+          width: 100%;
+          min-height: 54px;
+
+          padding: 0 14px 0 0;
+
+          border: 0;
+          outline: 0;
+
+          color: var(--text);
+          background: transparent;
+
+          font: inherit;
+          font-size: 16px;
+
+          letter-spacing: -0.01em;
+
+          caret-color: var(--blue);
+        }
+
+        .ikigai-register-input::placeholder {
+          color: var(--secondary);
+        }
+
+        .ikigai-register-input:focus,
+        .ikigai-register-input:focus-visible {
+          outline: 0;
+          box-shadow: none;
+        }
+
+        .ikigai-register-password {
+          padding-right: 48px;
+        }
+
+        .ikigai-register-password-toggle {
+          position: absolute;
+
+          right: 4px;
+          top: 4px;
+
+          width: 44px;
+          height: 44px;
+
+          padding: 0;
+
+          display: grid;
+          place-items: center;
+
+          border: 0;
+          border-radius: 50%;
+
+          color: var(--secondary);
+          background: transparent;
+
+          cursor: pointer;
+        }
+
+        .ikigai-register-password-toggle:hover {
+          background: color-mix(
+            in srgb,
+            var(--blue) 10%,
+            transparent
+          );
+        }
+
+        .ikigai-register-password-toggle svg {
+          width: 20px;
+          height: 20px;
+        }
+
+        /* PASSWORD STRENGTH */
+
+        .ikigai-register-strength {
+          display: flex;
+          align-items: center;
+
+          gap: 10px;
+
+          margin: 9px 2px 0;
+        }
+
+        .ikigai-register-strength-bars {
+          flex: 1;
+
+          display: flex;
+
+          gap: 4px;
+        }
+
+        .ikigai-register-strength-bar {
+          height: 4px;
+
+          flex: 1;
+
+          border-radius: 999px;
+
+          background: var(--separator);
+        }
+
+        .ikigai-register-strength-label {
+          width: 40px;
+
+          text-align: right;
+
+          font-size: 12px;
+          font-weight: 650;
+        }
+
+        /* ERROR */
+
+        .ikigai-register-error {
+          margin: 12px 2px 0;
+
+          color: var(--error);
+
+          font-size: 14px;
+          line-height: 1.35;
+        }
+
+        /* BUTTON */
+
+        .ikigai-register-submit {
+          width: 100%;
+
+          min-height: 50px;
+
+          margin-top: 24px;
+          padding: 0 18px;
+
+          border: 0;
+          border-radius: 12px;
+
+          background: var(--blue);
+          color: #fff;
+
+          font: inherit;
+          font-size: 17px;
+          font-weight: 600;
+
+          cursor: pointer;
+
+          transition:
+            transform 0.14s ease,
+            background 0.14s ease;
+        }
+
+        .ikigai-register-submit:hover:not(:disabled) {
+          background: var(--blue-pressed);
+        }
+
+        .ikigai-register-submit:active:not(:disabled) {
+          transform: scale(0.985);
+        }
+
+        .ikigai-register-submit:disabled {
+          opacity: 0.55;
+          cursor: progress;
+        }
+
+        /* LOGIN LINK */
+
+        .ikigai-register-login-link {
+          margin: 22px 0 0;
+
+          color: var(--secondary);
+
+          text-align: center;
+
+          font-size: 15px;
+        }
+
+        .ikigai-register-login-link button {
+          margin-left: 4px;
+          padding: 4px;
+
+          border: 0;
+
+          color: var(--blue);
+          background: transparent;
+
+          font: inherit;
+          font-weight: 600;
+
+          cursor: pointer;
+        }
+
+        /* FOOTER */
+
+        .ikigai-register-privacy {
+          margin: 17px 6px 0;
+
+          color: var(--secondary);
+
+          text-align: center;
+
+          font-size: 12px;
+          line-height: 1.4;
+        }
+
+        /* ACCESSIBILITY */
+
+        .ikigai-register-theme:focus-visible,
+        .ikigai-register-password-toggle:focus-visible,
+        .ikigai-register-submit:focus-visible,
+        .ikigai-register-login-link button:focus-visible {
+          outline: 3px solid
+            color-mix(in srgb, var(--blue) 42%, transparent);
+
+          outline-offset: 2px;
+        }
+
+        /* DESKTOP */
+
+        @media (min-width: 700px) {
+          .ikigai-register {
+            display: grid;
+            place-items: center;
+            padding: 32px;
+          }
+
+          .ikigai-register-shell {
+            min-height: 680px;
+
+            padding: 20px 28px 30px;
+
+            border-radius: 30px;
+
+            background: var(--page);
+
+            box-shadow: 0 18px 52px rgba(0, 0, 0, 0.14);
+          }
+
+          .ikigai-register-intro {
+            padding-top: 54px;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .ikigai-register * {
+            transition: none !important;
+          }
+        }
       `}</style>
-      <div className="samsung-shell">
-        <header className="samsung-topbar">
+
+      <div className="ikigai-register-shell">
+        {/* HEADER */}
+        <header className="ikigai-register-nav">
+          <span className="ikigai-register-brand">
+            <img className="ikigai-register-logo" src={appLogo} alt="ikigAI" />
+            IKIG-AI
+          </span>
+
           <button
-            className="theme-button"
+            className="ikigai-register-theme"
             type="button"
             onClick={toggleDarkMode}
             aria-label={
@@ -150,32 +649,40 @@ export default function Register({ onRegisterSuccess, goToLogin }: Props) {
             <Icon name={darkMode ? "sun" : "moon"} />
           </button>
         </header>
-        <section className="view-area" aria-labelledby="register-title">
-          <div className="identity">
-            <img src={appLogo} alt="ikigAI logo" />
-            ikigAI
-          </div>
-          <h1 id="register-title">Build a life that feels like yours.</h1>
+
+        {/* INTRO */}
+        <section
+          className="ikigai-register-intro"
+          aria-labelledby="register-title"
+        >
+          <h1 id="register-title">Make each day count.</h1>
+
           <p>
-            Start with a small daily check-in. Your progress becomes clearer
-            over time.
+            Create a private space to notice your patterns and grow with
+            intention.
           </p>
         </section>
+
+        {/* FORM */}
         <section
-          className="interaction-area"
+          className="ikigai-register-content"
           aria-labelledby="create-account-title"
         >
           <h2 id="create-account-title">Create account</h2>
+
           <form onSubmit={handleRegister} noValidate>
-            <div className="form-field">
+            {/* NAME */}
+            <div className="ikigai-register-field">
               <label htmlFor="register-name">Your name</label>
-              <div className="field-box">
-                <span className="field-icon">
+
+              <div className="ikigai-register-input-box">
+                <span className="ikigai-register-field-icon">
                   <Icon name="person" />
                 </span>
+
                 <input
                   id="register-name"
-                  className="register-input"
+                  className="ikigai-register-input"
                   type="text"
                   autoComplete="name"
                   placeholder="What should we call you?"
@@ -185,15 +692,19 @@ export default function Register({ onRegisterSuccess, goToLogin }: Props) {
                 />
               </div>
             </div>
-            <div className="form-field">
+
+            {/* EMAIL */}
+            <div className="ikigai-register-field">
               <label htmlFor="register-email">Email address</label>
-              <div className="field-box">
-                <span className="field-icon">
+
+              <div className="ikigai-register-input-box">
+                <span className="ikigai-register-field-icon">
                   <Icon name="mail" />
                 </span>
+
                 <input
                   id="register-email"
-                  className="register-input"
+                  className="ikigai-register-input"
                   type="email"
                   autoComplete="email"
                   inputMode="email"
@@ -204,26 +715,31 @@ export default function Register({ onRegisterSuccess, goToLogin }: Props) {
                 />
               </div>
             </div>
-            <div className="form-field">
+
+            {/* PASSWORD */}
+            <div className="ikigai-register-field">
               <label htmlFor="register-password">Password</label>
-              <div className="field-box password-box">
-                <span className="field-icon">
+
+              <div className="ikigai-register-input-box">
+                <span className="ikigai-register-field-icon">
                   <Icon name="lock" />
                 </span>
+
                 <input
                   id="register-password"
-                  className="register-input password-input"
+                  className="ikigai-register-input ikigai-register-password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="new-password"
                   placeholder="At least 8 characters"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   aria-describedby={
-                    error ? "register-error password-strength" : " "
+                    error ? "register-error password-strength" : undefined
                   }
                 />
+
                 <button
-                  className="password-button"
+                  className="ikigai-register-password-toggle"
                   type="button"
                   onClick={() => setShowPassword((visible) => !visible)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
@@ -231,13 +747,18 @@ export default function Register({ onRegisterSuccess, goToLogin }: Props) {
                   <Icon name={showPassword ? "eyeOff" : "eye"} />
                 </button>
               </div>
+
+              {/* PASSWORD STRENGTH */}
               {password && (
-                <div className="strength" id="password-strength">
-                  <div className="strength-bars">
+                <div
+                  className="ikigai-register-strength"
+                  id="password-strength"
+                >
+                  <div className="ikigai-register-strength-bars">
                     {[1, 2, 3, 4].map((level) => (
                       <span
                         key={level}
-                        className="strength-bar"
+                        className="ikigai-register-strength-bar"
                         style={{
                           background:
                             level <= strength ? strengthColor : undefined,
@@ -245,33 +766,51 @@ export default function Register({ onRegisterSuccess, goToLogin }: Props) {
                       />
                     ))}
                   </div>
+
                   <span
-                    className="strength-label"
-                    style={{ color: strengthColor }}
+                    className="ikigai-register-strength-label"
+                    style={{
+                      color: strengthColor,
+                    }}
                   >
                     {strengthLabel}
                   </span>
                 </div>
               )}
             </div>
+
+            {/* ERROR */}
             {error && (
-              <p id="register-error" className="error-message" role="alert">
+              <p
+                id="register-error"
+                className="ikigai-register-error"
+                role="alert"
+              >
                 {error}
               </p>
             )}
-            <button className="create-button" type="submit" disabled={loading}>
+
+            {/* CREATE ACCOUNT */}
+            <button
+              className="ikigai-register-submit"
+              type="submit"
+              disabled={loading}
+            >
               {loading ? "Creating account..." : "Create account"}
             </button>
           </form>
-          <p className="signin-link">
+
+          {/* LOGIN */}
+          <p className="ikigai-register-login-link">
             Already have an account?
             <button type="button" onClick={goToLogin}>
               Sign in
             </button>
           </p>
-          <p className="fine-print">
-            By creating an account, you can start a private record of your daily
-            growth.
+
+          {/* PRIVACY */}
+          <p className="ikigai-register-privacy">
+            Your reflections are private and designed to stay personal.
           </p>
         </section>
       </div>
