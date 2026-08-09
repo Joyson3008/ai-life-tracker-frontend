@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useTheme } from "../context/ThemeContext";
+import appLogo from "../assets/ikigAI.jpeg";
 
 type Props = { setUserId: (id: number) => void; goToRegister: () => void };
 
@@ -109,19 +110,22 @@ export default function Login({ setUserId, goToRegister }: Props) {
         .apple-login { --page:#f2f2f7;--surface:#fff;--text:#1c1c1e;--secondary:#6d6d72;--separator:#c6c6c8;--blue:#007aff;--blue-pressed:#0069d9;--error:#c7322b;min-height:100svh;background:var(--page);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif; }
         .apple-dark { --page:#000;--surface:#1c1c1e;--text:#f5f5f7;--secondary:#a1a1a6;--separator:#3a3a3c;--blue:#0a84ff;--blue-pressed:#409cff;--error:#ff6961; }
         .apple-shell { width:min(100%,430px);min-height:100svh;margin:0 auto;padding:max(16px,env(safe-area-inset-top)) 20px max(30px,env(safe-area-inset-bottom));box-sizing:border-box;display:flex;flex-direction:column; }
-        .apple-nav { min-height:48px;display:flex;align-items:center;justify-content:space-between; }.brand { color:var(--blue);font-size:17px;font-weight:600;letter-spacing:-.02em; }
+        .apple-nav { min-height:48px;display:flex;align-items:center;justify-content:space-between; }.brand { display:flex;align-items:center;gap:10px;color:var(--text);font-size:17px;font-weight:650;letter-spacing:-.025em; }.brand-logo { width:32px;height:32px;border-radius:8px;object-fit:cover;box-shadow:0 1px 3px rgba(0,0,0,.14); }
         .icon-button { width:44px;height:44px;padding:0;display:grid;place-items:center;border:0;border-radius:50%;color:var(--blue);background:transparent;cursor:pointer; }.icon-button:hover { background:color-mix(in srgb,var(--blue) 10%,transparent); }.icon-button svg { width:20px;height:20px; }
         .intro { padding:38px 0 30px; }.intro h1 { max-width:340px;margin:0;font-size:clamp(34px,9vw,40px);line-height:1.08;letter-spacing:-.045em;font-weight:700; }.intro p { max-width:340px;margin:13px 0 0;color:var(--secondary);font-size:17px;line-height:1.42;letter-spacing:-.01em; }
         .login-content { margin-top:auto; }.login-content h2 { margin:0 0 12px;padding-left:2px;font-size:22px;line-height:1.25;letter-spacing:-.025em;font-weight:700; }.field-group { overflow:hidden;border-radius:12px;background:var(--surface); }
         .field { position:relative;min-height:56px;display:flex;align-items:center; }.field+.field::before { content:"";position:absolute;top:0;left:54px;right:0;height:1px;background:var(--separator); }.field-icon { width:54px;flex:0 0 54px;display:grid;place-items:center;color:var(--secondary); }.field-icon svg { width:20px;height:20px; }
-        .apple-input { width:100%;min-height:56px;padding:0 14px 0 0;border:0;outline:0;color:var(--text);background:transparent;font:inherit;font-size:17px;letter-spacing:-.01em; }.apple-input::placeholder { color:var(--secondary); }.password-input { padding-right:46px; }.password-toggle { position:absolute;right:1px;top:6px;width:44px;height:44px;color:var(--secondary); }.field:focus-within { box-shadow:inset 3px 0 0 var(--blue); }.field:focus-within .field-icon { color:var(--blue); }
+        .apple-input { width:100%;min-height:56px;padding:0 14px 0 0;border:0;outline:0;color:var(--text);background:transparent;font:inherit;font-size:17px;letter-spacing:-.01em;caret-color:var(--blue); }.apple-input::placeholder { color:var(--secondary); }.apple-input::selection { background:color-mix(in srgb,var(--blue) 28%,transparent); }.password-input { padding-right:46px; }.password-toggle { position:absolute;right:1px;top:6px;width:44px;height:44px;color:var(--secondary); }.field:focus-within { z-index:1;border-radius:10px;background:color-mix(in srgb,var(--blue) 8%,var(--surface));box-shadow:inset 0 0 0 2px var(--blue); }.field:focus-within::before { display:none; }.field:focus-within .field-icon { color:var(--blue); }
         .error-message { margin:12px 2px 0;color:var(--error);font-size:14px;line-height:1.35; }.sign-in { width:100%;min-height:50px;margin-top:24px;padding:0 18px;border:0;border-radius:12px;background:var(--blue);color:#fff;font:inherit;font-size:17px;font-weight:600;cursor:pointer;transition:transform .14s ease,background .14s ease; }.sign-in:hover:not(:disabled) { background:var(--blue-pressed); }.sign-in:active:not(:disabled) { transform:scale(.985); }.sign-in:disabled { opacity:.55;cursor:progress; }
         .register { margin:22px 0 0;color:var(--secondary);text-align:center;font-size:15px; }.register button { margin-left:4px;padding:4px;border:0;color:var(--blue);background:transparent;font:inherit;font-weight:600;cursor:pointer; }.privacy { margin:17px 6px 0;color:var(--secondary);text-align:center;font-size:12px;line-height:1.4; }.icon-button:focus-visible,.apple-input:focus-visible,.sign-in:focus-visible,.register button:focus-visible { outline:3px solid color-mix(in srgb,var(--blue) 42%,transparent);outline-offset:2px; }
         @media (min-width:700px) { .apple-login { display:grid;place-items:center;padding:32px; }.apple-shell { min-height:680px;padding:20px 28px 30px;border-radius:30px;background:var(--page);box-shadow:0 18px 52px rgba(0,0,0,.14); }.intro { padding-top:54px; } } @media (prefers-reduced-motion:reduce) { .apple-login * { transition:none !important; } }
       `}</style>
       <div className="apple-shell">
         <header className="apple-nav">
-          <span className="brand">AI Life Tracker</span>
+          <span className="brand">
+            <img className="brand-logo" src={appLogo} alt="ikigAI" />
+            ikigAI
+          </span>
           <button
             className="icon-button"
             type="button"
@@ -195,7 +199,7 @@ export default function Login({ setUserId, goToRegister }: Props) {
             </button>
           </form>
           <p className="register">
-            New to AI Life Tracker?
+            New to ikigAI?
             <button type="button" onClick={goToRegister}>
               Create account
             </button>
