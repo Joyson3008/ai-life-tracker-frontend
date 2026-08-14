@@ -1,608 +1,423 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type { CSSProperties } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  ReferenceLine,
-} from "recharts";
+  Brain,
+  BriefcaseBusiness,
+  Check,
+  ChevronRight,
+  CircleUserRound,
+  Code2,
+  Globe2,
+  Heart,
+  ListTodo,
+  Sparkles,
+  Target,
+} from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
 type Props = { userId: number };
+type DailyLog = Record<string, any>;
+
+function progressFor(log: DailyLog | undefined, keys: string[]) {
+  if (!log) return 0;
+  return keys.some((key) => Boolean(log[key])) ? 72 : 18;
+}
 
 export default function Dashboard({ userId }: Props) {
   const { darkMode } = useTheme();
-
-  // Theme-aware class helpers
-  const bg = darkMode ? "bg-[#060910]" : "bg-slate-100";
-  const text = darkMode ? "{textMuted} " : "text-slate-900";
-
-  const [logs, setLogs] = useState<any[]>([]);
+  const navigate = useNavigate();
+  const [logs, setLogs] = useState<DailyLog[]>([]);
   const [loading, setLoading] = useState(true);
-  const [greeting, setGreeting] = useState("");
-  const [activeReview, setActiveReview] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  const [completed, setCompleted] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) setGreeting("Good morning");
-    else if (hour < 17) setGreeting("Good afternoon");
-    else setGreeting("Good evening");
-
-    fetch("https://ai-life-tracker.onrender.com/api/daily")
-      .then((res) => res.json())
-      .then((data) => {
+    const loadLogs = async () => {
+      try {
+        setError("");
+        const response = await fetch(
+          "https://ai-life-tracker.onrender.com/api/daily",
+        );
+        if (!response.ok) throw new Error("Unable to load your dashboard.");
+        const data = await response.json();
         const userLogs = data
-          .filter((log: any) => log.user?.id === userId)
+          .filter((log: DailyLog) => log.user?.id === userId)
           .sort(
-            (a: any, b: any) =>
+            (a: DailyLog, b: DailyLog) =>
               new Date(a.date).getTime() - new Date(b.date).getTime(),
           );
         setLogs(userLogs);
+      } catch (loadError) {
+        console.error(loadError);
+        setError("We couldn't load your dashboard. Please try again.");
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+    loadLogs();
   }, [userId]);
 
   const latest = logs[logs.length - 1];
-  const prev = logs[logs.length - 2];
+  const greeting = useMemo(() => {
+    const hour = new Date().getHours();
+    return hour < 12
+      ? "Good morning"
+      : hour < 17
+        ? "Good afternoon"
+        : "Good evening";
+  }, []);
 
-  // ── Stats ──
-  const avgScore =
-    logs.length > 0
-      ? logs.reduce((s, l) => s + (l.score || 0), 0) / logs.length
-      : 0;
-
-  const weekLogs = logs.slice(-7);
-  const weekAvg =
-    weekLogs.length > 0
-      ? weekLogs.reduce((s, l) => s + (l.score || 0), 0) / weekLogs.length
-      : 0;
-
-  const bestDay = logs.reduce(
-    (best, l) => (l.score > (best?.score || 0) ? l : best),
-    null as any,
-  );
-  const worstDay = logs.reduce(
-    (worst, l) => ((l.score || 0) < (worst?.score ?? 999) ? l : worst),
-    null as any,
-  );
-
-  const scoreDelta =
-    latest && prev ? (latest.score || 0) - (prev.score || 0) : 0;
-
-  const streak = (() => {
+  const streak = useMemo(() => {
     let count = 0;
-    for (let i = logs.length - 1; i >= 0; i--) {
-      if ((logs[i].score || 0) >= 6) count++;
+    for (let index = logs.length - 1; index >= 0; index -= 1) {
+      if ((logs[index].score || 0) >= 6) count += 1;
       else break;
     }
     return count;
-  })();
+  }, [logs]);
 
-  const consistency =
-    logs.length > 0
-      ? Math.round(
-          (logs.filter((l) => (l.score || 0) >= 6).length / logs.length) * 100,
-        )
-      : 0;
+  const actions = useMemo(
+    () => [
+      {
+        id: "read",
+        title: "Read for 30 minutes",
+        detail: "Personal growth",
+        done: Boolean(latest?.bookReading || latest?.bibleReading),
+      },
+      {
+        id: "code",
+        title: "Practice coding",
+        detail: "Skill building",
+        done: Boolean(latest?.codingWork),
+      },
+      {
+        id: "learn",
+        title: "Learn something new",
+        detail: "Curiosity",
+        done: Boolean(latest?.csTopic || latest?.collegeActivity),
+      },
+      {
+        id: "reflect",
+        title: "Reflect on today",
+        detail: "Daily journal",
+        done: Boolean(latest?.diary),
+      },
+    ],
+    [latest],
+  );
 
-  // ── Chart data ──
-  const trendData = logs.slice(-14).map((log) => ({
-    date: new Date(log.date).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-    }),
-    score: log.score || 0,
-  }));
+  useEffect(() => {
+    setCompleted(
+      Object.fromEntries(actions.map((action) => [action.id, action.done])),
+    );
+  }, [actions]);
 
-  const weekData = weekLogs.map((log) => ({
-    day: new Date(log.date).toLocaleDateString("en-US", { weekday: "short" }),
-    score: log.score || 0,
-  }));
+  const completedCount = actions.filter(
+    (action) => completed[action.id],
+  ).length;
+  const todayProgress = Math.round((completedCount / actions.length) * 100);
+  const insight =
+    latest?.finalSummary ||
+    latest?.motivation ||
+    "A small intentional action today can make tomorrow feel lighter. Choose one thing that matters and begin there.";
+  const score = latest?.score ?? 0;
 
-  // ── AI Review sections ──
-  const reviews = [
-    { key: "bibleReview", label: "📖 Bible", color: "#818cf8" },
-    { key: "bookReview", label: "📚 Book", color: "#a78bfa" },
-    { key: "codingReview", label: "💻 Coding", color: "#34d399" },
-    { key: "csTopicReview", label: "🧠 CS Topic", color: "#22d3ee" },
-    { key: "collegeReview", label: "🏫 College", color: "#60a5fa" },
-    { key: "diaryReview", label: "📔 Diary", color: "#fbbf24" },
-    { key: "expensesReview", label: "💰 Expenses", color: "#f59e0b" },
-    { key: "movieReview", label: "🎬 Movie", color: "#f472b6" },
-    { key: "phoneUsageReview", label: "📱 Phone", color: "#fb7185" },
+  const areas = [
+    {
+      title: "What I love",
+      description: "Interests and energy",
+      icon: Heart,
+      progress: progressFor(latest, ["diary", "movie", "bookReading"]),
+      color: "rose",
+    },
+    {
+      title: "What I'm good at",
+      description: "Skills and strengths",
+      icon: Code2,
+      progress: progressFor(latest, ["codingWork", "csTopic"]),
+      color: "blue",
+    },
+    {
+      title: "What the world needs",
+      description: "Contribution and care",
+      icon: Globe2,
+      progress: progressFor(latest, ["collegeActivity", "diary"]),
+      color: "green",
+    },
+    {
+      title: "What I can be paid for",
+      description: "Purposeful work",
+      icon: BriefcaseBusiness,
+      progress: progressFor(latest, ["codingWork", "collegeActivity"]),
+      color: "orange",
+    },
   ];
-
-  // ── Score ring ──
-  const scoreVal = latest?.score || 0;
-  const circumference = 2 * Math.PI * 52;
-  const strokeDash = (((scoreVal / 10) * 100) / 100) * circumference;
-
-  const getScoreColor = (s: number) =>
-    s >= 8 ? "#10b981" : s >= 5 ? "#f59e0b" : "#f43f5e";
-
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload?.length) {
-      return (
-        <div className="bg-[#0d1117] border border-white/10 rounded-xl px-4 py-3 shadow-2xl">
-          <p className="text-xs text-black-500 mb-1">{label}</p>
-          <p
-            className="text-base font-bold"
-            style={{ color: getScoreColor(payload[0].value) }}
-          >
-            ⭐ {payload[0].value}
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#060910] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
-          <p className="text-gray-600 text-xs tracking-[0.25em] uppercase">
-            Loading dashboard
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (logs.length === 0) {
-    return (
-      <div className="min-h-screen bg-[#060910] flex items-center justify-center">
-        <div className="text-center space-y-3">
-          <p className="text-5xl">🚀</p>
-          <h2 className="text-xl font-bold {textMuted} ">No logs yet</h2>
-          <p className="text-gray-600 text-sm">
-            Start tracking your day to see your dashboard.
-          </p>
-        </div>
+      <div
+        className={`dashboard-loading ${darkMode ? "dashboard-dark" : "dashboard-light"}`}
+      >
+        <div className="loading-dot" />
+        <p>Preparing your day</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#060910] {textMuted} ">
-      <div
-        className={`min-h-screen ${bg} ${text} transition-colors duration-300`}
-      >
-        {/* ── Ambient glow ── */}
-        <div className="fixed inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute top-[-80px] left-[15%] w-[500px] h-[500px] bg-indigo-700/7 rounded-full blur-[140px]" />
-          <div className="absolute bottom-[10%] right-[5%] w-[400px] h-[400px] bg-violet-700/6 rounded-full blur-[120px]" />
-          <div className="absolute top-[40%] left-[-5%] w-[300px] h-[300px] bg-cyan-700/5 rounded-full blur-[100px]" />
-        </div>
+    <main
+      className={`ikigai-dashboard ${darkMode ? "dashboard-dark" : "dashboard-light"}`}
+    >
+      <style>{`
+        .ikigai-dashboard,.dashboard-loading { --page:#f2f2f7;--surface:#fff;--surface-soft:#f8f8fa;--text:#1c1c1e;--muted:#6d6d72;--line:#dedee3;--blue:#007aff;--blue-soft:#e7f1ff;--ring:#d9eaff;--shadow:0 8px 24px rgba(20,20,30,.05);min-height:100%;background:var(--page);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;}.dashboard-dark { --page:#000;--surface:#1c1c1e;--surface-soft:#2c2c2e;--text:#f5f5f7;--muted:#a1a1a6;--line:#38383a;--blue:#0a84ff;--blue-soft:#203a58;--ring:#203e60;--shadow:none; }
+        .dashboard-shell { width:min(100%,640px);margin:0 auto;padding:24px 20px 106px;box-sizing:border-box; }.dashboard-loading { min-height:100svh;display:grid;place-items:center;align-content:center;gap:14px;color:var(--muted);font-size:15px; }.loading-dot { width:32px;height:32px;border-radius:50%;border:3px solid var(--ring);border-top-color:var(--blue);animation:dashboard-spin .8s linear infinite; } @keyframes dashboard-spin { to { transform:rotate(360deg); } }
+        .dash-header { display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:28px; }.dash-kicker { margin:0 0 7px;color:var(--muted);font-size:15px; }.dash-heading { margin:0;max-width:320px;font-size:clamp(31px,8vw,40px);line-height:1.08;letter-spacing:-.052em;font-weight:730; }.profile-button { width:48px;height:48px;flex:0 0 48px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;color:var(--blue);background:var(--surface);box-shadow:var(--shadow);cursor:pointer; }.profile-button svg { width:23px;height:23px; }
+        .ai-card { padding:22px;border:1px solid color-mix(in srgb,var(--blue) 17%,var(--line));border-radius:24px;background:linear-gradient(135deg,var(--blue-soft),var(--surface) 72%);box-shadow:var(--shadow); }.ai-card-top { display:flex;align-items:center;justify-content:space-between;gap:12px; }.ai-label { display:flex;align-items:center;gap:7px;color:var(--blue);font-size:13px;font-weight:700; }.ai-label svg { width:17px;height:17px; }.score-chip { padding:6px 9px;border-radius:999px;background:color-mix(in srgb,var(--blue) 12%,transparent);color:var(--blue);font-size:12px;font-weight:700; }.ai-copy { margin:15px 0 18px;font-size:17px;line-height:1.45;letter-spacing:-.012em; }.ai-button { min-height:44px;padding:0 15px;border:0;border-radius:12px;background:var(--blue);color:#fff;font:inherit;font-size:14px;font-weight:650;cursor:pointer; }.ai-button:active,.quick-pill:active,.action-row:active,.area-card:active,.profile-button:active { transform:scale(.98); }
+        .section { margin-top:30px; }.section-header { display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px; }.section-title { margin:0;font-size:21px;letter-spacing:-.03em; }.section-action { padding:4px;border:0;background:transparent;color:var(--blue);font:inherit;font-size:14px;font-weight:600;cursor:pointer; }
+        .progress-card { display:grid;grid-template-columns:112px 1fr;gap:20px;align-items:center;padding:20px;border:1px solid var(--line);border-radius:24px;background:var(--surface);box-shadow:var(--shadow); }.progress-ring { width:112px;height:112px;position:relative;display:grid;place-items:center;border-radius:50%;background:conic-gradient(var(--blue) calc(var(--progress) * 1%),var(--ring) 0); }.progress-ring::before { content:"";position:absolute;inset:9px;border-radius:50%;background:var(--surface); }.progress-number { position:relative;z-index:1;text-align:center;font-size:26px;font-weight:730;letter-spacing:-.05em; }.progress-number span { display:block;margin-top:2px;color:var(--muted);font-size:11px;font-weight:500;letter-spacing:0; }.progress-summary h3 { margin:0;font-size:17px;letter-spacing:-.02em; }.progress-summary p { margin:5px 0 13px;color:var(--muted);font-size:14px; }.progress-stats { display:grid;grid-template-columns:repeat(3,1fr);gap:8px; }.progress-stat { padding-left:9px;border-left:2px solid var(--line); }.progress-stat strong { display:block;font-size:15px;letter-spacing:-.02em; }.progress-stat span { display:block;margin-top:2px;color:var(--muted);font-size:11px;line-height:1.2; }
+        .action-list { overflow:hidden;border:1px solid var(--line);border-radius:20px;background:var(--surface);box-shadow:var(--shadow); }.action-row { width:100%;min-height:70px;padding:0 15px;border:0;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:13px;background:transparent;color:var(--text);text-align:left;cursor:pointer; }.action-row:last-child { border-bottom:0; }.check-circle { width:25px;height:25px;flex:0 0 25px;border:1.5px solid var(--muted);border-radius:50%;display:grid;place-items:center;color:#fff; }.check-circle svg { width:15px;height:15px; }.action-row.done .check-circle { border-color:var(--blue);background:var(--blue); }.action-row.done .action-title { color:var(--muted);text-decoration:line-through; }.action-text { min-width:0;flex:1; }.action-title { display:block;font-size:16px;font-weight:560;letter-spacing:-.012em; }.action-detail { display:block;margin-top:3px;color:var(--muted);font-size:12px; }.action-row > svg { width:18px;color:var(--muted); }
+        .area-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px; }.area-card { min-height:154px;padding:16px;border:1px solid var(--line);border-radius:20px;background:var(--surface);box-shadow:var(--shadow);text-align:left;color:var(--text);cursor:pointer; }.area-icon { width:36px;height:36px;display:grid;place-items:center;border-radius:12px;background:var(--surface-soft); }.area-icon svg { width:19px;height:19px; }.area-card.rose .area-icon { color:#e85d75; }.area-card.blue .area-icon { color:var(--blue); }.area-card.green .area-icon { color:#2e9f67; }.area-card.orange .area-icon { color:#d77a1f; }.area-card h3 { margin:13px 0 4px;font-size:15px;letter-spacing:-.02em; }.area-card p { margin:0;color:var(--muted);font-size:12px;line-height:1.3; }.area-progress { height:4px;margin-top:15px;overflow:hidden;border-radius:99px;background:var(--surface-soft); }.area-progress span { display:block;height:100%;border-radius:inherit;background:var(--blue); }
+        .quick-scroll { display:flex;gap:9px;overflow-x:auto;padding:1px 0 4px;scrollbar-width:none; }.quick-scroll::-webkit-scrollbar { display:none; }.quick-pill { min-height:42px;white-space:nowrap;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--text);font:inherit;font-size:14px;font-weight:570;box-shadow:var(--shadow);cursor:pointer; }.quick-pill.primary { border-color:transparent;background:var(--blue);color:#fff; }.error-card,.empty-card { padding:24px;border:1px solid var(--line);border-radius:22px;background:var(--surface);box-shadow:var(--shadow);text-align:center; }.error-card p,.empty-card p { margin:8px 0 18px;color:var(--muted);font-size:14px;line-height:1.45; }.empty-card svg { width:32px;height:32px;color:var(--blue); }
+        .profile-button:focus-visible,.ai-button:focus-visible,.section-action:focus-visible,.action-row:focus-visible,.area-card:focus-visible,.quick-pill:focus-visible { outline:3px solid color-mix(in srgb,var(--blue) 42%,transparent);outline-offset:2px; } @media (min-width:700px) { .dashboard-shell { padding-top:38px; }.ai-card { padding:26px; }.area-grid { grid-template-columns:repeat(4,minmax(0,1fr)); } } @media (prefers-reduced-motion:reduce) { .ikigai-dashboard * { animation:none!important;transition:none!important; } }
+      `}</style>
 
-        <div className="relative max-w-6xl mx-auto px-6 py-10 space-y-8">
-          {/* ── HEADER ── */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <p className="text-xs tracking-[0.3em] text-indigo-400 uppercase mb-1">
-                {new Date().toLocaleDateString("en-US", {
-                  weekday: "long",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </p>
-              <h1 className="text-4xl font-black tracking-tight">
-                {greeting} <span className="text-indigo-400">👋</span>
-              </h1>
-              <p className="text-gray-600 text-sm mt-1">
-                {logs.length} days tracked ·{" "}
-                {streak > 0
-                  ? `🔥 ${streak}-day streak`
-                  : "Start your streak today"}
-              </p>
-            </div>
-
-            {scoreDelta !== 0 && (
-              <div
-                className={`flex items-center gap-2 px-4 py-2 rounded-2xl border text-sm font-semibold ${
-                  scoreDelta > 0
-                    ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-                    : "bg-rose-500/10 border-rose-500/20 text-rose-400"
-                }`}
-              >
-                {scoreDelta > 0 ? "↑" : "↓"} {Math.abs(scoreDelta)} pts vs
-                yesterday
-              </div>
-            )}
-          </div>
-
-          {/* ── HERO ROW: Score ring + Stats ── */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-5">
-            {/* Score ring */}
-            <div className="md:col-span-2 bg-white/[0.03] border border-white/[0.07] rounded-3xl p-7 flex flex-col items-center justify-center gap-4 backdrop-blur-sm relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent pointer-events-none" />
-              <p className="text-xs tracking-[0.25em] text-gray-500 uppercase">
-                Today's Score
-              </p>
-              <div className="relative w-36 h-36">
-                <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r="52"
-                    fill="none"
-                    stroke="#ffffff08"
-                    strokeWidth="8"
-                  />
-                  <circle
-                    cx="60"
-                    cy="60"
-                    r="52"
-                    fill="none"
-                    stroke={getScoreColor(scoreVal)}
-                    strokeWidth="8"
-                    strokeLinecap="round"
-                    strokeDasharray={`${strokeDash} ${circumference}`}
-                    style={{
-                      transition:
-                        "stroke-dasharray 1.2s cubic-bezier(0.4,0,0.2,1)",
-                    }}
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span
-                    className="text-4xl font-black"
-                    style={{ color: getScoreColor(scoreVal) }}
-                  >
-                    {scoreVal}
-                  </span>
-                  <span className="text-xs text-gray-600">/ 10</span>
-                </div>
-              </div>
-              <p className="text-xs text-gray-600 text-center">
-                {new Date(latest?.date).toLocaleDateString("en-US", {
-                  weekday: "long",
-                  month: "short",
-                  day: "numeric",
-                })}
-              </p>
-            </div>
-
-            {/* Stat grid */}
-            <div className="md:col-span-3 grid grid-cols-2 gap-4">
-              {[
-                {
-                  label: "Weekly Avg",
-                  value: weekAvg.toFixed(1),
-                  sub: "Last 7 days",
-                  icon: "📅",
-                  color: "text-indigo-400",
-                },
-                {
-                  label: "All-time Avg",
-                  value: avgScore.toFixed(1),
-                  sub: `${logs.length} entries`,
-                  icon: "📊",
-                  color: "text-violet-400",
-                },
-                {
-                  label: "Best Day",
-                  value: bestDay?.score || "—",
-                  sub: bestDay
-                    ? new Date(bestDay.date).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })
-                    : "",
-                  icon: "🏆",
-                  color: "text-emerald-400",
-                },
-                {
-                  label: "Worst Day",
-                  value: worstDay?.score || "—",
-                  sub: worstDay
-                    ? new Date(worstDay.date).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                      })
-                    : "",
-                  icon: "📉",
-                  color: "text-rose-400",
-                },
-                {
-                  label: "Consistency",
-                  value: `${consistency}%`,
-                  sub: "Days scored ≥ 6",
-                  icon: "🎯",
-                  color: "text-cyan-400",
-                },
-                {
-                  label: "Streak",
-                  value: streak,
-                  sub: streak > 0 ? "days in a row 🔥" : "Start today",
-                  icon: "⚡",
-                  color: "text-amber-400",
-                },
-              ].map((stat) => (
-                <div
-                  key={stat.label}
-                  className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 hover:bg-white/[0.05] hover:border-white/10 transition-all"
-                >
-                  <span className="text-xl">{stat.icon}</span>
-                  <p className={`text-2xl font-black mt-2 ${stat.color}`}>
-                    {stat.value}
-                  </p>
-                  <p className="text-[10px] text-gray-600 mt-0.5 uppercase tracking-wider">
-                    {stat.label}
-                  </p>
-                  <p className="text-[10px] text-gray-700 mt-0.5">{stat.sub}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* ── SCORE TREND CHART ── */}
-          <div className="bg-white/[0.03] border border-white/[0.06] rounded-3xl p-6 backdrop-blur-sm">
-            <div className="flex items-end justify-between mb-6">
-              <div>
-                <h2 className="text-base font-bold {textMuted} ">
-                  Score Trend
-                </h2>
-                <p className="text-xs text-gray-600 mt-0.5">
-                  Last 14 entries · avg {avgScore.toFixed(1)} dashed
-                </p>
-              </div>
-              <div className="flex items-center gap-4 text-xs text-gray-600">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-3 h-0.5 bg-indigo-400 inline-block rounded" />
-                  Score
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="w-3 h-px bg-white/20 inline-block border-dashed border-t border-white/30" />
-                  Avg
-                </span>
-              </div>
-            </div>
-            <div className="h-[220px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={trendData}>
-                  <defs>
-                    <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop
-                        offset="0%"
-                        stopColor="#6366f1"
-                        stopOpacity={0.25}
-                      />
-                      <stop offset="100%" stopColor="#6366f1" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid stroke="#ffffff06" vertical={false} />
-                  <XAxis
-                    dataKey="date"
-                    stroke="#ffffff10"
-                    tick={{ fontSize: 10, fill: "#4b5563" }}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <YAxis
-                    stroke="#ffffff08"
-                    tick={{ fontSize: 10, fill: "#4b5563" }}
-                    domain={[0, 10]}
-                    tickLine={false}
-                    axisLine={false}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
-                  <ReferenceLine
-                    y={parseFloat(avgScore.toFixed(1))}
-                    stroke="#ffffff18"
-                    strokeDasharray="5 4"
-                    strokeWidth={1.5}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="score"
-                    stroke="#6366f1"
-                    strokeWidth={2.5}
-                    fill="url(#trendGrad)"
-                    dot={{ r: 3.5, fill: "#6366f1", strokeWidth: 0 }}
-                    activeDot={{ r: 6, fill: "#a5b4fc", strokeWidth: 0 }}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          {/* ── WEEK SPARKLINE BARS ── */}
-          <div className="bg-white/[0.03] border border-white/[0.06] rounded-3xl p-6 backdrop-blur-sm">
-            <h2 className="text-base font-bold {textMuted}  mb-1">This Week</h2>
-            <p className="text-xs text-gray-600 mb-5">
-              Daily scores · {weekAvg.toFixed(1)} avg
-            </p>
-            <div className="flex items-end justify-between gap-2 h-24">
-              {weekData.length > 0 ? (
-                weekData.map((d, i) => {
-                  const heightPct = ((d.score || 0) / 10) * 100;
-                  const col =
-                    d.score >= 8
-                      ? "#10b981"
-                      : d.score >= 5
-                        ? "#f59e0b"
-                        : "#f43f5e";
-                  return (
-                    <div
-                      key={i}
-                      className="flex-1 flex flex-col items-center gap-1.5"
-                    >
-                      <span
-                        className="text-[10px] font-bold"
-                        style={{ color: col }}
-                      >
-                        {d.score}
-                      </span>
-                      <div
-                        className="w-full rounded-t-lg relative"
-                        style={{ height: "64px" }}
-                      >
-                        <div
-                          className="absolute bottom-0 w-full rounded-t-lg transition-all duration-700"
-                          style={{
-                            height: `${Math.max(heightPct, 8)}%`,
-                            background: `${col}28`,
-                            border: `1px solid ${col}45`,
-                            borderBottom: "none",
-                          }}
-                        />
-                      </div>
-                      <span className="text-[9px] text-gray-600">{d.day}</span>
-                    </div>
-                  );
-                })
-              ) : (
-                <p className="text-gray-600 text-sm w-full text-center">
-                  No data this week
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* ── MOTIVATION + SUMMARY ── */}
-          <div className="grid md:grid-cols-2 gap-5">
-            {latest?.motivation && (
-              <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/5 border border-amber-500/20 rounded-3xl p-6 relative overflow-hidden">
-                <div className="absolute top-4 right-5 text-5xl opacity-10 select-none">
-                  🔥
-                </div>
-                <p className="text-xs tracking-[0.2em] text-amber-400 uppercase mb-3">
-                  Daily Motivation
-                </p>
-                <p className="text-gray-300 text-sm leading-relaxed italic">
-                  "{latest.motivation}"
-                </p>
-              </div>
-            )}
-            {latest?.finalSummary && (
-              <div className="bg-gradient-to-br from-indigo-500/10 to-violet-500/5 border border-indigo-500/20 rounded-3xl p-6 relative overflow-hidden">
-                <div className="absolute top-4 right-5 text-5xl opacity-10 select-none">
-                  🧠
-                </div>
-                <p className="text-xs tracking-[0.2em] text-indigo-400 uppercase mb-3">
-                  AI Summary
-                </p>
-                <p className="text-gray-700 text-sm leading-relaxed">
-                  {latest.finalSummary}
-                </p>
-              </div>
-            )}
-          </div>
-
-          {/* ── AI REVIEW CARDS ── */}
+      <div className="dashboard-shell">
+        <header className="dash-header">
           <div>
-            <div className="flex items-end justify-between mb-4">
-              <div>
-                <h2 className="text-base font-bold {textMuted} ">
-                  Latest AI Reviews
-                </h2>
-                <p className="text-xs text-gray-600 mt-0.5">
-                  Tap any card to expand
-                </p>
-              </div>
-              <span className="text-xs text-gray-600">
-                {latest?.date &&
-                  new Date(latest.date).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {reviews.map(({ key, label, color }) => {
-                const text = latest?.[key];
-                if (!text) return null;
-                const isOpen = activeReview === key;
-                return (
-                  <div
-                    key={key}
-                    onClick={() => setActiveReview(isOpen ? null : key)}
-                    className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-4 cursor-pointer hover:bg-white/[0.05] hover:border-white/10 transition-all"
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-semibold" style={{ color }}>
-                        {label}
-                      </span>
-                      <span
-                        className="text-gray-600 text-xs inline-block transition-transform duration-300"
-                        style={{
-                          transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
-                        }}
-                      >
-                        ↓
-                      </span>
-                    </div>
-                    <p
-                      className={`text-gray-500 text-xs leading-relaxed transition-all duration-300 ${
-                        isOpen ? "" : "line-clamp-2"
-                      }`}
-                    >
-                      {text}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
+            <p className="dash-kicker">{greeting}</p>
+            <h1 className="dash-heading">Let's work on your Ikigai.</h1>
           </div>
+          <button
+            className="profile-button"
+            type="button"
+            onClick={() => navigate("/profile")}
+            aria-label="Open profile"
+          >
+            <CircleUserRound />
+          </button>
+        </header>
 
-          {/* ── BEST vs WORST ── */}
-          {bestDay && worstDay && bestDay.id !== worstDay.id && (
-            <div className="grid md:grid-cols-2 gap-5">
-              <div className="bg-emerald-500/5 border border-emerald-500/15 rounded-2xl p-5">
-                <p className="text-xs text-emerald-400 uppercase tracking-wider mb-3">
-                  🏆 Best Day
-                </p>
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-3xl font-black text-emerald-400">
-                    {bestDay.score}
-                  </span>
-                  <span className="text-gray-600 text-sm">
-                    {new Date(bestDay.date).toLocaleDateString("en-US", {
-                      weekday: "long",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </span>
-                </div>
-                {bestDay.finalSummary && (
-                  <p className="text-gray-500 text-xs leading-relaxed line-clamp-3">
-                    {bestDay.finalSummary}
-                  </p>
-                )}
+        {error ? (
+          <section className="error-card">
+            <h2>Dashboard unavailable</h2>
+            <p>{error}</p>
+            <button
+              className="ai-button"
+              type="button"
+              onClick={() => window.location.reload()}
+            >
+              Try again
+            </button>
+          </section>
+        ) : !latest ? (
+          <section className="empty-card">
+            <Target />
+            <h2>Your first day starts here.</h2>
+            <p>
+              Track a few meaningful actions and ikigAI will turn them into
+              useful, personal guidance.
+            </p>
+            <button
+              className="ai-button"
+              type="button"
+              onClick={() => navigate("/track")}
+            >
+              Track today
+            </button>
+          </section>
+        ) : (
+          <>
+            <section className="ai-card" aria-labelledby="ai-insight-title">
+              <div className="ai-card-top">
+                <span className="ai-label">
+                  <Sparkles />
+                  Your focus today
+                </span>
+                <span className="score-chip">Score {score}/10</span>
               </div>
+              <p className="ai-copy" id="ai-insight-title">
+                {insight}
+              </p>
+              <button
+                className="ai-button"
+                type="button"
+                onClick={() => navigate("/predict")}
+              >
+                <Brain
+                  size={16}
+                  style={{ verticalAlign: "-3px", marginRight: 6 }}
+                />
+                Ask ikigAI
+              </button>
+            </section>
 
-              <div className="bg-rose-500/5 border border-rose-500/15 rounded-2xl p-5">
-                <p className="text-xs text-rose-400 uppercase tracking-wider mb-3">
-                  📉 Worst Day
-                </p>
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-3xl font-black text-rose-400">
-                    {worstDay.score}
-                  </span>
-                  <span className="text-gray-600 text-sm">
-                    {new Date(worstDay.date).toLocaleDateString("en-US", {
-                      weekday: "long",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </span>
-                </div>
-                {worstDay.finalSummary && (
-                  <p className="text-gray-500 text-xs leading-relaxed line-clamp-3">
-                    {worstDay.finalSummary}
-                  </p>
-                )}
+            <section className="section" aria-labelledby="today-title">
+              <div className="section-header">
+                <h2 className="section-title" id="today-title">
+                  Today
+                </h2>
+                <button
+                  className="section-action"
+                  type="button"
+                  onClick={() => navigate("/track")}
+                >
+                  Track day
+                </button>
               </div>
-            </div>
-          )}
-        </div>
+              <div className="progress-card">
+                <div
+                  className="progress-ring"
+                  style={{ "--progress": todayProgress } as CSSProperties}
+                >
+                  <div className="progress-number">
+                    {todayProgress}%<span>complete</span>
+                  </div>
+                </div>
+                <div className="progress-summary">
+                  <h3>Keep the rhythm.</h3>
+                  <p>Small actions create meaningful direction.</p>
+                  <div className="progress-stats">
+                    <div className="progress-stat">
+                      <strong>
+                        {completedCount}/{actions.length}
+                      </strong>
+                      <span>actions</span>
+                    </div>
+                    <div className="progress-stat">
+                      <strong>{streak || "-"}</strong>
+                      <span>day streak</span>
+                    </div>
+                    <div className="progress-stat">
+                      <strong>{latest?.codingWork ? "Logged" : "Add"}</strong>
+                      <span>focus</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section className="section" aria-labelledby="actions-title">
+              <div className="section-header">
+                <h2 className="section-title" id="actions-title">
+                  Today's actions
+                </h2>
+                <ListTodo size={19} color="var(--muted)" />
+              </div>
+              <div className="action-list">
+                {actions.map((action) => (
+                  <button
+                    key={action.id}
+                    className={`action-row ${completed[action.id] ? "done" : ""}`}
+                    type="button"
+                    onClick={() =>
+                      setCompleted((state) => ({
+                        ...state,
+                        [action.id]: !state[action.id],
+                      }))
+                    }
+                  >
+                    <span className="check-circle">
+                      {completed[action.id] && <Check />}
+                    </span>
+                    <span className="action-text">
+                      <span className="action-title">{action.title}</span>
+                      <span className="action-detail">{action.detail}</span>
+                    </span>
+                    <ChevronRight />
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <section className="section" aria-labelledby="areas-title">
+              <div className="section-header">
+                <h2 className="section-title" id="areas-title">
+                  Your Ikigai areas
+                </h2>
+                <button
+                  className="section-action"
+                  type="button"
+                  onClick={() => navigate("/goals")}
+                >
+                  Explore
+                </button>
+              </div>
+              <div className="area-grid">
+                {areas.map((area) => {
+                  const AreaIcon = area.icon;
+                  return (
+                    <button
+                      className={`area-card ${area.color}`}
+                      key={area.title}
+                      type="button"
+                      onClick={() => navigate("/goals")}
+                    >
+                      <span className="area-icon">
+                        <AreaIcon />
+                      </span>
+                      <h3>{area.title}</h3>
+                      <p>{area.description}</p>
+                      <div className="area-progress">
+                        <span style={{ width: `${area.progress}%` }} />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            <section className="section" aria-labelledby="quick-title">
+              <div className="section-header">
+                <h2 className="section-title" id="quick-title">
+                  Quick actions
+                </h2>
+              </div>
+              <div className="quick-scroll">
+                <button
+                  className="quick-pill primary"
+                  type="button"
+                  onClick={() => navigate("/predict")}
+                >
+                  <Sparkles
+                    size={15}
+                    style={{ verticalAlign: "-2px", marginRight: 5 }}
+                  />
+                  Ask ikigAI
+                </button>
+                <button
+                  className="quick-pill"
+                  type="button"
+                  onClick={() => navigate("/track")}
+                >
+                  Plan my day
+                </button>
+                <button
+                  className="quick-pill"
+                  type="button"
+                  onClick={() => navigate("/track")}
+                >
+                  Reflect
+                </button>
+                <button
+                  className="quick-pill"
+                  type="button"
+                  onClick={() => navigate("/predict")}
+                >
+                  Find my strengths
+                </button>
+                <button
+                  className="quick-pill"
+                  type="button"
+                  onClick={() => navigate("/goals")}
+                >
+                  Suggest a goal
+                </button>
+              </div>
+            </section>
+          </>
+        )}
       </div>
-    </div>
+    </main>
   );
 }

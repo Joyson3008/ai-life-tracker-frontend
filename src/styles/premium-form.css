@@ -1,204 +1,170 @@
-/* ===============================
-   🌌 THEME TOKENS (AURORA UI)
-================================ */
+/* IkigAI premium form foundation
+   Calm surfaces, large touch targets, and subtle feedback for mobile-first flows. */
+
 :root {
-  --bg-primary: #030712;
-  --bg-secondary: #020617;
-
-  --card-bg: rgba(15, 23, 42, 0.6);
-  --border-color: rgba(255, 255, 255, 0.08);
-
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
-
-  --accent-1: #00c6ff;
-  --accent-2: #7c3aed;
-  --accent-3: #22c55e;
-
-  --gradient-main: linear-gradient(135deg, #6366f1, #9333ea);
+  --ikigai-page: #f2f2f7;
+  --ikigai-surface: #ffffff;
+  --ikigai-surface-soft: #f7f7f9;
+  --ikigai-field: #ffffff;
+  --ikigai-text: #1c1c1e;
+  --ikigai-text-secondary: #6d6d72;
+  --ikigai-line: #d9d9de;
+  --ikigai-accent: #007aff;
+  --ikigai-accent-soft: #e7f1ff;
+  --ikigai-success: #248a3d;
+  --ikigai-danger: #c7322b;
+  --ikigai-radius-card: 24px;
+  --ikigai-radius-control: 14px;
+  --ikigai-shadow: 0 8px 24px rgba(20, 20, 30, 0.05);
 }
 
-/* ===============================
-   🌈 BACKGROUND
-================================ */
+.dark {
+  --ikigai-page: #000000;
+  --ikigai-surface: #1c1c1e;
+  --ikigai-surface-soft: #2c2c2e;
+  --ikigai-field: #2c2c2e;
+  --ikigai-text: #f5f5f7;
+  --ikigai-text-secondary: #a1a1a6;
+  --ikigai-line: #3a3a3c;
+  --ikigai-accent: #0a84ff;
+  --ikigai-accent-soft: #203a58;
+  --ikigai-success: #32d74b;
+  --ikigai-danger: #ff6961;
+  --ikigai-shadow: none;
+}
+
+/* Page and surface hierarchy */
 .app-bg {
-  min-height: 100vh;
-  color: var(--text-primary);
-  background: radial-gradient(circle at 20% 20%, #1e3a8a, transparent 40%),
-              radial-gradient(circle at 80% 30%, #7c3aed, transparent 40%),
-              radial-gradient(circle at 50% 80%, #00c6ff, transparent 40%),
-              var(--bg-primary);
+  min-height: 100svh;
+  background: var(--ikigai-page);
+  color: var(--ikigai-text);
 }
 
-/* ===============================
-   🧊 GLASS CARD (GLOBAL)
-================================ */
-.card {
-  background: var(--card-bg);
-  backdrop-filter: blur(20px);
-
-  border: 1px solid var(--border-color);
-  border-radius: 20px;
-
-  padding: 20px;
-
-  box-shadow:
-    0 10px 40px rgba(0, 0, 0, 0.5),
-    inset 0 0 0.5px rgba(255, 255, 255, 0.08);
-
-  transition: all 0.3s ease;
-}
-
-.card:hover {
-  transform: translateY(-6px);
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.7),
-    0 0 25px rgba(99, 102, 241, 0.3);
-}
-
-/* ===============================
-   💰 EXPENSES SECTION (FIXED)
-================================ */
+.card,
 .expense-card {
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(20px);
-
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-
   padding: 20px;
-
-  box-shadow:
-    0 10px 40px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--ikigai-line);
+  border-radius: var(--ikigai-radius-card);
+  background: var(--ikigai-surface);
+  box-shadow: var(--ikigai-shadow);
 }
 
-/* ===============================
-   🎯 CATEGORY CHIPS
-================================ */
+/* Choice chips */
 .expense-chip {
-  padding: 12px;
-  border-radius: 14px;
-
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
-  color: #e2e8f0;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--ikigai-line);
+  border-radius: 12px;
+  background: var(--ikigai-surface);
+  color: var(--ikigai-text);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-
-  transition: all 0.25s ease;
+  transition: background 160ms ease, border-color 160ms ease, color 160ms ease,
+    transform 140ms ease;
 }
 
 .expense-chip:hover {
-  transform: scale(1.06);
-  background: rgba(99, 102, 241, 0.15);
-
-  box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+  background: var(--ikigai-surface-soft);
 }
 
 .expense-chip.active {
-  background: var(--gradient-main);
-  color: white;
-
-  box-shadow: 0 0 20px rgba(147, 51, 234, 0.5);
+  border-color: transparent;
+  background: var(--ikigai-accent);
+  color: #ffffff;
 }
 
-/* ===============================
-   ✏️ INPUT
-================================ */
+.expense-chip:active,
+.expense-add-btn:active,
+.btn-primary:active {
+  transform: scale(0.985);
+}
+
+/* Inputs: intentional focus without a second border or glow */
+.input,
 .expense-input {
   width: 100%;
-  padding: 14px;
-
-  border-radius: 14px;
-
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-
-  color: white;
+  min-height: 52px;
+  box-sizing: border-box;
+  padding: 0 15px;
+  border: 1px solid var(--ikigai-line);
+  border-radius: var(--ikigai-radius-control);
+  outline: 0;
+  background: var(--ikigai-field);
+  color: var(--ikigai-text);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.4;
+  caret-color: var(--ikigai-accent);
+  transition: background 160ms ease, border-color 160ms ease;
 }
 
-.expense-input:focus {
-  outline: none;
-
-  box-shadow:
-    0 0 0 2px rgba(99, 102, 241, 0.5),
-    0 0 20px rgba(147, 51, 234, 0.3);
+.input::placeholder,
+.expense-input::placeholder {
+  color: var(--ikigai-text-secondary);
+  opacity: 1;
 }
 
-/* ===============================
-   🔘 BUTTON
-================================ */
+.input:focus,
+.input:focus-visible,
+.expense-input:focus,
+.expense-input:focus-visible {
+  border-color: transparent;
+  outline: 0;
+  box-shadow: none;
+  background: var(--ikigai-accent-soft);
+}
+
+.input::selection,
+.expense-input::selection {
+  background: color-mix(in srgb, var(--ikigai-accent) 30%, transparent);
+}
+
+/* Primary actions */
+.btn-primary,
 .expense-add-btn {
-  background: var(--gradient-main);
-
-  padding: 12px 22px;
-  border-radius: 14px;
-
-  color: white;
-  font-weight: 600;
-
-  transition: all 0.25s ease;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 13px;
+  background: var(--ikigai-accent);
+  color: #ffffff;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 160ms ease, transform 140ms ease, opacity 160ms ease;
 }
 
+.btn-primary:hover,
 .expense-add-btn:hover {
-  transform: scale(1.05);
-
-  box-shadow:
-    0 10px 30px rgba(99, 102, 241, 0.5),
-    0 0 20px rgba(147, 51, 234, 0.5);
+  background: color-mix(in srgb, var(--ikigai-accent) 86%, #000000);
 }
 
-/* ===============================
-   ✏️ GLOBAL INPUT (KEEP)
-================================ */
-.input {
-  width: 100%;
-  padding: 13px 16px;
-  border-radius: 14px;
-
-  background: rgba(30, 41, 59, 0.6);
-  border: 1px solid var(--border-color);
-
-  color: var(--text-primary);
+.btn-primary:disabled,
+.expense-add-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.input:focus {
-  outline: none;
-
-  box-shadow:
-    0 0 0 2px rgba(99, 102, 241, 0.4),
-    0 0 20px rgba(147, 51, 234, 0.3);
+/* Keyboard accessibility */
+.expense-chip:focus-visible,
+.btn-primary:focus-visible,
+.expense-add-btn:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--ikigai-accent) 42%, transparent);
+  outline-offset: 2px;
 }
 
-/* ===============================
-   🔘 BUTTON GLOBAL
-================================ */
-.btn-primary {
-  background: var(--gradient-main);
-  padding: 12px 22px;
-  border-radius: 14px;
-
-  color: white;
-  font-weight: 600;
-
-  transition: all 0.25s ease;
-}
-
-.btn-primary:hover {
-  transform: scale(1.05);
-}
-
-/* ===============================
-   ✨ ANIMATION
-================================ */
+/* Lightweight status helpers */
 .fade-in {
-  animation: fadeIn 0.4s ease-in-out;
+  animation: ikigai-fade-in 220ms ease-out both;
 }
 
-@keyframes fadeIn {
+@keyframes ikigai-fade-in {
   from {
     opacity: 0;
-    transform: translateY(15px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -206,22 +172,30 @@
   }
 }
 
-/* ===============================
-   ⏳ SPINNER
-================================ */
 .spinner {
-  border: 3px solid rgba(255, 255, 255, 0.15);
-  border-top: 3px solid #6366f1;
-
-  border-radius: 50%;
   width: 20px;
   height: 20px;
-
-  animation: spin 0.8s linear infinite;
+  border: 3px solid var(--ikigai-line);
+  border-top-color: var(--ikigai-accent);
+  border-radius: 50%;
+  animation: ikigai-spin 760ms linear infinite;
 }
 
-@keyframes spin {
+@keyframes ikigai-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .expense-chip,
+  .expense-add-btn,
+  .btn-primary,
+  .input,
+  .expense-input,
+  .fade-in,
+  .spinner {
+    animation: none !important;
+    transition: none !important;
   }
 }
