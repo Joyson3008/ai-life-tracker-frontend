@@ -31,13 +31,13 @@ type Props = { userId: number };
 const expenseCategories = [
   { name: "Food", icon: "🍽️", color: "#f97316" },
   { name: "Travel", icon: "🚗", color: "#3b82f6" },
-  { name: "Shop", icon: "🛒", color: "#ec4899" },
-  { name: "Edu", icon: "📚", color: "#a855f7" },
+  { name: "Shopping", icon: "🛒", color: "#ec4899" },
+  { name: "Education", icon: "📚", color: "#a855f7" },
   { name: "Rent", icon: "🏠", color: "#22c55e" },
   { name: "Bills", icon: "💡", color: "#eab308" },
-  { name: "Moive", icon: "🎬", color: "#ef4444" },
+  { name: "Movie", icon: "🎬", color: "#ef4444" },
   { name: "Health", icon: "❤️‍🩹", color: "#f43f5e" },
-  { name: "Elec-", icon: "💻", color: "#6366f1" },
+  { name: "Software", icon: "💻", color: "#6366f1" },
   { name: "Others", icon: "📦", color: "#6b7280" },
 ];
 
@@ -47,9 +47,9 @@ const phoneApps = [
   "WhatsApp",
   "Facebook",
   "X",
-  "ChatGPT",
+  "Chatgpt",
   "Reddit",
-  "Gaming",
+  "TikTok",
   "Other",
 ];
 
@@ -466,14 +466,13 @@ const SectionCard = ({
   const { darkMode } = useTheme();
   return (
     <div
-      className={`relative rounded-2xl border backdrop-blur-xl overflow-hidden transition-colors duration-300 ${
+      className={`relative rounded-[24px] border overflow-hidden transition-colors duration-300 ${
         darkMode
-          ? "bg-gradient-to-b from-white/[0.06] to-white/[0.02] border-white/[0.07] shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
-          : "bg-white border-slate-200 shadow-[0_2px_16px_rgba(0,0,0,0.06)]"
+          ? "bg-[#1c1c1e] border-[#38383a] shadow-[0_1px_2px_rgba(0,0,0,0.18)]"
+          : "bg-white border-[#e5e5ea] shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
       } ${className}`}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-white/[0.03] via-transparent to-transparent pointer-events-none" />
-      <div className="relative p-6">{children}</div>
+      <div className="relative p-5 sm:p-6">{children}</div>
     </div>
   );
 };
@@ -489,14 +488,12 @@ const SectionHeader = ({
 }) => (
   <div className="flex items-center gap-3 mb-5">
     <div
-      className="flex items-center justify-center w-9 h-9 rounded-xl"
-      style={{ background: `${accent}22`, border: `1px solid ${accent}44` }}
+      className="flex items-center justify-center w-9 h-9 rounded-[11px]"
+      style={{ background: `${accent}18` }}
     >
       <span style={{ color: accent }}>{icon}</span>
     </div>
-    <span className="font-semibold tracking-wide text-sm uppercase">
-      {label}
-    </span>
+    <span className="font-semibold tracking-tight text-[17px]">{label}</span>
   </div>
 );
 
@@ -517,18 +514,18 @@ function SpiritualReader({
   darkMode: boolean;
   onReadingChange: (reading: SpiritualReading) => void;
 }) {
-  const textMuted = darkMode ? "text-gray-400" : "text-slate-500";
-  const textFaint = darkMode ? "text-gray-600" : "text-slate-400";
+  const textMuted = darkMode ? "text-[#aeaeb2]" : "text-[#6e6e73]";
+  const textFaint = "text-[#8e8e93]";
 
-  const selectClass = `px-3 py-2.5 rounded-xl border text-sm outline-none cursor-pointer transition-all ${
+  const selectClass = `min-h-[44px] px-3 py-2.5 rounded-[12px] border text-[15px] outline-none cursor-pointer transition-colors ${
     darkMode
-      ? "bg-black/30 border-white/[0.08] text-white/80 focus:border-indigo-500/50"
-      : "bg-white border-slate-200 text-slate-800 focus:border-indigo-400"
+      ? "bg-[#2c2c2e] border-[#3a3a3c] text-[#f5f5f7] focus:bg-[#203a58] focus:border-transparent"
+      : "bg-[#f2f2f7] border-[#e5e5ea] text-[#1d1d1f] focus:bg-[#e7f1ff] focus:border-transparent"
   }`;
 
   const bibleBoxClass = darkMode
-    ? "bg-black/30 border-white/[0.05]"
-    : "bg-slate-50 border-slate-200";
+    ? "bg-[#2c2c2e] border-[#3a3a3c]"
+    : "bg-[#f2f2f7] border-[#e5e5ea]";
 
   // ── Active spiritual tab ──
   const [activeTab, setActiveTab] = useState<SpiritualTab>("bible");
@@ -635,7 +632,7 @@ function SpiritualReader({
     setGitaError("");
     try {
       const res = await fetch(
-       `https://vedicscriptures.github.io/slok/${gitaChapter}/${gitaVerse}`,
+        `https://vedicscriptures.github.io/slok/${gitaChapter}/${gitaVerse}`,
       );
       if (!res.ok) throw new Error("Failed to fetch");
       const data = await res.json();
@@ -673,21 +670,18 @@ function SpiritualReader({
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl border text-xs font-semibold transition-all duration-200"
+            className="flex items-center gap-2 min-h-[40px] px-4 py-2 rounded-[12px] border text-[13px] font-semibold transition-colors duration-200"
             style={
               activeTab === tab.key
                 ? {
                     background: `${tab.color}20`,
                     borderColor: `${tab.color}55`,
                     color: darkMode ? tab.color : tab.color,
-                    boxShadow: `0 0 16px ${tab.color}20`,
                   }
                 : {
-                    background: darkMode ? "rgba(255,255,255,0.03)" : "#f8fafc",
-                    borderColor: darkMode
-                      ? "rgba(255,255,255,0.08)"
-                      : "#e2e8f0",
-                    color: darkMode ? "rgba(255,255,255,0.4)" : "#94a3b8",
+                    background: darkMode ? "#2c2c2e" : "#f2f2f7",
+                    borderColor: darkMode ? "#3a3a3c" : "#e5e5ea",
+                    color: darkMode ? "#aeaeb2" : "#6e6e73",
                   }
             }
           >
@@ -740,10 +734,10 @@ function SpiritualReader({
                 v = Math.min(Math.max(v, 1), chapterLimits[bibleBook]);
                 setBibleChapter(v);
               }}
-              className={`w-20 px-3 py-2.5 rounded-xl border text-sm text-center outline-none transition-all ${
+              className={`w-20 min-h-[44px] px-3 py-2.5 rounded-[12px] border text-[15px] text-center outline-none transition-colors ${
                 darkMode
-                  ? "bg-black/30 border-white/[0.08] text-white/90 focus:border-indigo-500/50"
-                  : "bg-white border-slate-200 text-slate-900 focus:border-indigo-400"
+                  ? "bg-[#2c2c2e] border-[#3a3a3c] text-[#f5f5f7] focus:bg-[#203a58] focus:border-transparent"
+                  : "bg-[#f2f2f7] border-[#e5e5ea] text-[#1d1d1f] focus:bg-[#e7f1ff] focus:border-transparent"
               }`}
             />
 
@@ -938,10 +932,10 @@ function SpiritualReader({
                 v = Math.min(Math.max(v, 1), maxGitaVerse);
                 setGitaVerse(v);
               }}
-              className={`w-20 px-3 py-2.5 rounded-xl border text-sm text-center outline-none transition-all ${
+              className={`w-20 min-h-[44px] px-3 py-2.5 rounded-[12px] border text-[15px] text-center outline-none transition-colors ${
                 darkMode
-                  ? "bg-black/30 border-white/[0.08] text-white/90 focus:border-orange-500/50"
-                  : "bg-white border-slate-200 text-slate-900 focus:border-orange-400"
+                  ? "bg-[#2c2c2e] border-[#3a3a3c] text-[#f5f5f7] focus:bg-[#203a58] focus:border-transparent"
+                  : "bg-[#f2f2f7] border-[#e5e5ea] text-[#1d1d1f] focus:bg-[#e7f1ff] focus:border-transparent"
               }`}
             />
 
@@ -1101,44 +1095,45 @@ function SpiritualReader({
 export default function TrackDay({ userId }: Props) {
   const { darkMode } = useTheme();
 
-  const bg = darkMode ? "bg-[#060910]" : "bg-slate-100";
-  const text = darkMode ? "text-white" : "text-slate-900";
-  const textMuted = darkMode ? "text-gray-400" : "text-slate-500";
-  const textFaint = darkMode ? "text-gray-600" : "text-slate-400";
+  const bg = darkMode ? "bg-[#000000]" : "bg-[#f2f2f7]";
+  const text = darkMode ? "text-[#f5f5f7]" : "text-[#1d1d1f]";
+  const textMuted = darkMode ? "text-[#aeaeb2]" : "text-[#6e6e73]";
+  const textFaint = darkMode ? "text-[#8e8e93]" : "text-[#8e8e93]";
 
   const inputBase = darkMode
-    ? "bg-black/30 border-white/[0.08] text-white placeholder-white/25 focus:border-indigo-500/60 focus:bg-black/40 focus:shadow-[0_0_0_3px_rgba(99,102,241,0.12)]"
-    : "bg-slate-50 border-slate-200 text-slate-900 placeholder-slate-400 focus:border-indigo-400 focus:bg-white focus:shadow-[0_0_0_3px_rgba(99,102,241,0.10)]";
+    ? "bg-[#2c2c2e] border-[#3a3a3c] text-[#f5f5f7] placeholder-[#98989d] focus:bg-[#203a58] focus:border-transparent focus:shadow-none"
+    : "bg-[#f2f2f7] border-[#e5e5ea] text-[#1d1d1f] placeholder-[#8e8e93] focus:bg-[#e7f1ff] focus:border-transparent focus:shadow-none";
 
-  const inputClass = `w-full px-4 py-3 rounded-xl border outline-none transition-all duration-200 text-sm ${inputBase}`;
-  const textareaClass = `w-full px-4 py-3 rounded-xl border outline-none transition-all duration-200 text-sm resize-none ${inputBase}`;
+  const inputClass = `w-full min-h-[48px] px-4 py-3 rounded-[14px] border outline-none transition-colors duration-200 text-[16px] ${inputBase}`;
+  const textareaClass = `w-full px-4 py-3 rounded-[14px] border outline-none transition-colors duration-200 text-[16px] resize-none ${inputBase}`;
 
- 
+  // const selectClass = `px-3 py-2.5 rounded-xl border text-sm outline-none cursor-pointer transition-all ${
+  //   darkMode
+  //     ? "bg-black/30 border-white/[0.08] text-white/80 focus:border-indigo-500/50"
+  //     : "bg-white border-slate-200 text-slate-800 focus:border-indigo-400"
+  // }`;
+
   const counterBtnClass = `w-7 h-7 rounded-lg border flex items-center justify-center transition-colors ${
     darkMode
-      ? "bg-white/5 border-white/10 text-white/60 hover:bg-white/10"
-      : "bg-slate-100 border-slate-200 text-slate-500 hover:bg-slate-200"
+      ? "bg-[#2c2c2e] border-[#3a3a3c] text-[#aeaeb2] hover:bg-[#3a3a3c]"
+      : "bg-[#f2f2f7] border-[#e5e5ea] text-[#6e6e73] hover:bg-[#e5e5ea]"
   }`;
 
   const statChipClass = `flex flex-col items-center px-4 py-3 rounded-xl border transition-colors ${
-    darkMode
-      ? "bg-white/[0.04] border-white/[0.06]"
-      : "bg-white border-slate-200 shadow-sm"
+    darkMode ? "bg-[#1c1c1e] border-[#38383a]" : "bg-white border-[#e5e5ea]"
   }`;
 
   const goalItemClass = `flex items-center gap-3 px-4 py-3 rounded-xl border mb-2 transition-colors ${
-    darkMode
-      ? "bg-white/[0.03] border-white/[0.06]"
-      : "bg-slate-50 border-slate-200"
+    darkMode ? "bg-[#2c2c2e] border-[#3a3a3c]" : "bg-[#f2f2f7] border-[#e5e5ea]"
   }`;
 
   const expenseTagClass = `inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition-colors ${
     darkMode
-      ? "bg-white/[0.04] border-white/[0.07] text-white/60"
-      : "bg-slate-100 border-slate-200 text-slate-600"
+      ? "bg-[#2c2c2e] border-[#3a3a3c] text-[#aeaeb2]"
+      : "bg-[#f2f2f7] border-[#e5e5ea] text-[#6e6e73]"
   }`;
 
-  const progressTrackClass = darkMode ? "bg-white/[0.06]" : "bg-slate-200";
+  const progressTrackClass = darkMode ? "bg-[#3a3a3c]" : "bg-[#e5e5ea]";
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -1320,65 +1315,53 @@ export default function TrackDay({ userId }: Props) {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Serif+Devanagari:wght@400;500&family=Amiri:wght@400;700&display=swap');
-        .track-root { font-family: 'Sora', sans-serif; }
-        .mono { font-family: 'JetBrains Mono', monospace; }
+        .track-root {
+          font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", sans-serif;
+          -webkit-font-smoothing: antialiased;
+        }
+        .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
 
         .pill-btn {
           display: inline-flex; align-items: center; justify-content: center;
-          padding: 6px 14px; border-radius: 999px; font-size: 12px; font-weight: 500;
-          border: 1px solid; cursor: pointer; transition: all 0.18s ease; white-space: nowrap;
+          min-height: 36px; padding: 7px 13px; border-radius: 999px; font-size: 13px; font-weight: 500;
+          border: 1px solid; cursor: pointer; transition: background-color 0.18s ease, color 0.18s ease, transform 0.18s ease; white-space: nowrap;
+        }
+        .pill-btn:active { transform: scale(0.96); }
+        .track-root button:focus-visible { outline: 2px solid #0a84ff; outline-offset: 2px; }
+        .track-root input:focus,
+        .track-root textarea:focus,
+        .track-root select:focus {
+          outline: none !important;
+          box-shadow: none !important;
+          border-color: transparent !important;
         }
 
         .submit-btn {
-          position: relative; overflow: hidden; padding: 16px 48px;
-          border-radius: 16px; font-size: 16px; font-weight: 600; cursor: pointer;
-          background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
-          border: 1px solid rgba(255,255,255,0.15); color: white;
-          box-shadow: 0 8px 32px rgba(99,102,241,0.35), inset 0 1px 0 rgba(255,255,255,0.15);
-          transition: all 0.2s ease; letter-spacing: 0.02em;
+          position: relative; overflow: hidden; min-height: 52px; padding: 15px 30px;
+          border-radius: 14px; font-size: 16px; font-weight: 600; cursor: pointer;
+          background: #0a84ff; border: 0; color: white;
+          box-shadow: none; transition: background-color 0.2s ease, transform 0.2s ease; letter-spacing: 0;
         }
-        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(99,102,241,0.5); }
-        .submit-btn:active { transform: translateY(0); }
-        .submit-btn::before {
-          content:''; position:absolute; inset:0;
-          background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 60%);
-          pointer-events:none;
-        }
+        .submit-btn:hover { background: #0077ed; }
+        .submit-btn:active { transform: scale(0.98); }
         .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
       `}</style>
 
       <div
         className={`track-root min-h-screen ${bg} ${text} transition-colors duration-300`}
         style={{
-          background: darkMode
-            ? "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(99,102,241,0.15) 0%, transparent 60%), #050812"
-            : "linear-gradient(160deg, #f8faff 0%, #f1f5f9 40%, #eef2ff 100%)",
+          background: darkMode ? "#000000" : "#f2f2f7",
         }}
       >
-        <div className="max-w-4xl mx-auto px-5 py-10 pb-24">
+        <div className="max-w-3xl mx-auto px-4 sm:px-5 py-8 sm:py-10 pb-24">
           {/* ── HEADER ── */}
-          <div className="mb-10">
-            <p
-              className={`mono text-xs uppercase tracking-widest mb-1 ${textFaint}`}
-            >
+          <div className="mb-8 sm:mb-10">
+            <p className={`text-[13px] font-medium mb-1 ${textFaint}`}>
               {today}
             </p>
             <div className="flex items-end justify-between flex-wrap gap-4">
               <div>
-                <h1
-                  className="text-4xl font-bold tracking-tight"
-                  style={
-                    darkMode
-                      ? {
-                          background:
-                            "linear-gradient(135deg, #ffffff 40%, rgba(255,255,255,0.6))",
-                          WebkitBackgroundClip: "text",
-                          WebkitTextFillColor: "transparent",
-                        }
-                      : { color: "#1e293b" }
-                  }
-                >
+                <h1 className="text-[34px] sm:text-4xl font-bold tracking-[-0.04em]">
                   Daily Log
                 </h1>
                 <p className={`mt-1 text-sm ${textMuted}`}>
@@ -1515,13 +1498,13 @@ export default function TrackDay({ userId }: Props) {
                       placeholder="min"
                       value={exerciseMin}
                       onChange={(e) => setExerciseMin(e.target.value)}
-                      className={`w-16 px-3 py-2 rounded-xl border text-sm outline-none text-center transition-all ${darkMode ? "bg-black/30 border-white/[0.08] text-white placeholder-white/20 focus:border-rose-500/50" : "bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-rose-400"}`}
+                      className={`w-16 min-h-[44px] px-2 py-1 rounded-[12px] border text-[15px] outline-none text-center transition-colors ${darkMode ? "bg-[#2c2c2e] border-[#3a3a3c] text-[#f5f5f7] placeholder-[#98989d] focus:bg-[#203a58] focus:border-transparent" : "bg-[#f2f2f7] border-[#e5e5ea] text-[#1d1d1f] placeholder-[#8e8e93] focus:bg-[#e7f1ff] focus:border-transparent"}`}
                     />
                     <input
                       placeholder="type"
                       value={exerciseType}
                       onChange={(e) => setExerciseType(e.target.value)}
-                      className={`w-16 flex-1 px-3 py-2 rounded-xl border text-sm outline-none transition-all ${darkMode ? "bg-black/30 border-white/[0.08] text-white placeholder-white/20 focus:border-rose-500/50" : "bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-rose-400"}`}
+                      className={`w-16 flex-1 min-h-[44px] px-2 py-1 rounded-[12px] border text-[15px] outline-none transition-colors ${darkMode ? "bg-[#2c2c2e] border-[#3a3a3c] text-[#f5f5f7] placeholder-[#98989d] focus:bg-[#203a58] focus:border-transparent" : "bg-[#f2f2f7] border-[#e5e5ea] text-[#1d1d1f] placeholder-[#8e8e93] focus:bg-[#e7f1ff] focus:border-transparent"}`}
                     />
                   </div>
                 </div>
@@ -1906,7 +1889,7 @@ export default function TrackDay({ userId }: Props) {
                       placeholder="mins"
                       value={appTime}
                       onChange={(e) => setAppTime(e.target.value)}
-                      className={`w-24 px-3 py-2.5 rounded-xl border text-sm outline-none text-center transition-all ${darkMode ? "bg-black/30 border-white/[0.08] text-white/90 placeholder-white/20 focus:border-pink-500/50" : "bg-white border-slate-200 text-slate-900 placeholder-slate-400 focus:border-pink-400"}`}
+                      className={`w-24 min-h-[48px] px-3 py-2.5 rounded-[14px] border text-[15px] outline-none text-center transition-colors ${darkMode ? "bg-[#2c2c2e] border-[#3a3a3c] text-[#f5f5f7] placeholder-[#98989d] focus:bg-[#203a58] focus:border-transparent" : "bg-[#f2f2f7] border-[#e5e5ea] text-[#1d1d1f] placeholder-[#8e8e93] focus:bg-[#e7f1ff] focus:border-transparent"}`}
                     />
                     <button
                       onClick={addAppUsage}
@@ -2090,29 +2073,16 @@ export default function TrackDay({ userId }: Props) {
             <div className="mt-12">
               <AIResult
                 result={result}
-   // AFTER — passes all wellness, goals, gratitude, tomorrowPlan
-onDownload={() =>
-  generatePDF(
-    result,
-    form,
-    expenseList,
-    appList,
-    selectedMood,
-    diaryTitle,
-    {
-      sleepHours,
-      waterIntake,
-      exerciseMin,
-      exerciseType,
-      morningRoutine,
-      caffeineCount,
-      focusMode,
-    },
-    todayGoals.map((text, i) => ({ text, done: goalsDone[i] ?? false })),
-    gratitude,
-    tomorrowPlan,
-  )
-}
+                onDownload={() =>
+                  generatePDF(
+                    result,
+                    form,
+                    expenseList,
+                    appList,
+                    selectedMood,
+                    diaryTitle,
+                  )
+                }
               />
             </div>
           )}

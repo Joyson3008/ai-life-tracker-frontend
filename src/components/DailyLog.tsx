@@ -9,8 +9,6 @@ import {
   NotebookPen,
   Wallet,
   PencilLine,
-} from "lucide-react";
-import {
   Utensils,
   Car,
   ShoppingCart,
@@ -18,8 +16,12 @@ import {
   Lightbulb,
   HeartPulse,
   Package,
+  ChevronRight,
+  Plus,
+  Sparkles,
 } from "lucide-react";
 import { generatePDF } from "../utils/PDFGenerator";
+
 type Props = {
   userId: number;
 };
@@ -36,6 +38,7 @@ const expenseCategories = [
   { name: "Software", icon: <Laptop />, color: "text-indigo-400" },
   { name: "Others", icon: <Package />, color: "text-gray-400" },
 ];
+
 const phoneApps = [
   { name: "Instagram" },
   { name: "YouTube" },
@@ -44,26 +47,27 @@ const phoneApps = [
   { name: "X" },
   { name: "Other" },
 ];
+
 function DailyLog({ userId }: Props) {
   const [bibleBook, setBibleBook] = useState("John");
   const [bibleChapter, setBibleChapter] = useState(3);
   const [bibleContent, setBibleContent] = useState("");
   const [bibleLoading, setBibleLoading] = useState(false);
-  // 🔥 Expense States
 
   const [selectedCategory, setSelectedCategory] = useState("");
   const [expenseAmount, setExpenseAmount] = useState("");
   const [expenseList, setExpenseList] = useState<
     { category: string; amount: number }[]
   >([]);
-  // 📱 Phone Usage States
+
   const [selectedApp, setSelectedApp] = useState("");
   const [appTime, setAppTime] = useState("");
   const [customApp, setCustomApp] = useState("");
   const [appList, setAppList] = useState<{ name: string; time: number }[]>([]);
-  // 📔 Diary States (ADD THIS)
+
   const [selectedMood, setSelectedMood] = useState("");
   const [diaryTitle, setDiaryTitle] = useState("");
+
   const addExpense = () => {
     if (!selectedCategory || !expenseAmount) {
       alert("Select category and enter amount");
@@ -93,12 +97,15 @@ function DailyLog({ userId }: Props) {
     setAppTime("");
     setCustomApp("");
   };
+
   const fetchBibleChapter = async () => {
     setBibleLoading(true);
+
     try {
       const res = await fetch(
         `https://bible-api.com/${bibleBook}%20${bibleChapter}`,
       );
+
       const data = await res.json();
 
       const verses = data.verses.map((v: any) => `${v.verse}. ${v.text}`);
@@ -107,9 +114,10 @@ function DailyLog({ userId }: Props) {
     } catch (err) {
       setBibleContent("Error loading chapter");
     }
+
     setBibleLoading(false);
   };
-  // 🔥 Original Form
+
   const [form, setForm] = useState({
     bibleReading: "",
     bookReading: "",
@@ -133,6 +141,7 @@ function DailyLog({ userId }: Props) {
 
   const extractAmount = (text: string) => {
     const numbers = text.match(/\d+/g);
+
     return numbers ? numbers.map(Number).reduce((a, b) => a + b, 0) : null;
   };
 
@@ -173,8 +182,8 @@ function DailyLog({ userId }: Props) {
       setLoading(false);
     }
   };
+
   const chapterLimits: Record<string, number> = {
-    // Old Testament
     Genesis: 50,
     Exodus: 40,
     Leviticus: 27,
@@ -215,7 +224,6 @@ function DailyLog({ userId }: Props) {
     Zechariah: 14,
     Malachi: 4,
 
-    // New Testament
     Matthew: 28,
     Mark: 16,
     Luke: 24,
@@ -244,8 +252,8 @@ function DailyLog({ userId }: Props) {
     Jude: 1,
     Revelation: 22,
   };
+
   const bibleBooks = [
-    // 📖 OLD TESTAMENT
     "Genesis",
     "Exodus",
     "Leviticus",
@@ -286,7 +294,6 @@ function DailyLog({ userId }: Props) {
     "Zechariah",
     "Malachi",
 
-    // ✝️ NEW TESTAMENT
     "Matthew",
     "Mark",
     "Luke",
@@ -315,58 +322,111 @@ function DailyLog({ userId }: Props) {
     "Jude",
     "Revelation",
   ];
-  return (
-    <div className="min-h-screen bg-[#020617] text-white px-6 py-10">
-      <div className="max-w-5xl mx-auto">
-        <h1 className="text-3xl font-bold mb-8 flex items-center gap-3">
-          <PencilLine className="w-8 h-8 text-indigo-400 drop-shadow-lg" />
-          <span className="bg-gradient-to-r from-indigo-400 to-purple-500 bg-clip-text text-transparent">
-            Track Your Day
-          </span>
-        </h1>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* 📖 Spiritual */}
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-xl">
-            <div className="flex items-center gap-2 mb-3">
-              <BookOpen className="w-5 h-5 text-indigo-400" />
-              <h2 className="font-semibold">Spiritual</h2>
+  const inputClass =
+    "w-full px-4 py-3.5 rounded-2xl bg-white/[0.045] border border-white/[0.08] text-white placeholder:text-white/30 outline-none transition-all duration-200 focus:bg-white/[0.07] focus:border-indigo-400/50 focus:ring-4 focus:ring-indigo-500/10";
+
+  const cardClass =
+    "bg-white/[0.035] backdrop-blur-2xl border border-white/[0.08] rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.22)]";
+
+  return (
+    <div className="min-h-screen bg-[#050506] text-white">
+      {/* Apple-style ambient background */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-40 left-[20%] w-[500px] h-[500px] bg-indigo-500/[0.08] rounded-full blur-[140px]" />
+
+        <div className="absolute top-[35%] -right-40 w-[450px] h-[450px] bg-purple-500/[0.06] rounded-full blur-[140px]" />
+
+        <div className="absolute bottom-0 left-[10%] w-[400px] h-[400px] bg-blue-500/[0.05] rounded-full blur-[140px]" />
+      </div>
+
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        {/* Header */}
+        <header className="mb-10 sm:mb-14">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-11 h-11 rounded-2xl bg-white/[0.07] border border-white/[0.08] flex items-center justify-center">
+              <PencilLine className="w-5 h-5 text-indigo-300" />
             </div>
 
-            {/* 🔥 Selector */}
-            <div className="flex gap-3 mb-4">
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.22em] text-white/35 font-semibold">
+                Daily Reflection
+              </p>
+
+              <p className="text-xs text-white/25 mt-0.5">
+                Take a moment for yourself
+              </p>
+            </div>
+          </div>
+
+          <div className="max-w-2xl">
+            <h1 className="text-[38px] sm:text-5xl lg:text-6xl font-semibold tracking-[-0.04em] leading-[1.05]">
+              Track your day.
+            </h1>
+
+            <p className="text-lg sm:text-xl text-white/40 mt-4 leading-relaxed">
+              Capture what you learned, experienced, enjoyed, and accomplished
+              today.
+            </p>
+          </div>
+        </header>
+
+        {/* Main Grid */}
+        <div className="grid lg:grid-cols-2 gap-5">
+          {/* Spiritual */}
+          <section className={`${cardClass} p-5 sm:p-7`}>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center">
+                  <BookOpen className="w-5 h-5 text-indigo-300" />
+                </div>
+
+                <div>
+                  <h2 className="font-semibold text-[17px]">Spiritual</h2>
+
+                  <p className="text-xs text-white/30 mt-0.5">Bible reading</p>
+                </div>
+              </div>
+
+              <Sparkles className="w-4 h-4 text-white/20" />
+            </div>
+
+            <div className="grid grid-cols-[1fr_75px_auto] gap-2 sm:gap-3 items-center">
               <select
                 value={bibleBook}
                 onChange={(e) => {
                   const selectedBook = e.target.value;
                   setBibleBook(selectedBook);
 
-                  // reset chapter if exceeds limit
                   const max = chapterLimits[selectedBook];
+
                   if (bibleChapter > max) {
                     setBibleChapter(1);
                   }
                 }}
-                className="p-2 rounded-lg bg-white/10 text-white"
+                className={`${inputClass} appearance-none cursor-pointer`}
               >
-                <option disabled className="text-gray-400">
-                  ── Old Testament ──
+                <option disabled className="text-black">
+                  Old Testament
                 </option>
+
                 {bibleBooks.slice(0, 39).map((b) => (
                   <option key={b} value={b} className="text-black">
                     {b}
                   </option>
                 ))}
 
-                <option disabled className="text-gray-400">
-                  ── New Testament ──
+                <option disabled className="text-black">
+                  New Testament
                 </option>
+
                 {bibleBooks.slice(39).map((b) => (
                   <option key={b} value={b} className="text-black">
                     {b}
                   </option>
                 ))}
               </select>
+
               <input
                 type="number"
                 min={1}
@@ -376,175 +436,250 @@ function DailyLog({ userId }: Props) {
                   let value = Number(e.target.value);
 
                   if (value < 1) value = 1;
+
                   if (value > chapterLimits[bibleBook]) {
                     value = chapterLimits[bibleBook];
                   }
 
                   setBibleChapter(value);
                 }}
-                className="w-20 p-2 rounded-lg bg-white/10 text-white text-center"
+                className={`${inputClass} text-center`}
               />
-              <p className="text-xs text-gray-400">
-                Max: {chapterLimits[bibleBook]}
-              </p>
 
               <button
                 onClick={fetchBibleChapter}
-                className="px-4 py-2 bg-indigo-500 rounded-lg hover:bg-indigo-600"
+                className="h-full px-4 sm:px-5 rounded-2xl bg-white text-black font-semibold text-sm hover:bg-white/90 active:scale-[0.97] transition-all"
               >
                 Read
               </button>
             </div>
 
-            {/* 🔥 Reader */}
-            <div className="h-40 overflow-y-auto bg-white/5 rounded-xl p-3 text-sm whitespace-pre-line">
-              {bibleLoading ? "Loading..." : bibleContent || "Select chapter"}
-            </div>
-          </div>
-          {/* 📚 Learning */}
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-xl hover:shadow-purple-500/20 transition">
-            <div className="flex items-center gap-2 mb-3">
-              <GraduationCap className="w-5 h-5 text-purple-400" />
-              <h2 className="font-semibold">Learning</h2>
+            <div className="flex items-center justify-between mt-3 px-1">
+              <span className="text-[11px] text-white/25">
+                Chapter {bibleChapter}
+              </span>
+
+              <span className="text-[11px] text-white/25">
+                Max {chapterLimits[bibleBook]}
+              </span>
             </div>
 
-            <input
-              name="bookReading"
-              placeholder="Book reading"
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 mb-2 focus:ring-2 focus:ring-purple-500 outline-none"
-            />
+            <div className="mt-5 h-48 overflow-y-auto rounded-2xl bg-black/20 border border-white/[0.05] p-4 sm:p-5">
+              {bibleLoading ? (
+                <div className="h-full flex items-center justify-center">
+                  <div className="flex items-center gap-3 text-sm text-white/40">
+                    <div className="w-4 h-4 rounded-full border-2 border-white/20 border-t-white animate-spin" />
+                    Loading chapter...
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm text-white/55 leading-7 whitespace-pre-line">
+                  {bibleContent || "Select a chapter to begin reading."}
+                </p>
+              )}
+            </div>
+          </section>
 
-            <input
-              name="csTopic"
-              placeholder="CS Topic"
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:ring-2 focus:ring-purple-500 outline-none"
-            />
-          </div>
+          {/* Learning */}
+          <section className={`${cardClass} p-5 sm:p-7`}>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                <GraduationCap className="w-5 h-5 text-purple-300" />
+              </div>
 
-          {/* 💻 Productivity */}
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-xl hover:shadow-green-500/20 transition">
-            <div className="flex items-center gap-2 mb-3">
-              <Laptop className="w-5 h-5 text-green-400" />
-              <h2 className="font-semibold">Productivity</h2>
+              <div>
+                <h2 className="font-semibold text-[17px]">Learning</h2>
+
+                <p className="text-xs text-white/30 mt-0.5">Feed your mind</p>
+              </div>
             </div>
 
-            <input
-              name="codingWork"
-              placeholder="Coding work"
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 mb-2 focus:ring-2 focus:ring-green-500 outline-none"
-            />
+            <div className="space-y-3">
+              <input
+                name="bookReading"
+                placeholder="What book did you read?"
+                onChange={handleChange}
+                className={inputClass}
+              />
 
-            <input
-              name="collegeActivity"
-              placeholder="College activity"
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:ring-2 focus:ring-green-500 outline-none"
-            />
-          </div>
+              <input
+                name="csTopic"
+                placeholder="What CS topic did you learn?"
+                onChange={handleChange}
+                className={inputClass}
+              />
+            </div>
 
-          {/* 🎯 Lifestyle */}
-          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-xl hover:shadow-pink-500/20 transition">
-            <div className="flex items-center gap-2 mb-3">
-              <Film className="w-5 h-5 text-pink-400" />
-              <h2 className="font-semibold">Lifestyle</h2>
+            <div className="mt-5 px-4 py-3 rounded-2xl bg-purple-500/[0.05] border border-purple-400/[0.08]">
+              <p className="text-xs text-purple-200/50">
+                Small progress every day compounds into something remarkable.
+              </p>
+            </div>
+          </section>
+
+          {/* Productivity */}
+          <section className={`${cardClass} p-5 sm:p-7`}>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                <Laptop className="w-5 h-5 text-emerald-300" />
+              </div>
+
+              <div>
+                <h2 className="font-semibold text-[17px]">Productivity</h2>
+
+                <p className="text-xs text-white/30 mt-0.5">
+                  Work that mattered
+                </p>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <input
+                name="codingWork"
+                placeholder="What did you code today?"
+                onChange={handleChange}
+                className={inputClass}
+              />
+
+              <input
+                name="collegeActivity"
+                placeholder="College activity"
+                onChange={handleChange}
+                className={inputClass}
+              />
+            </div>
+          </section>
+
+          {/* Lifestyle */}
+          <section className={`${cardClass} p-5 sm:p-7`}>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center">
+                <Film className="w-5 h-5 text-pink-300" />
+              </div>
+
+              <div>
+                <h2 className="font-semibold text-[17px]">Lifestyle</h2>
+
+                <p className="text-xs text-white/30 mt-0.5">Balance your day</p>
+              </div>
             </div>
 
             <input
               name="movie"
-              placeholder="Movie"
+              placeholder="What did you watch?"
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 mb-2 focus:ring-2 focus:ring-pink-500 outline-none"
+              className={inputClass}
             />
 
-            {/* 📱 Phone Usage */}
-            <div className="space-y-4 mt-4">
-              {/* Apps */}
-              <div className="grid grid-cols-5 gap-3">
+            {/* Phone Usage */}
+            <div className="mt-6">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-sm font-medium text-white/70">Screen time</p>
+
+                <span className="text-[11px] text-white/25">
+                  Add apps & minutes
+                </span>
+              </div>
+
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
                 {phoneApps.map((app) => (
-                  <div
+                  <button
                     key={app.name}
+                    type="button"
                     onClick={() => setSelectedApp(app.name)}
-                    className={`cursor-pointer text-center px-3 py-2 rounded-xl border transition 
-        ${
-          selectedApp === app.name
-            ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white"
-            : "bg-white/5 border-white/10 hover:bg-pink-500/10"
-        }`}
+                    className={`min-h-[48px] px-2 rounded-xl border text-[11px] font-medium transition-all active:scale-95 ${
+                      selectedApp === app.name
+                        ? "bg-white text-black border-white"
+                        : "bg-white/[0.035] border-white/[0.07] text-white/45 hover:bg-white/[0.07] hover:text-white"
+                    }`}
                   >
                     {app.name}
-                  </div>
+                  </button>
                 ))}
               </div>
 
-              {/* Custom App */}
               {selectedApp === "Other" && (
                 <input
                   placeholder="Enter app name"
                   value={customApp}
                   onChange={(e) => setCustomApp(e.target.value)}
-                  className="w-full px-4 py-2 rounded-xl bg-white/5 border border-white/10"
+                  className={`${inputClass} mt-3`}
                 />
               )}
 
-              {/* Time */}
-              <div className="flex gap-2">
+              <div className="flex gap-2 mt-3">
                 <input
                   type="number"
                   placeholder="Minutes"
                   value={appTime}
                   onChange={(e) => setAppTime(e.target.value)}
-                  className="flex-1 px-4 py-2 rounded-xl bg-white/5 border border-white/10"
+                  className={`${inputClass} flex-1`}
                 />
 
                 <button
                   onClick={addAppUsage}
-                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600"
+                  className="px-5 rounded-2xl bg-white/[0.08] border border-white/[0.08] text-white font-semibold hover:bg-white/[0.13] active:scale-95 transition-all"
                 >
-                  Add
+                  <Plus className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* List */}
-              {appList.map((a, i) => (
-                <div key={i} className="text-sm text-gray-300">
-                  {a.name} - {a.time} mins
-                </div>
-              ))}
-            </div>
-          </div>
+              {appList.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  {appList.map((a, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between px-4 py-3 rounded-xl bg-black/20 border border-white/[0.05]"
+                    >
+                      <span className="text-sm text-white/60">{a.name}</span>
 
-          {/* 📔 Diary (Modern UI) */}
-          <div className="md:col-span-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-xl space-y-5">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <NotebookPen className="w-5 h-5 text-yellow-400" />
-                <h2 className="font-semibold text-lg">Daily Journal</h2>
+                      <span className="text-xs text-white/30">
+                        {a.time} min
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* Journal */}
+          <section className={`${cardClass} lg:col-span-2 p-5 sm:p-7`}>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-7">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center">
+                  <NotebookPen className="w-5 h-5 text-yellow-300" />
+                </div>
+
+                <div>
+                  <h2 className="font-semibold text-[17px]">Daily Journal</h2>
+
+                  <p className="text-xs text-white/30 mt-0.5">
+                    A quiet space for your thoughts
+                  </p>
+                </div>
               </div>
 
-              <span className="text-xs text-gray-400">
-                Express your thoughts
+              <span className="text-xs text-white/25">
+                {form.diary?.length || 0} characters
               </span>
             </div>
 
-            {/* Mood Selector */}
+            {/* Mood */}
             <div>
-              <p className="text-sm text-gray-400 mb-2">How was your day?</p>
-              <div className="flex gap-3">
+              <p className="text-sm text-white/50 mb-3">How was your day?</p>
+
+              <div className="flex gap-2">
                 {["😄", "🙂", "😐", "😔", "😴"].map((mood) => (
                   <button
                     key={mood}
                     type="button"
                     onClick={() => setSelectedMood(mood)}
-                    className={`text-xl px-3 py-2 rounded-xl transition 
-          ${
-            selectedMood === mood
-              ? "bg-yellow-500/20 scale-110"
-              : "bg-white/5 hover:bg-white/10"
-          }`}
+                    className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl text-xl transition-all active:scale-90 ${
+                      selectedMood === mood
+                        ? "bg-white text-black scale-105 shadow-lg"
+                        : "bg-white/[0.045] border border-white/[0.07] hover:bg-white/[0.08]"
+                    }`}
                   >
                     {mood}
                   </button>
@@ -552,92 +687,166 @@ function DailyLog({ userId }: Props) {
               </div>
             </div>
 
-            {/* Title Input */}
             <input
               type="text"
-              placeholder="Give a title for your day..."
+              placeholder="Give today a title..."
               onChange={(e) => setDiaryTitle(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:ring-2 focus:ring-yellow-500 outline-none text-lg font-medium"
+              className={`${inputClass} mt-6 text-base`}
             />
 
-            {/* Main Diary */}
             <textarea
               name="diary"
-              placeholder="Write your thoughts... what did you learn, feel, or experience today?"
+              placeholder="Write about your thoughts, feelings, experiences, lessons, or anything you want to remember..."
               onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 min-h-[140px] focus:ring-2 focus:ring-yellow-500 outline-none resize-none"
+              className={`${inputClass} mt-3 min-h-[180px] resize-none leading-7`}
             />
 
-            {/* Footer Actions */}
-            <div className="flex items-center justify-between text-sm text-gray-400">
-              <span>💡 Tip: Be honest & reflective</span>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-4">
+              <span className="text-xs text-white/25">
+                💡 Be honest. This space is only about you.
+              </span>
 
-              <span>{form.diary?.length || 0} characters</span>
+              <span className="text-xs text-white/20">
+                {form.diary?.length || 0} characters
+              </span>
             </div>
-          </div>
-          {/* 💰 Expenses */}
-          <div className="md:col-span-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 shadow-xl space-y-4">
-            <div className="flex items-center gap-2">
-              <Wallet className="w-5 h-5 text-emerald-400" />
-              <h2 className="font-semibold">Expenses</h2>
+          </section>
+
+          {/* Expenses */}
+          <section className={`${cardClass} lg:col-span-2 p-5 sm:p-7`}>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                  <Wallet className="w-5 h-5 text-emerald-300" />
+                </div>
+
+                <div>
+                  <h2 className="font-semibold text-[17px]">Expenses</h2>
+
+                  <p className="text-xs text-white/30 mt-0.5">
+                    Keep an eye on your spending
+                  </p>
+                </div>
+              </div>
+
+              {expenseList.length > 0 && (
+                <span className="text-sm font-semibold text-white/60">
+                  ₹
+                  {expenseList
+                    .reduce((sum, item) => sum + item.amount, 0)
+                    .toLocaleString("en-IN")}
+                </span>
+              )}
             </div>
 
             {/* Categories */}
-            <div className="grid grid-cols-5 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
               {expenseCategories.map((cat) => (
-                <div
+                <button
                   key={cat.name}
+                  type="button"
                   onClick={() => setSelectedCategory(cat.name)}
-                  className={`cursor-pointer text-center px-3 py-2 rounded-xl border transition 
-              ${
-                selectedCategory === cat.name
-                  ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg"
-                  : "bg-white/5 border-white/10 hover:bg-indigo-500/10"
-              }`}
+                  className={`flex items-center gap-2 p-3 rounded-2xl border transition-all active:scale-95 ${
+                    selectedCategory === cat.name
+                      ? "bg-white text-black border-white shadow-lg"
+                      : "bg-white/[0.035] border-white/[0.07] text-white/45 hover:bg-white/[0.07] hover:text-white"
+                  }`}
                 >
-                  <div className="text-sm">
-                    {cat.icon} {cat.name}
-                  </div>
-                </div>
+                  <span
+                    className={
+                      selectedCategory === cat.name ? "text-black" : cat.color
+                    }
+                  >
+                    {cat.icon}
+                  </span>
+
+                  <span className="text-xs font-medium">{cat.name}</span>
+                </button>
               ))}
             </div>
 
-            {/* Input */}
-            <div className="flex gap-2">
-              <input
-                type="number"
-                value={expenseAmount}
-                onChange={(e) => setExpenseAmount(e.target.value)}
-                className="flex-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:ring-2 focus:ring-indigo-500 outline-none"
-              />
+            {/* Amount */}
+            <div className="flex gap-2 mt-4">
+              <div className="relative flex-1">
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-white/25">
+                  ₹
+                </span>
+
+                <input
+                  type="number"
+                  value={expenseAmount}
+                  onChange={(e) => setExpenseAmount(e.target.value)}
+                  placeholder="Amount"
+                  className={`${inputClass} pl-9`}
+                />
+              </div>
 
               <button
                 onClick={addExpense}
-                className="px-5 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 font-semibold hover:scale-105 transition shadow-lg"
+                className="px-6 rounded-2xl bg-white text-black font-semibold hover:bg-white/90 active:scale-95 transition-all flex items-center gap-2"
               >
-                Add
+                <Plus className="w-4 h-4" />
+                <span>Add</span>
               </button>
             </div>
 
-            {/* List */}
-            {expenseList.map((e, i) => (
-              <div key={i} className="text-sm text-gray-300">
-                {e.category} - ₹{e.amount}
+            {/* Expense list */}
+            {expenseList.length > 0 && (
+              <div className="mt-5 grid sm:grid-cols-2 gap-2">
+                {expenseList.map((e, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center justify-between px-4 py-3.5 rounded-2xl bg-black/20 border border-white/[0.05]"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-white/[0.05] flex items-center justify-center">
+                        <Wallet className="w-3.5 h-3.5 text-white/40" />
+                      </div>
+
+                      <span className="text-sm text-white/55">
+                        {e.category}
+                      </span>
+                    </div>
+
+                    <span className="text-sm font-semibold text-white/75">
+                      ₹{e.amount}
+                    </span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            )}
+          </section>
         </div>
 
-        {/* 🚀 Submit */}
-        <div className="mt-10 text-center">
+        {/* Analyze */}
+        <div className="mt-8 sm:mt-10">
           <button
             onClick={handleSubmit}
-            className="px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 font-semibold text-lg hover:scale-105 transition shadow-lg"
+            disabled={loading}
+            className="group w-full rounded-[24px] bg-white text-black py-4 sm:py-5 font-semibold text-base sm:text-lg transition-all hover:bg-white/90 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_20px_50px_rgba(255,255,255,0.08)]"
           >
-            {loading ? "Analyzing..." : "🚀 Analyze My Day"}
+            <span className="flex items-center justify-center gap-2">
+              {loading ? (
+                <>
+                  <div className="w-5 h-5 rounded-full border-2 border-black/20 border-t-black animate-spin" />
+                  Analyzing your day...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-5 h-5" />
+                  Analyze My Day
+                  <ChevronRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                </>
+              )}
+            </span>
           </button>
+
+          <p className="text-center text-[11px] text-white/20 mt-3">
+            Your daily reflection will be analyzed by AI.
+          </p>
         </div>
 
+        {/* AI Result */}
         {result && (
           <div className="mt-10">
             <AIResult
