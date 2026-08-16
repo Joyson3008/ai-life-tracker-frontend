@@ -1,228 +1,202 @@
-import { Moon, Sun } from "lucide-react";
-import { motion } from "framer-motion";
+import { CalendarDays, Moon, Sun } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import { useNavigate } from "react-router-dom";
 
 export default function ThemeToggle() {
   const { darkMode, toggleDarkMode } = useTheme();
+  const navigate = useNavigate();
 
   return (
-    <motion.button
-      type="button"
-      onClick={toggleDarkMode}
-      aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-      aria-pressed={darkMode}
-      title={darkMode ? "Light Mode" : "Dark Mode"}
-      whileHover={{ scale: 1.04 }}
-      whileTap={{ scale: 0.94 }}
-      transition={{
-        type: "spring",
-        stiffness: 500,
-        damping: 30,
-      }}
-      className="relative outline-none select-none"
+    <div
+      className="mobile-header-actions"
       style={{
-        width: 58,
-        height: 32,
-        padding: 2,
-        borderRadius: 999,
-        cursor: "pointer",
-
-        background: darkMode ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.055)",
+        background: darkMode
+          ? "rgba(255,255,255,0.055)"
+          : "rgba(255,255,255,0.72)",
 
         border: darkMode
-          ? "1px solid rgba(255,255,255,0.12)"
-          : "1px solid rgba(0,0,0,0.08)",
+          ? "1px solid rgba(255,255,255,0.08)"
+          : "1px solid rgba(15,23,42,0.08)",
 
         boxShadow: darkMode
-          ? `
-            inset 0 1px 0 rgba(255,255,255,0.08),
-            0 2px 8px rgba(0,0,0,0.22)
-          `
-          : `
-            inset 0 1px 0 rgba(255,255,255,0.9),
-            0 2px 8px rgba(0,0,0,0.08)
-          `,
+          ? "0 2px 12px rgba(0,0,0,0.18)"
+          : "0 2px 12px rgba(15,23,42,0.06)",
 
         backdropFilter: "blur(20px) saturate(180%)",
         WebkitBackdropFilter: "blur(20px) saturate(180%)",
-
-        transition:
-          "background 280ms ease, border 280ms ease, box-shadow 280ms ease",
       }}
     >
       {/* =====================================================
-          SUBTLE TRACK LIGHT
+          CALENDAR
       ===================================================== */}
 
-      <motion.div
-        className="absolute inset-0 rounded-full pointer-events-none"
-        animate={{
-          opacity: darkMode ? 0.45 : 0.7,
-        }}
-        transition={{ duration: 0.25 }}
+      <button
+        type="button"
+        onClick={() => navigate("/calendar")}
+        title="Calendar"
+        aria-label="Open Calendar"
+        className="mobile-action-button"
         style={{
-          background: darkMode
-            ? "linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.06))"
-            : "linear-gradient(90deg, rgba(255,255,255,0.65), rgba(255,255,255,0.25))",
-        }}
-      />
-
-      {/* =====================================================
-          TRACK ICONS
-      ===================================================== */}
-
-      <div
-        className="absolute inset-0 flex items-center justify-between pointer-events-none"
-        style={{
-          paddingLeft: 8,
-          paddingRight: 8,
+          color: darkMode ? "#F5F5F7" : "#1C1C1E",
         }}
       >
-        <Sun
-          size={12}
-          strokeWidth={2.1}
-          style={{
-            color: darkMode
-              ? "rgba(255,255,255,0.28)"
-              : "rgba(245,158,11,0.78)",
-            transition: "color 250ms ease",
-          }}
-        />
-
-        <Moon
-          size={11}
-          strokeWidth={2.1}
-          style={{
-            color: darkMode
-              ? "rgba(199,210,254,0.75)"
-              : "rgba(100,116,139,0.30)",
-            transition: "color 250ms ease",
-          }}
-        />
-      </div>
+        <CalendarDays className="mobile-action-icon" />
+      </button>
 
       {/* =====================================================
-          PREMIUM SLIDER THUMB
+          THEME
       ===================================================== */}
 
-      <motion.div
-        animate={{
-          x: darkMode ? 26 : 0,
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 550,
-          damping: 32,
-          mass: 0.7,
-        }}
-        className="absolute top-1 left-1 flex items-center justify-center"
+      <button
+        type="button"
+        onClick={toggleDarkMode}
+        title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+        aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+        aria-pressed={darkMode}
+        className="mobile-action-button"
         style={{
-          width: 28,
-          height: 28,
-          borderRadius: "50%",
+          color: darkMode ? "#F5F5F7" : "#1C1C1E",
+        }}
+      >
+        {darkMode ? (
+          <Sun className="mobile-action-icon" />
+        ) : (
+          <Moon className="mobile-action-icon" />
+        )}
+      </button>
 
-          background: darkMode
-            ? "linear-gradient(145deg, #3f4652, #252a33)"
-            : "linear-gradient(145deg, #ffffff, #f5f5f7)",
+      <style>{`
+        /* =====================================================
+           APPLE MOBILE HEADER ACTION GROUP
+        ===================================================== */
 
-          border: darkMode
-            ? "1px solid rgba(255,255,255,0.12)"
-            : "1px solid rgba(0,0,0,0.05)",
+        .mobile-header-actions {
+          height: 40px;
 
-          boxShadow: darkMode
-            ? `
-              0 2px 6px rgba(0,0,0,0.35),
-              0 1px 2px rgba(0,0,0,0.2),
-              inset 0 1px 0 rgba(255,255,255,0.12)
-            `
-            : `
-              0 2px 6px rgba(0,0,0,0.12),
-              0 1px 2px rgba(0,0,0,0.08),
-              inset 0 1px 0 rgba(255,255,255,1)
-            `,
+          display: flex;
+          align-items: center;
+
+          gap: 2px;
+
+          padding: 2px;
+
+          border-radius: 13px;
+
+          flex-shrink: 0;
+
+          box-sizing: border-box;
+        }
+
+        /* =====================================================
+           INDIVIDUAL ACTION
+        ===================================================== */
+
+        .mobile-action-button {
+          position: relative;
+
+          width: 34px;
+          height: 34px;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          padding: 0;
+
+          border: 0;
+          border-radius: 10px;
+
+          background: transparent;
+
+          cursor: pointer;
+
+          outline: none;
+
+          -webkit-tap-highlight-color: transparent;
 
           transition:
-            "background 280ms ease, border 280ms ease, box-shadow 280ms ease",
-        }}
-      >
-        {/* =================================================
-            THUMB ICON
-        ================================================= */}
+            background-color 150ms ease,
+            transform 100ms ease;
+        }
 
-        <motion.div
-          key={darkMode ? "dark" : "light"}
-          initial={{
-            opacity: 0,
-            scale: 0.65,
-            rotate: darkMode ? -30 : 30,
-          }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-            rotate: 0,
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 500,
-            damping: 24,
-          }}
-        >
-          {darkMode ? (
-            <Moon
-              size={14}
-              strokeWidth={2.2}
-              style={{
-                color: "#dbe4ff",
-              }}
-            />
-          ) : (
-            <Sun
-              size={14}
-              strokeWidth={2.2}
-              style={{
-                color: "#f59e0b",
-              }}
-            />
-          )}
-        </motion.div>
+        /* =====================================================
+           ICON
+        ===================================================== */
 
-        {/* =================================================
-            THUMB TOP REFLECTION
-        ================================================= */}
+        .mobile-action-icon {
+          width: 17px;
+          height: 17px;
 
-        <div
-          className="absolute pointer-events-none"
-          style={{
-            top: 2,
-            left: 7,
-            right: 7,
-            height: 1,
-            borderRadius: 999,
+          stroke-width: 1.8;
 
-            background: darkMode
-              ? "rgba(255,255,255,0.13)"
-              : "rgba(255,255,255,0.95)",
-          }}
-        />
-      </motion.div>
+          flex-shrink: 0;
+        }
 
-      {/* =====================================================
-          OUTER HIGHLIGHT
-      ===================================================== */}
+        /* =====================================================
+           HOVER
+           Mostly useful for desktop/tablet.
+        ===================================================== */
 
-      <div
-        className="absolute pointer-events-none rounded-full"
-        style={{
-          top: 0,
-          left: 4,
-          right: 4,
-          height: 1,
+        .mobile-action-button:hover {
+          background: ${
+            darkMode ? "rgba(255,255,255,0.08)" : "rgba(15,23,42,0.055)"
+          };
+        }
 
-          background: darkMode
-            ? "rgba(255,255,255,0.08)"
-            : "rgba(255,255,255,0.85)",
-        }}
-      />
-    </motion.button>
+        /* =====================================================
+           PRESS
+        ===================================================== */
+
+        .mobile-action-button:active {
+          transform: scale(0.94);
+        }
+
+        /* =====================================================
+           KEYBOARD ACCESSIBILITY
+        ===================================================== */
+
+        .mobile-action-button:focus-visible {
+          outline: 2px solid ${
+            darkMode ? "rgba(10,132,255,0.65)" : "rgba(0,122,255,0.45)"
+          };
+
+          outline-offset: 1px;
+        }
+
+        /* =====================================================
+           MOBILE OPTIMIZATION
+        ===================================================== */
+
+        @media (max-width: 480px) {
+          .mobile-header-actions {
+            height: 38px;
+            padding: 2px;
+            gap: 1px;
+            border-radius: 12px;
+          }
+
+          .mobile-action-button {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+          }
+
+          .mobile-action-icon {
+            width: 16px;
+            height: 16px;
+          }
+        }
+
+        /* =====================================================
+           REDUCED MOTION
+        ===================================================== */
+
+        @media (prefers-reduced-motion: reduce) {
+          .mobile-action-button {
+            transition: none;
+          }
+        }
+      `}</style>
+    </div>
   );
 }

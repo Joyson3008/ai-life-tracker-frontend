@@ -1,18 +1,74 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  BarChart3,
+  CalendarDays,
+  ChevronLeft,
+  ChevronRight,
+  Flame,
+  X,
+  Sparkles,
+} from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
-type Props = { userId: number };
+
+type Props = {
+  userId: number;
+};
+
+type ViewMode = "month" | "heatmap" | "breakdown";
+
+type CalendarDay = {
+  date: Date;
+  key: string;
+  log: any;
+};
 
 const CATEGORIES = [
-  { key: "bibleReading", label: "Bible", icon: "📖", color: "#818cf8" },
-  { key: "bookReading", label: "Books", icon: "📚", color: "#a78bfa" },
-  { key: "codingWork", label: "Coding", icon: "💻", color: "#34d399" },
-  { key: "csTopic", label: "CS", icon: "🧠", color: "#22d3ee" },
-  { key: "collegeActivity", label: "College", icon: "🏫", color: "#60a5fa" },
-  { key: "diary", label: "Diary", icon: "📔", color: "#fbbf24" },
-  { key: "movie", label: "Movie", icon: "🎬", color: "#f472b6" },
+  {
+    key: "bibleReading",
+    label: "Bible",
+    icon: "📖",
+    color: "#6366f1",
+  },
+  {
+    key: "bookReading",
+    label: "Books",
+    icon: "📚",
+    color: "#8b5cf6",
+  },
+  {
+    key: "codingWork",
+    label: "Coding",
+    icon: "💻",
+    color: "#10b981",
+  },
+  {
+    key: "csTopic",
+    label: "CS",
+    icon: "🧠",
+    color: "#06b6d4",
+  },
+  {
+    key: "collegeActivity",
+    label: "College",
+    icon: "🏫",
+    color: "#3b82f6",
+  },
+  {
+    key: "diary",
+    label: "Diary",
+    icon: "📔",
+    color: "#f59e0b",
+  },
+  {
+    key: "movie",
+    label: "Movie",
+    icon: "🎬",
+    color: "#ec4899",
+  },
 ];
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
 const MONTHS = [
   "January",
   "February",
@@ -28,798 +84,2102 @@ const MONTHS = [
   "December",
 ];
 
+/* =========================================================
+   SCORE HELPERS
+========================================================= */
+
 function getScoreColor(score: number): string {
-  if (score === 0) return "rgba(255,255,255,0.04)";
   if (score >= 9) return "#10b981";
   if (score >= 7) return "#34d399";
   if (score >= 5) return "#f59e0b";
   if (score >= 3) return "#f97316";
-  return "#f43f5e";
+  if (score > 0) return "#f43f5e";
+
+  return "#8e8e93";
 }
 
-function getScoreGlow(score: number): string {
-  if (score >= 9) return "0 0 12px #10b98155";
-  if (score >= 7) return "0 0 10px #34d39940";
-  if (score >= 5) return "0 0 10px #f59e0b40";
-  if (score >= 3) return "0 0 10px #f9731640";
-  if (score > 0) return "0 0 10px #f43f5e40";
-  return "none";
-}
-
-function getScoreLabel(score: number) {
+function getScoreLabel(score: number): string {
   if (score >= 9) return "Legendary";
   if (score >= 7) return "Great";
   if (score >= 5) return "Good";
   if (score >= 3) return "Low";
   if (score > 0) return "Poor";
+
   return "No log";
 }
+
+function getScoreBackground(score: number, darkMode: boolean): string {
+  if (!score) {
+    return darkMode ? "#1c1c1e" : "#f2f2f7";
+  }
+
+  const color = getScoreColor(score);
+
+  return darkMode ? `${color}1A` : `${color}12`;
+}
+
+function getScoreBorder(score: number, darkMode: boolean): string {
+  if (!score) {
+    return darkMode ? "#38383a" : "#e5e5ea";
+  }
+
+  const color = getScoreColor(score);
+
+  return darkMode ? `${color}45` : `${color}35`;
+}
+
+/* =========================================================
+   SMALL REUSABLE CARD
+========================================================= */
+
+function AppleCard({
+  children,
+  darkMode,
+  className = "",
+}: {
+  children: React.ReactNode;
+  darkMode: boolean;
+  className?: string;
+}) {
+  return (
+    <div
+      className={className}
+      style={{
+        background: darkMode ? "#1c1c1e" : "#ffffff",
+        border: `1px solid ${darkMode ? "#38383a" : "#e5e5ea"}`,
+        borderRadius: 22,
+        boxShadow: darkMode
+          ? "0 1px 2px rgba(0,0,0,0.22)"
+          : "0 1px 3px rgba(0,0,0,0.04)",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* =========================================================
+   STAT CARD
+========================================================= */
+
+function StatCard({
+  label,
+  value,
+  accent,
+  darkMode,
+}: {
+  label: string;
+  value: string | number;
+  accent: string;
+  darkMode: boolean;
+}) {
+  return (
+    <div
+      style={{
+        minWidth: 78,
+        flex: 1,
+        padding: "12px 10px",
+        borderRadius: 15,
+        background: darkMode ? "#2c2c2e" : "#f2f2f7",
+        border: `1px solid ${darkMode ? "#3a3a3c" : "#e5e5ea"}`,
+        textAlign: "center",
+      }}
+    >
+      <div
+        style={{
+          fontSize: 19,
+          lineHeight: 1.15,
+          fontWeight: 700,
+          letterSpacing: "-0.035em",
+          color: accent,
+        }}
+      >
+        {value}
+      </div>
+
+      <div
+        style={{
+          marginTop: 5,
+          fontSize: 9,
+          fontWeight: 600,
+          letterSpacing: "0.04em",
+          color: darkMode ? "#8e8e93" : "#8e8e93",
+          textTransform: "uppercase",
+        }}
+      >
+        {label}
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   VIEW SWITCHER
+========================================================= */
+
+function ViewSwitcher({
+  viewMode,
+  setViewMode,
+  darkMode,
+}: {
+  viewMode: ViewMode;
+  setViewMode: (value: ViewMode) => void;
+  darkMode: boolean;
+}) {
+  const items: {
+    key: ViewMode;
+    label: string;
+    icon: React.ReactNode;
+  }[] = [
+    {
+      key: "month",
+      label: "Month",
+      icon: <CalendarDays size={14} strokeWidth={1.8} />,
+    },
+    {
+      key: "heatmap",
+      label: "Activity",
+      icon: <Flame size={14} strokeWidth={1.8} />,
+    },
+    {
+      key: "breakdown",
+      label: "Insights",
+      icon: <BarChart3 size={14} strokeWidth={1.8} />,
+    },
+  ];
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        width: "100%",
+        padding: 3,
+        gap: 2,
+        borderRadius: 14,
+        background: darkMode ? "#1c1c1e" : "#e5e5ea",
+        border: `1px solid ${darkMode ? "#38383a" : "#d1d1d6"}`,
+      }}
+    >
+      {items.map((item) => {
+        const active = viewMode === item.key;
+
+        return (
+          <button
+            key={item.key}
+            type="button"
+            onClick={() => setViewMode(item.key)}
+            style={{
+              flex: 1,
+              minHeight: 38,
+              padding: "0 8px",
+              border: 0,
+              borderRadius: 11,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 6,
+              cursor: "pointer",
+              background: active
+                ? darkMode
+                  ? "#3a3a3c"
+                  : "#ffffff"
+                : "transparent",
+              color: active
+                ? darkMode
+                  ? "#f5f5f7"
+                  : "#1d1d1f"
+                : darkMode
+                  ? "#8e8e93"
+                  : "#6e6e73",
+              fontSize: 12,
+              fontWeight: active ? 600 : 500,
+              boxShadow: active
+                ? darkMode
+                  ? "0 1px 3px rgba(0,0,0,0.25)"
+                  : "0 1px 3px rgba(0,0,0,0.08)"
+                : "none",
+              transition: "background-color 160ms ease, color 160ms ease",
+            }}
+          >
+            {item.icon}
+            <span>{item.label}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/* =========================================================
+   MAIN COMPONENT
+========================================================= */
 
 export default function CalendarView({ userId }: Props) {
   const { darkMode } = useTheme();
 
-  // Theme-aware class helpers
-  const bg = darkMode ? "bg-[#060910]" : "bg-slate-100";
-
   const [logs, setLogs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDay, setSelectedDay] = useState<any>(null);
-  const [viewMode, setViewMode] = useState<"month" | "heatmap" | "breakdown">(
-    "month",
-  );
+  const [selectedDay, setSelectedDay] = useState<CalendarDay | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>("month");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [error, setError] = useState("");
+
+  /* =======================================================
+     THEME
+  ======================================================= */
+
+  const pageBackground = darkMode ? "#000000" : "#f2f2f7";
+  const textPrimary = darkMode ? "#f5f5f7" : "#1d1d1f";
+  const textSecondary = darkMode ? "#aeaeb2" : "#6e6e73";
+  const textTertiary = "#8e8e93";
+  const separator = darkMode ? "#38383a" : "#e5e5ea";
+  const secondaryBackground = darkMode ? "#1c1c1e" : "#ffffff";
+  const groupedBackground = darkMode ? "#2c2c2e" : "#f2f2f7";
+  const blue = darkMode ? "#0a84ff" : "#007aff";
+
+  /* =======================================================
+     LOAD LOGS
+  ======================================================= */
 
   useEffect(() => {
-    fetch("https://ai-life-tracker.onrender.com/api/daily")
-      .then((r) => r.json())
-      .then((data) => {
-        const userLogs = data.filter((l: any) => l.user?.id === userId);
+    let cancelled = false;
+
+    const loadLogs = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await fetch(
+          "https://ai-life-tracker.onrender.com/api/daily",
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to load calendar");
+        }
+
+        const data = await response.json();
+
+        if (cancelled) return;
+
+        const userLogs = data
+          .filter((log: any) => log.user?.id === userId)
+          .sort(
+            (a: any, b: any) =>
+              new Date(a.date).getTime() - new Date(b.date).getTime(),
+          );
+
         setLogs(userLogs);
-        setLoading(false);
-      });
+      } catch (requestError) {
+        console.error("Calendar loading error:", requestError);
+
+        if (!cancelled) {
+          setError("Unable to load your calendar. Please try again.");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadLogs();
+
+    return () => {
+      cancelled = true;
+    };
   }, [userId]);
+
+  /* =======================================================
+     LOG MAP
+  ======================================================= */
 
   const logMap = useMemo(() => {
     const map: Record<string, any> = {};
-    logs.forEach((l) => {
-      const key = new Date(l.date).toISOString().split("T")[0];
-      map[key] = l;
+
+    logs.forEach((log) => {
+      const key = new Date(log.date).toISOString().split("T")[0];
+
+      map[key] = log;
     });
+
     return map;
   }, [logs]);
 
-  // Build calendar grid for current month
+  /* =======================================================
+     CURRENT MONTH CALENDAR
+  ======================================================= */
+
   const calendarDays = useMemo(() => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
+
     const firstDay = new Date(year, month, 1).getDay();
+
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const days: (null | { date: Date; key: string; log: any })[] = [];
-    for (let i = 0; i < firstDay; i++) days.push(null);
-    for (let d = 1; d <= daysInMonth; d++) {
-      const date = new Date(year, month, d);
-      const key = date.toISOString().split("T")[0];
-      days.push({ date, key, log: logMap[key] || null });
+
+    const days: (null | CalendarDay)[] = [];
+
+    for (let i = 0; i < firstDay; i++) {
+      days.push(null);
     }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day);
+
+      const key = date.toISOString().split("T")[0];
+
+      days.push({
+        date,
+        key,
+        log: logMap[key] || null,
+      });
+    }
+
     return days;
   }, [currentDate, logMap]);
 
-  // Heatmap — last 12 months
+  /* =======================================================
+     12 MONTH HEATMAP
+  ======================================================= */
+
   const heatmapData = useMemo(() => {
     const today = new Date();
+
     const start = new Date(today);
     start.setMonth(start.getMonth() - 11);
     start.setDate(1);
-    const weeks: (null | { date: Date; key: string; log: any })[][] = [];
-    let current = new Date(start);
-    // Pad to Sunday
-    while (current.getDay() !== 0) current.setDate(current.getDate() - 1);
-    let week: (null | { date: Date; key: string; log: any })[] = [];
+
+    const weeks: CalendarDay[][] = [];
+
+    const current = new Date(start);
+
+    while (current.getDay() !== 0) {
+      current.setDate(current.getDate() - 1);
+    }
+
+    let week: CalendarDay[] = [];
+
     while (current <= today) {
-      const key = current.toISOString().split("T")[0];
-      week.push({ date: new Date(current), key, log: logMap[key] || null });
+      const date = new Date(current);
+
+      const key = date.toISOString().split("T")[0];
+
+      week.push({
+        date,
+        key,
+        log: logMap[key] || null,
+      });
+
       if (week.length === 7) {
         weeks.push(week);
         week = [];
       }
+
       current.setDate(current.getDate() + 1);
     }
-    if (week.length) weeks.push(week);
+
+    if (week.length > 0) {
+      weeks.push(week);
+    }
+
     return weeks;
   }, [logMap]);
 
-  // Score breakdown by category
+  /* =======================================================
+     CATEGORY STATISTICS
+  ======================================================= */
+
   const categoryStats = useMemo(() => {
-    return CATEGORIES.map((cat) => {
-      const daysLogged = logs.filter((l) => l[cat.key]).length;
+    return CATEGORIES.map((category) => {
+      const daysLogged = logs.filter((log) =>
+        Boolean(log[category.key]),
+      ).length;
+
       const pct =
         logs.length > 0 ? Math.round((daysLogged / logs.length) * 100) : 0;
-      return { ...cat, daysLogged, pct };
+
+      return {
+        ...category,
+        daysLogged,
+        pct,
+      };
     });
   }, [logs]);
 
-  // Monthly stats
+  /* =======================================================
+     MONTH STATISTICS
+  ======================================================= */
+
   const monthLogs = useMemo(() => {
-    const y = currentDate.getFullYear();
-    const m = currentDate.getMonth();
-    return logs.filter((l) => {
-      const d = new Date(l.date);
-      return d.getFullYear() === y && d.getMonth() === m;
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+
+    return logs.filter((log) => {
+      const date = new Date(log.date);
+
+      return date.getFullYear() === year && date.getMonth() === month;
     });
   }, [logs, currentDate]);
 
   const monthAvg =
     monthLogs.length > 0
       ? (
-          monthLogs.reduce((s, l) => s + (l.score || 0), 0) / monthLogs.length
+          monthLogs.reduce((sum, log) => sum + (Number(log.score) || 0), 0) /
+          monthLogs.length
         ).toFixed(1)
       : "—";
 
   const bestInMonth = monthLogs.reduce(
-    (b, l) => (l.score > (b?.score || 0) ? l : b),
+    (best, log) =>
+      (Number(log.score) || 0) > (Number(best?.score) || 0) ? log : best,
     null as any,
   );
+
+  const daysInCurrentMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth() + 1,
+    0,
+  ).getDate();
+
   const monthConsistency =
-    logs.length > 0
+    daysInCurrentMonth > 0
       ? Math.round(
-          (monthLogs.filter((l) => l.score >= 6).length /
-            new Date(
-              currentDate.getFullYear(),
-              currentDate.getMonth() + 1,
-              0,
-            ).getDate()) *
+          (monthLogs.filter((log) => (log.score || 0) >= 6).length /
+            daysInCurrentMonth) *
             100,
         )
       : 0;
 
-  if (loading)
+  /* =======================================================
+     NAVIGATION
+  ======================================================= */
+
+  const goPreviousMonth = () => {
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1),
+    );
+    setSelectedDay(null);
+  };
+
+  const goNextMonth = () => {
+    setCurrentDate(
+      new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1),
+    );
+    setSelectedDay(null);
+  };
+
+  const goToday = () => {
+    setCurrentDate(new Date());
+    setSelectedDay(null);
+  };
+
+  /* =======================================================
+     TODAY KEY
+  ======================================================= */
+
+  const todayKey = new Date().toISOString().split("T")[0];
+
+  /* =======================================================
+     LOADING
+  ======================================================= */
+
+  if (loading) {
     return (
-      <div className={`min-h-screen ${bg} flex items-center justify-center`}>
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin" />
-          <p className="{text} text-xs tracking-[0.25em] uppercase">
-            Loading calendar
+      <div
+        className="calendar-root"
+        style={{
+          minHeight: "100svh",
+          background: pageBackground,
+          color: textPrimary,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 24,
+          fontFamily:
+            '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif',
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 280,
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              width: 56,
+              height: 56,
+              margin: "0 auto 18px",
+              borderRadius: 18,
+              background: secondaryBackground,
+              border: `1px solid ${separator}`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: darkMode
+                ? "0 2px 8px rgba(0,0,0,.25)"
+                : "0 2px 8px rgba(0,0,0,.06)",
+            }}
+          >
+            <CalendarDays size={25} strokeWidth={1.7} color={blue} />
+          </div>
+
+          <p
+            style={{
+              margin: 0,
+              fontSize: 17,
+              fontWeight: 600,
+              letterSpacing: "-0.02em",
+            }}
+          >
+            Preparing your calendar
+          </p>
+
+          <p
+            style={{
+              margin: "7px 0 0",
+              fontSize: 14,
+              lineHeight: 1.4,
+              color: textSecondary,
+            }}
+          >
+            Your daily story is being organized.
           </p>
         </div>
       </div>
     );
+  }
+
+  /* =======================================================
+     ERROR
+  ======================================================= */
+
+  if (error) {
+    return (
+      <div
+        style={{
+          minHeight: "100svh",
+          background: pageBackground,
+          color: textPrimary,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 24,
+          fontFamily:
+            '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif',
+        }}
+      >
+        <AppleCard darkMode={darkMode} className="w-full max-w-sm">
+          <div
+            style={{
+              padding: 28,
+              textAlign: "center",
+            }}
+          >
+            <CalendarDays size={32} color={blue} strokeWidth={1.6} />
+
+            <h2
+              style={{
+                margin: "16px 0 6px",
+                fontSize: 21,
+                letterSpacing: "-0.03em",
+              }}
+            >
+              Calendar unavailable
+            </h2>
+
+            <p
+              style={{
+                margin: 0,
+                color: textSecondary,
+                fontSize: 14,
+                lineHeight: 1.45,
+              }}
+            >
+              {error}
+            </p>
+          </div>
+        </AppleCard>
+      </div>
+    );
+  }
+
+  /* =======================================================
+     PAGE
+  ======================================================= */
 
   return (
     <div
-      className="min-h-screen ${bg} {textMuted}"
-      style={{ fontFamily: "'DM Sans', sans-serif" }}
+      className="calendar-root"
+      style={{
+        minHeight: "100svh",
+        background: pageBackground,
+        color: textPrimary,
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif',
+        WebkitFontSmoothing: "antialiased",
+      }}
     >
-      <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap"
-        rel="stylesheet"
-      />
+      <style>{`
+        .calendar-root button {
+          -webkit-tap-highlight-color: transparent;
+        }
 
-      {/* Ambient */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-[20%] w-[600px] h-[600px] bg-violet-700/5 rounded-full blur-[160px]" />
-        <div className="absolute bottom-[20%] right-[10%] w-[400px] h-[400px] bg-cyan-700/5 rounded-full blur-[120px]" />
-        <div className="absolute top-[50%] left-[-5%] w-[300px] h-[300px] bg-indigo-700/4 rounded-full blur-[100px]" />
-      </div>
+        .calendar-root button:focus-visible {
+          outline: 2px solid #0a84ff;
+          outline-offset: 2px;
+        }
 
-      <div className="relative max-w-6xl mx-auto px-6 py-10 space-y-8">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-          <div>
-            <p className="text-xs tracking-[0.35em] text-violet-400 uppercase mb-1 font-medium">
-              Life Calendar
-            </p>
-            <h1 className="text-4xl font-black tracking-tight">
-              Your Days,
-              <br />
-              <span className="text-violet-400">Visualized.</span>
-            </h1>
-            <p className="{text} text-sm mt-2">
-              {logs.length} days recorded · Score your story
-            </p>
-          </div>
+        .calendar-scroll {
+          scrollbar-width: thin;
+        }
 
-          {/* View Switcher */}
-          <div className="flex gap-1 bg-white/[0.03] border border-white/[0.07] rounded-2xl p-1">
-            {(["month", "heatmap", "breakdown"] as const).map((v) => (
-              <button
-                key={v}
-                onClick={() => setViewMode(v)}
-                className={`px-4 py-2 rounded-xl text-xs font-semibold capitalize transition-all duration-200 ${
-                  viewMode === v
-                    ? "bg-violet-500 {textMuted} shadow-lg shadow-violet-500/30"
-                    : "text-gray-500 hover:text-gray-300"
-                }`}
+        .calendar-day:hover {
+          filter: brightness(1.025);
+        }
+
+        .calendar-day:active {
+          transform: scale(0.97);
+        }
+
+        .calendar-nav-button:hover {
+          background: ${darkMode ? "#3a3a3c" : "#e5e5ea"} !important;
+        }
+
+        .today-button:hover {
+          background: ${darkMode ? "#172b43" : "#e7f1ff"} !important;
+        }
+
+        .category-card:hover {
+          transform: translateY(-1px);
+        }
+
+        @media (max-width: 520px) {
+          .calendar-page {
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+            padding-top: 22px !important;
+          }
+
+          .calendar-title {
+            font-size: 32px !important;
+          }
+
+          .calendar-card {
+            border-radius: 20px !important;
+          }
+
+          .calendar-grid-card {
+            padding: 12px !important;
+          }
+
+          .calendar-grid {
+            gap: 4px !important;
+          }
+
+          .calendar-day {
+            border-radius: 11px !important;
+          }
+
+          .calendar-day-score {
+            font-size: 8px !important;
+          }
+
+          .calendar-stat-row {
+            gap: 6px !important;
+          }
+
+          .calendar-stat-row > div {
+            min-width: 0 !important;
+            padding: 10px 5px !important;
+          }
+
+          .calendar-month-title {
+            width: auto !important;
+            min-width: 145px !important;
+            font-size: 16px !important;
+          }
+
+          .heatmap-card {
+            padding: 16px !important;
+          }
+        }
+
+        @media (min-width: 768px) {
+          .calendar-page {
+            max-width: 1040px !important;
+          }
+        }
+      `}</style>
+
+      {/* =====================================================
+          CONTENT
+      ===================================================== */}
+
+      <div
+        className="calendar-page"
+        style={{
+          width: "100%",
+          maxWidth: 1040,
+          margin: "0 auto",
+          padding: "28px 20px calc(100px + env(safe-area-inset-bottom))",
+          boxSizing: "border-box",
+        }}
+      >
+        {/* ===================================================
+            HEADER
+        =================================================== */}
+
+        <header
+          style={{
+            marginBottom: 24,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "flex-start",
+              justifyContent: "space-between",
+              gap: 16,
+            }}
+          >
+            <div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 7,
+                  marginBottom: 7,
+                  color: blue,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  letterSpacing: "0.05em",
+                }}
               >
-                {v === "month"
-                  ? "📅 Month"
-                  : v === "heatmap"
-                    ? "🔥 Heatmap"
-                    : "📊 Breakdown"}
-              </button>
-            ))}
+                <CalendarDays size={14} strokeWidth={1.8} />
+                LIFE CALENDAR
+              </div>
+
+              <h1
+                className="calendar-title"
+                style={{
+                  margin: 0,
+                  fontSize: 36,
+                  lineHeight: 1.05,
+                  fontWeight: 700,
+                  letterSpacing: "-0.045em",
+                }}
+              >
+                Your days,
+                <br />
+                <span
+                  style={{
+                    color: blue,
+                  }}
+                >
+                  visualized.
+                </span>
+              </h1>
+
+              <p
+                style={{
+                  margin: "10px 0 0",
+                  fontSize: 14,
+                  color: textSecondary,
+                }}
+              >
+                {logs.length} {logs.length === 1 ? "day" : "days"} recorded
+              </p>
+            </div>
           </div>
-        </div>
 
-        {/* ── MONTH VIEW ── */}
+          {/* VIEW SWITCHER */}
+
+          <div
+            style={{
+              marginTop: 22,
+            }}
+          >
+            <ViewSwitcher
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+              darkMode={darkMode}
+            />
+          </div>
+        </header>
+
+        {/* ===================================================
+            MONTH VIEW
+        =================================================== */}
+
         {viewMode === "month" && (
-          <div className="space-y-6">
-            {/* Month nav + stats */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <button
-                  onClick={() =>
-                    setCurrentDate(
-                      new Date(
-                        currentDate.getFullYear(),
-                        currentDate.getMonth() - 1,
-                        1,
-                      ),
-                    )
-                  }
-                  className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition text-gray-400 hover:{textMuted}"
-                >
-                  ←
-                </button>
-                <h2 className="text-xl font-black w-44 text-center">
-                  {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
-                </h2>
-                <button
-                  onClick={() =>
-                    setCurrentDate(
-                      new Date(
-                        currentDate.getFullYear(),
-                        currentDate.getMonth() + 1,
-                        1,
-                      ),
-                    )
-                  }
-                  className="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition text-gray-400 hover:{textMuted}"
-                >
-                  →
-                </button>
-              </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}
+          >
+            {/* MONTH NAVIGATION */}
 
-              <div className="flex gap-3">
-                {[
-                  {
-                    label: "Avg Score",
-                    value: monthAvg,
-                    color: "text-violet-400",
-                  },
-                  {
-                    label: "Days Logged",
-                    value: monthLogs.length,
-                    color: "text-cyan-400",
-                  },
-                  {
-                    label: "Consistency",
-                    value: `${monthConsistency}%`,
-                    color: "text-emerald-400",
-                  },
-                  {
-                    label: "Best",
-                    value: bestInMonth?.score || "—",
-                    color: "text-amber-400",
-                  },
-                ].map((s) => (
-                  <div
-                    key={s.label}
-                    className="bg-white/[0.03] border border-white/[0.06] rounded-xl px-3 py-2 text-center"
-                  >
-                    <p className={`text-lg font-black ${s.color}`}>{s.value}</p>
-                    <p className="text-[9px] {text} uppercase tracking-wider">
-                      {s.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 8,
+              }}
+            >
+              <button
+                type="button"
+                onClick={goPreviousMonth}
+                className="calendar-nav-button"
+                aria-label="Previous month"
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 12,
+                  border: `1px solid ${separator}`,
+                  background: groupedBackground,
+                  color: textPrimary,
+                  display: "grid",
+                  placeItems: "center",
+                  cursor: "pointer",
+                  transition: "background 160ms ease",
+                }}
+              >
+                <ChevronLeft size={19} strokeWidth={1.8} />
+              </button>
+
+              <button
+                type="button"
+                onClick={goToday}
+                className="today-button"
+                style={{
+                  flex: 1,
+                  maxWidth: 210,
+                  minHeight: 40,
+                  borderRadius: 12,
+                  border: `1px solid ${separator}`,
+                  background: secondaryBackground,
+                  color: textPrimary,
+                  cursor: "pointer",
+                  fontSize: 15,
+                  fontWeight: 600,
+                  letterSpacing: "-0.02em",
+                  transition: "background 160ms ease",
+                }}
+              >
+                {MONTHS[currentDate.getMonth()]} {currentDate.getFullYear()}
+              </button>
+
+              <button
+                type="button"
+                onClick={goNextMonth}
+                className="calendar-nav-button"
+                aria-label="Next month"
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 12,
+                  border: `1px solid ${separator}`,
+                  background: groupedBackground,
+                  color: textPrimary,
+                  display: "grid",
+                  placeItems: "center",
+                  cursor: "pointer",
+                  transition: "background 160ms ease",
+                }}
+              >
+                <ChevronRight size={19} strokeWidth={1.8} />
+              </button>
             </div>
 
-            {/* Score legend */}
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <span className="text-[10px] {text} uppercase tracking-wider">
-                Score legend:
+            {/* STATS */}
+
+            <div
+              className="calendar-stat-row"
+              style={{
+                display: "flex",
+                gap: 8,
+              }}
+            >
+              <StatCard
+                label="Average"
+                value={monthAvg}
+                accent={blue}
+                darkMode={darkMode}
+              />
+
+              <StatCard
+                label="Logged"
+                value={monthLogs.length}
+                accent="#10b981"
+                darkMode={darkMode}
+              />
+
+              <StatCard
+                label="Consistency"
+                value={`${monthConsistency}%`}
+                accent="#34d399"
+                darkMode={darkMode}
+              />
+
+              <StatCard
+                label="Best"
+                value={bestInMonth?.score || "—"}
+                accent="#f59e0b"
+                darkMode={darkMode}
+              />
+            </div>
+
+            {/* SCORE LEGEND */}
+
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                alignItems: "center",
+                gap: "7px 12px",
+                padding: "2px 2px",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: 10,
+                  fontWeight: 600,
+                  color: textTertiary,
+                }}
+              >
+                SCORE
               </span>
+
               {[
-                { label: "9-10", color: "#10b981" },
-                { label: "7-8", color: "#34d399" },
-                { label: "5-6", color: "#f59e0b" },
-                { label: "3-4", color: "#f97316" },
-                { label: "1-2", color: "#f43f5e" },
-                { label: "No log", color: "rgba(255,255,255,0.08)" },
-              ].map((l) => (
-                <div key={l.label} className="flex items-center gap-1.5">
-                  <div
-                    className="w-3 h-3 rounded-sm"
-                    style={{ background: l.color }}
+                { label: "9–10", color: "#10b981" },
+                { label: "7–8", color: "#34d399" },
+                { label: "5–6", color: "#f59e0b" },
+                { label: "3–4", color: "#f97316" },
+                { label: "1–2", color: "#f43f5e" },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 5,
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 7,
+                      height: 7,
+                      borderRadius: "50%",
+                      background: item.color,
+                    }}
                   />
-                  <span className="text-[10px] text-gray-500">{l.label}</span>
+
+                  <span
+                    style={{
+                      fontSize: 10,
+                      color: textSecondary,
+                    }}
+                  >
+                    {item.label}
+                  </span>
                 </div>
               ))}
             </div>
 
-            {/* Calendar Grid */}
-            <div className="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-6 backdrop-blur-sm">
-              {/* Weekday headers */}
-              <div className="grid grid-cols-7 mb-3">
-                {WEEKDAYS.map((d) => (
-                  <div
-                    key={d}
-                    className="text-center text-[10px] {text} uppercase tracking-wider font-semibold py-2"
-                  >
-                    {d}
-                  </div>
-                ))}
-              </div>
+            {/* CALENDAR */}
 
-              {/* Days */}
-              <div className="grid grid-cols-7 gap-2">
-                {calendarDays.map((day, i) => {
-                  if (!day) return <div key={`empty-${i}`} />;
-                  const score = day.log?.score || 0;
-                  const isToday =
-                    day.key === new Date().toISOString().split("T")[0];
-                  const isSelected = selectedDay?.key === day.key;
-
-                  return (
-                    <button
-                      key={day.key}
-                      onClick={() => setSelectedDay(isSelected ? null : day)}
-                      className={`relative aspect-square rounded-2xl flex flex-col items-center justify-center transition-all duration-200 hover:scale-105 group ${
-                        isSelected ? "ring-2 ring-white/40 scale-105" : ""
-                      }`}
-                      style={{
-                        background: day.log
-                          ? getScoreColor(score) + "33"
-                          : "rgba(255,255,255,0.03)",
-                        border: `1px solid ${day.log ? getScoreColor(score) + "55" : "rgba(255,255,255,0.06)"}`,
-                        boxShadow: day.log ? getScoreGlow(score) : "none",
-                      }}
-                    >
-                      <span
-                        className={`text-xs font-bold ${isToday ? "text-violet-300" : day.log ? "{textMuted}" : "{text}"}`}
-                      >
-                        {day.date.getDate()}
-                      </span>
-                      {day.log && (
-                        <span
-                          className="text-[9px] font-black"
-                          style={{ color: getScoreColor(score) }}
-                        >
-                          {score}
-                        </span>
-                      )}
-                      {isToday && (
-                        <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-violet-400" />
-                      )}
-
-                      {/* Hover tooltip */}
-                      {day.log && (
-                        <div className="absolute z-20 bottom-full left-1/2 -translate-x-1/2 mb-2 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-200">
-                          <div className="bg-[#0d1117] border border-white/10 rounded-xl px-3 py-2 text-center whitespace-nowrap shadow-2xl">
-                            <p className="text-[10px] text-gray-500">
-                              {day.date.toLocaleDateString("en-US", {
-                                month: "short",
-                                day: "numeric",
-                              })}
-                            </p>
-                            <p
-                              className="text-sm font-black"
-                              style={{ color: getScoreColor(score) }}
-                            >
-                              {score}/10
-                            </p>
-                            <p className="text-[9px] {text}">
-                              {getScoreLabel(score)}
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Selected Day Detail */}
-            {selectedDay?.log && (
+            <AppleCard
+              darkMode={darkMode}
+              className="calendar-card calendar-grid-card"
+            >
               <div
-                className="rounded-3xl p-6 border backdrop-blur-sm space-y-5 animate-[slideUp_0.3s_ease]"
                 style={{
-                  background: `${getScoreColor(selectedDay.log.score)}11`,
-                  borderColor: `${getScoreColor(selectedDay.log.score)}30`,
+                  padding: 16,
                 }}
               >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">
-                      {selectedDay.date.toLocaleDateString("en-US", {
-                        weekday: "long",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </p>
-                    <div className="flex items-baseline gap-2">
-                      <span
-                        className="text-5xl font-black"
-                        style={{ color: getScoreColor(selectedDay.log.score) }}
-                      >
-                        {selectedDay.log.score}
-                      </span>
-                      <span className="{text} text-lg">/10</span>
-                      <span
-                        className="text-sm font-semibold px-2 py-0.5 rounded-lg"
+                {/* WEEKDAYS */}
+
+                <div
+                  className="calendar-grid"
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
+                    gap: 6,
+                    marginBottom: 7,
+                  }}
+                >
+                  {WEEKDAYS.map((day) => (
+                    <div
+                      key={day}
+                      style={{
+                        textAlign: "center",
+                        padding: "5px 0",
+                        fontSize: 10,
+                        fontWeight: 600,
+                        color: textTertiary,
+                      }}
+                    >
+                      {day.slice(0, 1)}
+                    </div>
+                  ))}
+                </div>
+
+                {/* DAYS */}
+
+                <div
+                  className="calendar-grid"
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(7, minmax(0, 1fr))",
+                    gap: 6,
+                  }}
+                >
+                  {calendarDays.map((day, index) => {
+                    if (!day) {
+                      return (
+                        <div
+                          key={`empty-${index}`}
+                          style={{
+                            aspectRatio: "1",
+                          }}
+                        />
+                      );
+                    }
+
+                    const score = Number(day.log?.score) || 0;
+
+                    const isToday = day.key === todayKey;
+
+                    const isSelected = selectedDay?.key === day.key;
+
+                    return (
+                      <button
+                        key={day.key}
+                        type="button"
+                        onClick={() => setSelectedDay(isSelected ? null : day)}
+                        className="calendar-day"
+                        aria-label={`${day.date.toLocaleDateString("en-US", {
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
+                        })}${day.log ? `, score ${score}` : ", no log"}`}
                         style={{
-                          background: `${getScoreColor(selectedDay.log.score)}22`,
+                          position: "relative",
+                          aspectRatio: "1",
+                          minWidth: 0,
+                          borderRadius: 13,
+                          border: `1px solid ${
+                            isSelected ? blue : getScoreBorder(score, darkMode)
+                          }`,
+                          background: getScoreBackground(score, darkMode),
+                          color: isToday
+                            ? blue
+                            : score
+                              ? textPrimary
+                              : textTertiary,
+                          cursor: "pointer",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: 2,
+                          transition: "transform 120ms ease, filter 120ms ease",
+                          boxShadow: isSelected
+                            ? `0 0 0 2px ${blue}22`
+                            : "none",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: 12,
+                            lineHeight: 1,
+                            fontWeight: isToday ? 700 : 600,
+                          }}
+                        >
+                          {day.date.getDate()}
+                        </span>
+
+                        {day.log && (
+                          <span
+                            className="calendar-day-score"
+                            style={{
+                              fontSize: 9,
+                              lineHeight: 1,
+                              fontWeight: 700,
+                              color: getScoreColor(score),
+                            }}
+                          >
+                            {score}
+                          </span>
+                        )}
+
+                        {isToday && (
+                          <span
+                            style={{
+                              position: "absolute",
+                              bottom: 4,
+                              width: 3,
+                              height: 3,
+                              borderRadius: "50%",
+                              background: blue,
+                            }}
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </AppleCard>
+
+            {/* SELECTED DAY */}
+
+            {selectedDay?.log && (
+              <AppleCard darkMode={darkMode} className="calendar-card">
+                <div
+                  style={{
+                    padding: 20,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      justifyContent: "space-between",
+                      gap: 16,
+                    }}
+                  >
+                    <div>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: 12,
+                          fontWeight: 500,
+                          color: textSecondary,
+                        }}
+                      >
+                        {selectedDay.date.toLocaleDateString("en-US", {
+                          weekday: "long",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </p>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "baseline",
+                          gap: 6,
+                          marginTop: 7,
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: 42,
+                            lineHeight: 1,
+                            fontWeight: 700,
+                            letterSpacing: "-0.06em",
+                            color: getScoreColor(selectedDay.log.score),
+                          }}
+                        >
+                          {selectedDay.log.score}
+                        </span>
+
+                        <span
+                          style={{
+                            fontSize: 15,
+                            color: textTertiary,
+                          }}
+                        >
+                          /10
+                        </span>
+                      </div>
+
+                      <span
+                        style={{
+                          display: "inline-flex",
+                          marginTop: 8,
+                          padding: "5px 9px",
+                          borderRadius: 8,
+                          background: getScoreBackground(
+                            selectedDay.log.score,
+                            darkMode,
+                          ),
                           color: getScoreColor(selectedDay.log.score),
+                          fontSize: 11,
+                          fontWeight: 600,
                         }}
                       >
                         {getScoreLabel(selectedDay.log.score)}
                       </span>
                     </div>
-                  </div>
-                  <button
-                    onClick={() => setSelectedDay(null)}
-                    className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center text-gray-500 hover:{textMuted} transition"
-                  >
-                    ✕
-                  </button>
-                </div>
 
-                {/* Activity pills */}
-                <div className="flex flex-wrap gap-2">
-                  {CATEGORIES.filter((c) => selectedDay.log[c.key]).map((c) => (
-                    <span
-                      key={c.key}
-                      className="text-xs px-3 py-1 rounded-full border font-medium"
+                    <button
+                      type="button"
+                      onClick={() => setSelectedDay(null)}
+                      aria-label="Close selected day"
                       style={{
-                        background: `${c.color}15`,
-                        borderColor: `${c.color}30`,
-                        color: c.color,
+                        width: 32,
+                        height: 32,
+                        borderRadius: 10,
+                        border: 0,
+                        background: groupedBackground,
+                        color: textSecondary,
+                        display: "grid",
+                        placeItems: "center",
+                        cursor: "pointer",
                       }}
                     >
-                      {c.icon} {c.label}
-                    </span>
-                  ))}
-                </div>
+                      <X size={16} strokeWidth={1.8} />
+                    </button>
+                  </div>
 
-                {/* Summary & Motivation */}
-                <div className="grid md:grid-cols-2 gap-4">
-                  {selectedDay.log.finalSummary && (
-                    <div className="bg-white/[0.03] rounded-2xl p-4 border border-white/[0.06]">
-                      <p className="text-[10px] text-indigo-400 uppercase tracking-wider mb-2">
-                        🧠 AI Summary
-                      </p>
-                      <p className="text-gray-300 text-xs leading-relaxed">
-                        {selectedDay.log.finalSummary}
-                      </p>
-                    </div>
-                  )}
-                  {selectedDay.log.motivation && (
-                    <div className="bg-white/[0.03] rounded-2xl p-4 border border-white/[0.06]">
-                      <p className="text-[10px] text-amber-400 uppercase tracking-wider mb-2">
-                        🔥 Motivation
-                      </p>
-                      <p className="text-gray-300 text-xs leading-relaxed italic">
-                        {selectedDay.log.motivation}
-                      </p>
+                  {/* ACTIVITIES */}
+
+                  <div
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 7,
+                      marginTop: 20,
+                    }}
+                  >
+                    {CATEGORIES.filter(
+                      (category) => selectedDay.log[category.key],
+                    ).map((category) => (
+                      <span
+                        key={category.key}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 5,
+                          padding: "6px 9px",
+                          borderRadius: 9,
+                          background: `${category.color}12`,
+                          border: `1px solid ${category.color}25`,
+                          color: darkMode ? category.color : category.color,
+                          fontSize: 11,
+                          fontWeight: 500,
+                        }}
+                      >
+                        {category.icon}
+                        {category.label}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* AI SUMMARY / MOTIVATION */}
+
+                  {(selectedDay.log.finalSummary ||
+                    selectedDay.log.motivation) && (
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns:
+                          "repeat(auto-fit,minmax(220px,1fr))",
+                        gap: 10,
+                        marginTop: 16,
+                      }}
+                    >
+                      {selectedDay.log.finalSummary && (
+                        <div
+                          style={{
+                            padding: 14,
+                            borderRadius: 14,
+                            background: groupedBackground,
+                            border: `1px solid ${separator}`,
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 6,
+                              marginBottom: 7,
+                              color: blue,
+                              fontSize: 10,
+                              fontWeight: 600,
+                              textTransform: "uppercase",
+                              letterSpacing: "0.04em",
+                            }}
+                          >
+                            <Sparkles size={13} strokeWidth={1.8} />
+                            AI Summary
+                          </div>
+
+                          <p
+                            style={{
+                              margin: 0,
+                              fontSize: 13,
+                              lineHeight: 1.5,
+                              color: textSecondary,
+                            }}
+                          >
+                            {selectedDay.log.finalSummary}
+                          </p>
+                        </div>
+                      )}
+
+                      {selectedDay.log.motivation && (
+                        <div
+                          style={{
+                            padding: 14,
+                            borderRadius: 14,
+                            background: groupedBackground,
+                            border: `1px solid ${separator}`,
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 6,
+                              marginBottom: 7,
+                              color: "#f59e0b",
+                              fontSize: 10,
+                              fontWeight: 600,
+                              textTransform: "uppercase",
+                              letterSpacing: "0.04em",
+                            }}
+                          >
+                            <Flame size={13} strokeWidth={1.8} />
+                            Motivation
+                          </div>
+
+                          <p
+                            style={{
+                              margin: 0,
+                              fontSize: 13,
+                              lineHeight: 1.5,
+                              color: textSecondary,
+                              fontStyle: "italic",
+                            }}
+                          >
+                            {selectedDay.log.motivation}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
-              </div>
+              </AppleCard>
             )}
           </div>
         )}
 
-        {/* ── HEATMAP VIEW ── */}
+        {/* ===================================================
+            HEATMAP VIEW
+        =================================================== */}
+
         {viewMode === "heatmap" && (
-          <div className="space-y-6">
-            <div className="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-6 backdrop-blur-sm overflow-x-auto">
-              <h2 className="text-base font-bold {textMuted} mb-1">
-                Year Activity Heatmap
-              </h2>
-              <p className="text-xs {text} mb-6">
-                Last 12 months · each square = 1 day
-              </p>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}
+          >
+            <AppleCard
+              darkMode={darkMode}
+              className="heatmap-card calendar-card"
+            >
+              <div
+                style={{
+                  padding: 20,
+                  overflowX: "auto",
+                }}
+                className="calendar-scroll"
+              >
+                <h2
+                  style={{
+                    margin: 0,
+                    fontSize: 18,
+                    fontWeight: 650,
+                    letterSpacing: "-0.025em",
+                  }}
+                >
+                  Activity
+                </h2>
 
-              {/* Month labels */}
-              <div className="flex gap-1 mb-2 ml-8">
-                {heatmapData
-                  .filter((_, i) => i % 4 === 0)
-                  .map((week, i) => (
-                    <div
-                      key={i}
-                      className="text-[9px] {text} w-[calc(100%/13)]"
-                    >
-                      {week[0] && MONTHS[week[0].date.getMonth()].slice(0, 3)}
-                    </div>
-                  ))}
-              </div>
+                <p
+                  style={{
+                    margin: "5px 0 20px",
+                    fontSize: 13,
+                    color: textSecondary,
+                  }}
+                >
+                  Your activity across the last 12 months.
+                </p>
 
-              <div className="flex gap-1">
-                {/* Day labels */}
-                <div className="flex flex-col gap-1 mr-2">
-                  {["S", "M", "T", "W", "T", "F", "S"].map((d, i) => (
-                    <div
-                      key={i}
-                      className="text-[9px] {text} h-3 flex items-center"
-                    >
-                      {d}
-                    </div>
-                  ))}
-                </div>
+                <div
+                  style={{
+                    minWidth: 620,
+                  }}
+                >
+                  {/* MONTH LABELS */}
 
-                {/* Grid */}
-                <div className="flex gap-1">
-                  {heatmapData.map((week, wi) => (
-                    <div key={wi} className="flex flex-col gap-1">
-                      {week.map((day, di) => (
-                        <button
-                          key={di}
-                          onClick={() => day && setSelectedDay(day)}
-                          className="w-3 h-3 rounded-sm transition-all duration-150 hover:scale-125 hover:z-10 relative group"
+                  <div
+                    style={{
+                      display: "flex",
+                      marginLeft: 25,
+                      marginBottom: 7,
+                      gap: 5,
+                    }}
+                  >
+                    {heatmapData
+                      .filter((_, index) => index % 4 === 0)
+                      .map((week, index) => (
+                        <div
+                          key={index}
                           style={{
-                            background: day?.log
-                              ? getScoreColor(day.log.score)
-                              : "rgba(255,255,255,0.05)",
-                            boxShadow: day?.log
-                              ? getScoreGlow(day.log.score)
-                              : "none",
+                            width: 12,
+                            flex: 1,
+                            fontSize: 9,
+                            color: textTertiary,
                           }}
-                          title={
-                            day
-                              ? `${day.date.toLocaleDateString()} — Score: ${day.log?.score ?? "No log"}`
-                              : ""
-                          }
-                        />
+                        >
+                          {week[0] &&
+                            MONTHS[week[0].date.getMonth()].slice(0, 3)}
+                        </div>
+                      ))}
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 6,
+                    }}
+                  >
+                    {/* DAY LABELS */}
+
+                    <div
+                      style={{
+                        width: 18,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 4,
+                      }}
+                    >
+                      {["S", "M", "T", "W", "T", "F", "S"].map((day, index) => (
+                        <div
+                          key={index}
+                          style={{
+                            height: 12,
+                            display: "flex",
+                            alignItems: "center",
+                            fontSize: 8,
+                            color: textTertiary,
+                          }}
+                        >
+                          {day}
+                        </div>
                       ))}
                     </div>
+
+                    {/* HEATMAP */}
+
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 4,
+                        flex: 1,
+                      }}
+                    >
+                      {heatmapData.map((week, weekIndex) => (
+                        <div
+                          key={weekIndex}
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: 4,
+                            flex: 1,
+                          }}
+                        >
+                          {week.map((day) => {
+                            const score = Number(day.log?.score) || 0;
+
+                            return (
+                              <button
+                                key={day.key}
+                                type="button"
+                                onClick={() => setSelectedDay(day)}
+                                title={`${day.date.toLocaleDateString()} — ${
+                                  day.log ? `Score: ${score}` : "No log"
+                                }`}
+                                style={{
+                                  width: "100%",
+                                  aspectRatio: "1",
+                                  minWidth: 8,
+                                  maxWidth: 15,
+                                  padding: 0,
+                                  borderRadius: 3,
+                                  border: `1px solid ${
+                                    score
+                                      ? getScoreColor(score) + "45"
+                                      : darkMode
+                                        ? "#2c2c2e"
+                                        : "#e5e5ea"
+                                  }`,
+                                  background: score
+                                    ? getScoreColor(score)
+                                    : darkMode
+                                      ? "#1c1c1e"
+                                      : "#e5e5ea",
+                                  cursor: "pointer",
+                                }}
+                              />
+                            );
+                          })}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* LEGEND */}
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                    gap: 5,
+                    marginTop: 18,
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: 9,
+                      color: textTertiary,
+                    }}
+                  >
+                    Less
+                  </span>
+
+                  {[0, 2, 4, 6, 8, 10].map((score) => (
+                    <span
+                      key={score}
+                      style={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: 3,
+                        background:
+                          score === 0
+                            ? darkMode
+                              ? "#1c1c1e"
+                              : "#e5e5ea"
+                            : getScoreColor(score),
+                      }}
+                    />
                   ))}
+
+                  <span
+                    style={{
+                      fontSize: 9,
+                      color: textTertiary,
+                    }}
+                  >
+                    More
+                  </span>
                 </div>
               </div>
+            </AppleCard>
 
-              {/* Legend */}
-              <div className="flex items-center gap-2 mt-5">
-                <span className="text-[10px] {text}">Less</span>
-                {[0, 2, 4, 6, 8, 10].map((s) => (
-                  <div
-                    key={s}
-                    className="w-3 h-3 rounded-sm"
-                    style={{
-                      background:
-                        s === 0 ? "rgba(255,255,255,0.05)" : getScoreColor(s),
-                    }}
-                  />
-                ))}
-                <span className="text-[10px] {text}">More</span>
-              </div>
-            </div>
+            {/* SUMMARY CARDS */}
 
-            {/* Streak calendar */}
-            <div className="grid md:grid-cols-3 gap-4">
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit,minmax(150px,1fr))",
+                gap: 10,
+              }}
+            >
               {[
                 {
-                  label: "Total Days Logged",
+                  label: "Total Days",
                   value: logs.length,
-                  icon: "📋",
-                  color: "text-indigo-400",
+                  icon: <CalendarDays size={17} />,
+                  color: blue,
                 },
                 {
-                  label: "Best Score Ever",
+                  label: "Best Score",
                   value:
                     logs.length > 0
-                      ? Math.max(...logs.map((l) => l.score || 0))
+                      ? Math.max(...logs.map((log) => Number(log.score) || 0))
                       : "—",
-                  icon: "🏆",
-                  color: "text-amber-400",
+                  icon: <Sparkles size={17} />,
+                  color: "#f59e0b",
                 },
                 {
                   label: "Active Months",
                   value: new Set(
                     logs.map(
-                      (l) =>
-                        `${new Date(l.date).getFullYear()}-${new Date(l.date).getMonth()}`,
+                      (log) =>
+                        `${new Date(log.date).getFullYear()}-${new Date(
+                          log.date,
+                        ).getMonth()}`,
                     ),
                   ).size,
-                  icon: "📅",
-                  color: "text-violet-400",
+                  icon: <CalendarDays size={17} />,
+                  color: "#8b5cf6",
                 },
-              ].map((s) => (
-                <div
-                  key={s.label}
-                  className="bg-white/[0.03] border border-white/[0.06] rounded-2xl p-5 flex items-center gap-4"
-                >
-                  <span className="text-3xl">{s.icon}</span>
-                  <div>
-                    <p className={`text-3xl font-black ${s.color}`}>
-                      {s.value}
-                    </p>
-                    <p className="text-[10px] {text} uppercase tracking-wider">
-                      {s.label}
-                    </p>
+              ].map((item) => (
+                <AppleCard key={item.label} darkMode={darkMode}>
+                  <div
+                    style={{
+                      padding: 17,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: 11,
+                        display: "grid",
+                        placeItems: "center",
+                        background: `${item.color}14`,
+                        color: item.color,
+                      }}
+                    >
+                      {item.icon}
+                    </div>
+
+                    <div>
+                      <div
+                        style={{
+                          fontSize: 22,
+                          lineHeight: 1,
+                          fontWeight: 700,
+                          letterSpacing: "-0.04em",
+                        }}
+                      >
+                        {item.value}
+                      </div>
+
+                      <div
+                        style={{
+                          marginTop: 5,
+                          fontSize: 10,
+                          color: textTertiary,
+                        }}
+                      >
+                        {item.label}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </AppleCard>
               ))}
             </div>
           </div>
         )}
 
-        {/* ── BREAKDOWN VIEW ── */}
+        {/* ===================================================
+            BREAKDOWN VIEW
+        =================================================== */}
+
         {viewMode === "breakdown" && (
-          <div className="space-y-6">
-            {/* Overall score distribution */}
-            <div className="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-6 backdrop-blur-sm">
-              <h2 className="text-base font-bold mb-1">Score Distribution</h2>
-              <p className="text-xs {text} mb-6">
-                How often you hit each score band
-              </p>
-              <div className="space-y-3">
-                {[
-                  {
-                    label: "Legendary (9-10)",
-                    min: 9,
-                    max: 10,
-                    color: "#10b981",
-                  },
-                  { label: "Great (7-8)", min: 7, max: 8, color: "#34d399" },
-                  { label: "Good (5-6)", min: 5, max: 6, color: "#f59e0b" },
-                  { label: "Low (3-4)", min: 3, max: 4, color: "#f97316" },
-                  { label: "Poor (1-2)", min: 1, max: 2, color: "#f43f5e" },
-                ].map((band) => {
-                  const count = logs.filter(
-                    (l) =>
-                      (l.score || 0) >= band.min && (l.score || 0) <= band.max,
-                  ).length;
-                  const pct =
-                    logs.length > 0
-                      ? Math.round((count / logs.length) * 100)
-                      : 0;
-                  return (
-                    <div key={band.label} className="flex items-center gap-4">
-                      <span className="text-xs text-gray-500 w-36">
-                        {band.label}
-                      </span>
-                      <div className="flex-1 h-6 bg-white/[0.04] rounded-lg overflow-hidden">
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: 16,
+            }}
+          >
+            {/* SCORE DISTRIBUTION */}
+
+            <AppleCard darkMode={darkMode} className="calendar-card">
+              <div style={{ padding: 20 }}>
+                <h2
+                  style={{
+                    margin: 0,
+                    fontSize: 18,
+                    fontWeight: 650,
+                    letterSpacing: "-0.025em",
+                  }}
+                >
+                  Score distribution
+                </h2>
+
+                <p
+                  style={{
+                    margin: "5px 0 20px",
+                    fontSize: 13,
+                    color: textSecondary,
+                  }}
+                >
+                  How your daily scores are distributed.
+                </p>
+
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 13,
+                  }}
+                >
+                  {[
+                    {
+                      label: "Legendary",
+                      min: 9,
+                      max: 10,
+                      color: "#10b981",
+                    },
+                    {
+                      label: "Great",
+                      min: 7,
+                      max: 8,
+                      color: "#34d399",
+                    },
+                    {
+                      label: "Good",
+                      min: 5,
+                      max: 6,
+                      color: "#f59e0b",
+                    },
+                    {
+                      label: "Low",
+                      min: 3,
+                      max: 4,
+                      color: "#f97316",
+                    },
+                    {
+                      label: "Poor",
+                      min: 1,
+                      max: 2,
+                      color: "#f43f5e",
+                    },
+                  ].map((band) => {
+                    const count = logs.filter(
+                      (log) =>
+                        (log.score || 0) >= band.min &&
+                        (log.score || 0) <= band.max,
+                    ).length;
+
+                    const pct =
+                      logs.length > 0
+                        ? Math.round((count / logs.length) * 100)
+                        : 0;
+
+                    return (
+                      <div key={band.label}>
                         <div
-                          className="h-full rounded-lg flex items-center justify-end pr-3 transition-all duration-1000"
                           style={{
-                            width: `${Math.max(pct, pct > 0 ? 5 : 0)}%`,
-                            background: `${band.color}55`,
-                            borderRight: `2px solid ${band.color}`,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            marginBottom: 6,
                           }}
                         >
-                          {pct > 0 && (
+                          <span
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 500,
+                              color: textSecondary,
+                            }}
+                          >
+                            {band.label}{" "}
                             <span
-                              className="text-[10px] font-bold"
-                              style={{ color: band.color }}
+                              style={{
+                                color: textTertiary,
+                              }}
                             >
-                              {pct}%
+                              ({band.min}–{band.max})
                             </span>
-                          )}
+                          </span>
+
+                          <span
+                            style={{
+                              fontSize: 11,
+                              fontWeight: 600,
+                              color: band.color,
+                            }}
+                          >
+                            {count} {count === 1 ? "day" : "days"}
+                          </span>
+                        </div>
+
+                        <div
+                          style={{
+                            height: 7,
+                            borderRadius: 99,
+                            background: darkMode ? "#2c2c2e" : "#e5e5ea",
+                            overflow: "hidden",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: `${pct}%`,
+                              height: "100%",
+                              borderRadius: 99,
+                              background: band.color,
+                              transition: "width 400ms ease",
+                            }}
+                          />
                         </div>
                       </div>
-                      <span className="text-xs {text} w-8 text-right">
-                        {count}d
-                      </span>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            </AppleCard>
 
-            {/* Category coverage */}
-            <div className="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-6 backdrop-blur-sm">
-              <h2 className="text-base font-bold mb-1">Category Coverage</h2>
-              <p className="text-xs {text} mb-6">
-                Days each category was active
-              </p>
-              <div className="grid md:grid-cols-2 gap-4">
-                {categoryStats.map((cat) => (
-                  <button
-                    key={cat.key}
-                    onClick={() =>
-                      setSelectedCategory(
-                        selectedCategory === cat.key ? null : cat.key,
-                      )
-                    }
-                    className={`text-left p-4 rounded-2xl border transition-all duration-200 hover:scale-[1.01] ${
-                      selectedCategory === cat.key ? "ring-2 ring-white/20" : ""
-                    }`}
-                    style={{
-                      background: `${cat.color}10`,
-                      borderColor:
-                        selectedCategory === cat.key
-                          ? cat.color + "60"
-                          : cat.color + "25",
-                    }}
-                  >
-                    <div className="flex items-center justify-between mb-3">
-                      <span
-                        className="text-sm font-bold"
-                        style={{ color: cat.color }}
-                      >
-                        {cat.icon} {cat.label}
-                      </span>
-                      <span className="text-lg font-black {textMuted}">
-                        {cat.pct}%
-                      </span>
-                    </div>
-                    <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-1000"
-                        style={{ width: `${cat.pct}%`, background: cat.color }}
-                      />
-                    </div>
-                    <p className="text-[10px] {text} mt-2">
-                      {cat.daysLogged} of {logs.length} days
-                    </p>
-                  </button>
-                ))}
-              </div>
-            </div>
+            {/* CATEGORY COVERAGE */}
 
-            {/* Day-of-week patterns */}
-            <div className="bg-white/[0.02] border border-white/[0.06] rounded-3xl p-6 backdrop-blur-sm">
-              <h2 className="text-base font-bold mb-1">Day-of-Week Pattern</h2>
-              <p className="text-xs {text} mb-6">
-                Your average score per weekday
-              </p>
-              <div className="flex items-end justify-around gap-2 h-32">
-                {WEEKDAYS.map((day, di) => {
-                  const dayLogs = logs.filter(
-                    (l) => new Date(l.date).getDay() === di,
-                  );
-                  const avg =
-                    dayLogs.length > 0
-                      ? dayLogs.reduce((s, l) => s + (l.score || 0), 0) /
-                        dayLogs.length
-                      : 0;
-                  const heightPct = (avg / 10) * 100;
-                  const col = getScoreColor(avg);
-                  return (
-                    <div
-                      key={day}
-                      className="flex-1 flex flex-col items-center gap-1"
-                    >
-                      {avg > 0 && (
-                        <span
-                          className="text-[10px] font-bold"
-                          style={{ color: col }}
-                        >
-                          {avg.toFixed(1)}
-                        </span>
-                      )}
-                      <div
-                        className="w-full relative"
-                        style={{ height: "80px" }}
+            <AppleCard darkMode={darkMode} className="calendar-card">
+              <div style={{ padding: 20 }}>
+                <h2
+                  style={{
+                    margin: 0,
+                    fontSize: 18,
+                    fontWeight: 650,
+                    letterSpacing: "-0.025em",
+                  }}
+                >
+                  Category coverage
+                </h2>
+
+                <p
+                  style={{
+                    margin: "5px 0 18px",
+                    fontSize: 13,
+                    color: textSecondary,
+                  }}
+                >
+                  How consistently each area appears in your logs.
+                </p>
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit,minmax(210px,1fr))",
+                    gap: 9,
+                  }}
+                >
+                  {categoryStats.map((category) => {
+                    const selected = selectedCategory === category.key;
+
+                    return (
+                      <button
+                        key={category.key}
+                        type="button"
+                        onClick={() =>
+                          setSelectedCategory(selected ? null : category.key)
+                        }
+                        className="category-card"
+                        style={{
+                          textAlign: "left",
+                          padding: 14,
+                          borderRadius: 15,
+                          border: `1px solid ${
+                            selected ? category.color + "55" : separator
+                          }`,
+                          background: selected
+                            ? `${category.color}0D`
+                            : groupedBackground,
+                          cursor: "pointer",
+                          transition:
+                            "transform 140ms ease, background 140ms ease",
+                        }}
                       >
                         <div
-                          className="absolute bottom-0 w-full rounded-t-lg transition-all duration-700"
                           style={{
-                            height: `${Math.max(heightPct, avg > 0 ? 8 : 0)}%`,
-                            background: `${col}25`,
-                            border: `1px solid ${col}40`,
-                            borderBottom: "none",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            marginBottom: 10,
                           }}
-                        />
-                      </div>
-                      <span className="text-[9px] {text}">{day}</span>
-                    </div>
-                  );
-                })}
+                        >
+                          <span
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 6,
+                              fontSize: 13,
+                              fontWeight: 600,
+                              color: textPrimary,
+                            }}
+                          >
+                            <span>{category.icon}</span>
+                            {category.label}
+                          </span>
+
+                          <span
+                            style={{
+                              fontSize: 14,
+                              fontWeight: 700,
+                              color: category.color,
+                            }}
+                          >
+                            {category.pct}%
+                          </span>
+                        </div>
+
+                        <div
+                          style={{
+                            height: 5,
+                            borderRadius: 99,
+                            background: darkMode ? "#3a3a3c" : "#e5e5ea",
+                            overflow: "hidden",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: `${category.pct}%`,
+                              height: "100%",
+                              borderRadius: 99,
+                              background: category.color,
+                            }}
+                          />
+                        </div>
+
+                        <p
+                          style={{
+                            margin: "7px 0 0",
+                            fontSize: 10,
+                            color: textTertiary,
+                          }}
+                        >
+                          {category.daysLogged} of {logs.length} days
+                        </p>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
+            </AppleCard>
+
+            {/* DAY OF WEEK */}
+
+            <AppleCard darkMode={darkMode} className="calendar-card">
+              <div style={{ padding: 20 }}>
+                <h2
+                  style={{
+                    margin: 0,
+                    fontSize: 18,
+                    fontWeight: 650,
+                    letterSpacing: "-0.025em",
+                  }}
+                >
+                  Weekly pattern
+                </h2>
+
+                <p
+                  style={{
+                    margin: "5px 0 20px",
+                    fontSize: 13,
+                    color: textSecondary,
+                  }}
+                >
+                  Average score by day of the week.
+                </p>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-end",
+                    gap: 8,
+                    height: 150,
+                  }}
+                >
+                  {WEEKDAYS.map((day, dayIndex) => {
+                    const dayLogs = logs.filter(
+                      (log) => new Date(log.date).getDay() === dayIndex,
+                    );
+
+                    const average =
+                      dayLogs.length > 0
+                        ? dayLogs.reduce(
+                            (sum, log) => sum + (log.score || 0),
+                            0,
+                          ) / dayLogs.length
+                        : 0;
+
+                    const height = (average / 10) * 100;
+
+                    const color =
+                      average > 0
+                        ? getScoreColor(average)
+                        : darkMode
+                          ? "#3a3a3c"
+                          : "#e5e5ea";
+
+                    return (
+                      <div
+                        key={day}
+                        style={{
+                          flex: 1,
+                          height: "100%",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "flex-end",
+                          gap: 6,
+                        }}
+                      >
+                        {average > 0 && (
+                          <span
+                            style={{
+                              fontSize: 9,
+                              fontWeight: 700,
+                              color,
+                            }}
+                          >
+                            {average.toFixed(1)}
+                          </span>
+                        )}
+
+                        <div
+                          style={{
+                            width: "100%",
+                            height: 88,
+                            display: "flex",
+                            alignItems: "flex-end",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "100%",
+                              height: `${Math.max(
+                                height,
+                                average > 0 ? 8 : 3,
+                              )}%`,
+                              minHeight: average > 0 ? 5 : 3,
+                              borderRadius: "7px 7px 3px 3px",
+                              background: average > 0 ? `${color}25` : color,
+                              border:
+                                average > 0 ? `1px solid ${color}40` : "none",
+                              transition: "height 400ms ease",
+                            }}
+                          />
+                        </div>
+
+                        <span
+                          style={{
+                            fontSize: 9,
+                            color: textTertiary,
+                            fontWeight: 500,
+                          }}
+                        >
+                          {day.slice(0, 1)}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </AppleCard>
           </div>
         )}
       </div>
-
-      <style>{`
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </div>
   );
 }

@@ -1,6 +1,8 @@
 import { Outlet, useLocation, NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { UserRound } from "lucide-react";
+//import type { ReactNode } from "react";
+
 import ThemeToggle from "../components/ThemeToggle";
 import { useTheme } from "../context/ThemeContext";
 import AppNav from "./Sidebar";
@@ -8,12 +10,13 @@ import AppNav from "./Sidebar";
 /* =========================================================
    IKIG-AI PREMIUM LOGO
    ---------------------------------------------------------
-   Inline SVG logo inspired by the supplied IKIG-AI logo:
+   Inline SVG logo inspired by the supplied IKIG-AI logo.
+
    - Four connected rounded loops
    - Blue/cyan accents
    - Coral/red accent
    - Central connection
-   - Minimal Apple-style presentation
+   - No external image import
 ========================================================= */
 
 function IkigaiLogo({
@@ -38,7 +41,7 @@ function IkigaiLogo({
       ===================================================== */}
 
       <motion.div
-        whileHover={{ scale: 1.04 }}
+        whileHover={{ scale: 1.03 }}
         transition={{
           type: "spring",
           stiffness: 450,
@@ -49,19 +52,26 @@ function IkigaiLogo({
           height: size,
           flexShrink: 0,
           position: "relative",
+
           borderRadius: Math.round(size * 0.29),
 
           background: darkMode
-            ? "rgba(255,255,255,0.07)"
-            : "rgba(255,255,255,0.92)",
+            ? "rgba(255,255,255,0.055)"
+            : "rgba(255,255,255,0.94)",
 
           border: darkMode
-            ? "1px solid rgba(255,255,255,0.10)"
-            : "1px solid rgba(15,23,42,0.08)",
+            ? "1px solid rgba(255,255,255,0.085)"
+            : "1px solid rgba(15,23,42,0.075)",
 
           boxShadow: darkMode
-            ? "0 5px 18px rgba(0,0,0,0.28)"
-            : "0 4px 14px rgba(15,23,42,0.10)",
+            ? `
+              0 4px 16px rgba(0,0,0,0.26),
+              inset 0 1px 0 rgba(255,255,255,0.06)
+            `
+            : `
+              0 3px 12px rgba(15,23,42,0.08),
+              inset 0 1px 0 rgba(255,255,255,0.95)
+            `,
 
           display: "flex",
           alignItems: "center",
@@ -70,19 +80,25 @@ function IkigaiLogo({
           overflow: "hidden",
         }}
       >
-        {/* Very subtle inner highlight */}
+        {/* Subtle glass highlight */}
 
         <div
           style={{
             position: "absolute",
             inset: 0,
             borderRadius: "inherit",
+
             background: darkMode
-              ? "linear-gradient(135deg, rgba(255,255,255,0.07), transparent 50%)"
-              : "linear-gradient(135deg, rgba(255,255,255,0.75), transparent 55%)",
+              ? "linear-gradient(135deg, rgba(255,255,255,0.055), transparent 52%)"
+              : "linear-gradient(135deg, rgba(255,255,255,0.82), transparent 58%)",
+
             pointerEvents: "none",
           }}
         />
+
+        {/* =================================================
+            IKIG-AI SVG
+        ================================================= */}
 
         <svg
           width={size * 0.74}
@@ -204,6 +220,7 @@ function IkigaiLogo({
                 fontWeight: 600,
                 letterSpacing: "0.13em",
                 textTransform: "uppercase",
+
                 color: darkMode
                   ? "rgba(255,255,255,0.38)"
                   : "rgba(15,23,42,0.42)",
@@ -219,97 +236,130 @@ function IkigaiLogo({
 }
 
 /* =========================================================
-   PREMIUM ICON BUTTON
+   PREMIUM PROFILE BUTTON
 ========================================================= */
 
-function PremiumIconButton({
-  children,
-  darkMode,
-  to,
-  label,
-}: {
-  children: React.ReactNode;
-  darkMode: boolean;
-  to?: string;
-  label: string;
-}) {
-  const content = (
-    <motion.div
-      whileHover={{
-        scale: 1.04,
-        y: -1,
-      }}
-      whileTap={{
-        scale: 0.94,
-      }}
-      transition={{
-        type: "spring",
-        stiffness: 450,
-        damping: 25,
-      }}
-      aria-label={label}
-      title={label}
-      style={{
-        width: 40,
-        height: 40,
-        borderRadius: 13,
+function ProfileButton({ darkMode }: { darkMode: boolean }) {
+  return (
+    <NavLink
+      to="/profile"
+      aria-label="Open profile"
+      title="Profile"
+      className="flex-shrink-0"
+    >
+      <motion.div
+        whileHover={{
+          scale: 1.03,
+        }}
+        whileTap={{
+          scale: 0.94,
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 450,
+          damping: 28,
+        }}
+        style={{
+          width: 40,
+          height: 40,
 
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+
+          borderRadius: 13,
+
+          background: darkMode
+            ? "rgba(255,255,255,0.055)"
+            : "rgba(255,255,255,0.78)",
+
+          border: darkMode
+            ? "1px solid rgba(255,255,255,0.08)"
+            : "1px solid rgba(15,23,42,0.065)",
+
+          color: darkMode ? "#E5E7EB" : "#334155",
+
+          boxShadow: darkMode
+            ? `
+              0 4px 16px rgba(0,0,0,0.20),
+              inset 0 1px 0 rgba(255,255,255,0.05)
+            `
+            : `
+              0 4px 14px rgba(15,23,42,0.055),
+              inset 0 1px 0 rgba(255,255,255,0.85)
+            `,
+
+          backdropFilter: "blur(20px) saturate(180%)",
+          WebkitBackdropFilter: "blur(20px) saturate(180%)",
+
+          cursor: "pointer",
+        }}
+      >
+        <UserRound size={18} strokeWidth={1.8} />
+      </motion.div>
+    </NavLink>
+  );
+}
+
+/* =========================================================
+   CONTROL GROUP
+   ---------------------------------------------------------
+   ThemeToggle already contains:
+   - Calendar
+   - Theme
+
+   Therefore it should NOT be wrapped inside another button.
+========================================================= */
+
+function HeaderControls({ darkMode }: { darkMode: boolean }) {
+  return (
+    <div
+      style={{
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
+        gap: 7,
 
-        background: darkMode
-          ? "rgba(255,255,255,0.065)"
-          : "rgba(255,255,255,0.78)",
+        padding: 4,
+
+        borderRadius: 17,
+
+        background: darkMode ? "rgba(10,13,20,0.72)" : "rgba(255,255,255,0.68)",
 
         border: darkMode
-          ? "1px solid rgba(255,255,255,0.085)"
-          : "1px solid rgba(15,23,42,0.075)",
+          ? "1px solid rgba(255,255,255,0.065)"
+          : "1px solid rgba(15,23,42,0.055)",
 
-        backdropFilter: "blur(20px) saturate(180%)",
-        WebkitBackdropFilter: "blur(20px) saturate(180%)",
+        backdropFilter: "blur(24px) saturate(180%)",
+        WebkitBackdropFilter: "blur(24px) saturate(180%)",
 
         boxShadow: darkMode
-          ? "0 5px 20px rgba(0,0,0,0.20), inset 0 1px 0 rgba(255,255,255,0.05)"
-          : "0 5px 18px rgba(15,23,42,0.065), inset 0 1px 0 rgba(255,255,255,0.85)",
-
-        color: darkMode ? "#E5E7EB" : "#334155",
-
-        cursor: "pointer",
-
-        position: "relative",
-        overflow: "hidden",
+          ? "0 7px 26px rgba(0,0,0,0.20)"
+          : "0 7px 24px rgba(15,23,42,0.05)",
       }}
     >
-      {/* Subtle top highlight */}
+      {/* PROFILE */}
 
-      <span
+      <ProfileButton darkMode={darkMode} />
+
+      {/* SEPARATOR */}
+
+      <div
+        aria-hidden="true"
         style={{
-          position: "absolute",
-          top: 0,
-          left: "18%",
-          right: "18%",
-          height: 1,
+          width: 1,
+          height: 21,
+
           background: darkMode
-            ? "rgba(255,255,255,0.12)"
-            : "rgba(255,255,255,0.9)",
-          pointerEvents: "none",
+            ? "rgba(255,255,255,0.075)"
+            : "rgba(15,23,42,0.075)",
         }}
       />
 
-      {children}
-    </motion.div>
+      {/* CALENDAR + THEME */}
+
+      <ThemeToggle />
+    </div>
   );
-
-  if (to) {
-    return (
-      <NavLink to={to} className="flex-shrink-0">
-        {content}
-      </NavLink>
-    );
-  }
-
-  return content;
 }
 
 /* =========================================================
@@ -359,15 +409,15 @@ export default function MainLayout() {
     >
       {/* =====================================================
           APP NAVIGATION
-          Desktop → top
-          Mobile → bottom
+          Desktop → top navigation
+          Mobile → bottom navigation
       ===================================================== */}
 
       <AppNav />
 
       {/* =====================================================
-          DESKTOP TOP RIGHT CONTROLS
-          Profile + Theme
+          DESKTOP TOP-RIGHT CONTROLS
+          Profile + Calendar + Theme
       ===================================================== */}
 
       <div
@@ -377,63 +427,7 @@ export default function MainLayout() {
           paddingRight: 24,
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-
-            padding: 5,
-
-            borderRadius: 17,
-
-            background: darkMode
-              ? "rgba(10,13,20,0.72)"
-              : "rgba(255,255,255,0.68)",
-
-            border: darkMode
-              ? "1px solid rgba(255,255,255,0.065)"
-              : "1px solid rgba(15,23,42,0.055)",
-
-            backdropFilter: "blur(24px) saturate(180%)",
-            WebkitBackdropFilter: "blur(24px) saturate(180%)",
-
-            boxShadow: darkMode
-              ? "0 8px 28px rgba(0,0,0,0.22)"
-              : "0 8px 25px rgba(15,23,42,0.055)",
-          }}
-        >
-          {/* PROFILE */}
-
-          <PremiumIconButton
-            darkMode={darkMode}
-            to="/profile"
-            label="Open profile"
-          >
-            <UserRound size={18} strokeWidth={1.8} />
-          </PremiumIconButton>
-
-          {/* SEPARATOR */}
-
-          <div
-            style={{
-              width: 1,
-              height: 20,
-              background: darkMode
-                ? "rgba(255,255,255,0.08)"
-                : "rgba(15,23,42,0.08)",
-            }}
-          />
-
-          {/* THEME */}
-
-          <PremiumIconButton
-            darkMode={darkMode}
-            label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-          >
-            <ThemeToggle />
-          </PremiumIconButton>
-        </div>
+        <HeaderControls darkMode={darkMode} />
       </div>
 
       {/* =====================================================
@@ -463,11 +457,11 @@ export default function MainLayout() {
           className="h-full flex items-center justify-between"
           style={{
             paddingLeft: 17,
-            paddingRight: 15,
+            paddingRight: 14,
           }}
         >
           {/* =================================================
-              BRAND
+              IKIG-AI BRAND
           ================================================= */}
 
           <IkigaiLogo size={36} showName={true} darkMode={darkMode} />
@@ -476,31 +470,7 @@ export default function MainLayout() {
               MOBILE CONTROLS
           ================================================= */}
 
-          <div
-            className="flex items-center"
-            style={{
-              gap: 8,
-            }}
-          >
-            {/* PROFILE BUTTON */}
-
-            <PremiumIconButton
-              darkMode={darkMode}
-              to="/profile"
-              label="Open profile"
-            >
-              <UserRound size={18} strokeWidth={1.8} />
-            </PremiumIconButton>
-
-            {/* THEME BUTTON */}
-
-            <PremiumIconButton
-              darkMode={darkMode}
-              label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-            >
-              <ThemeToggle />
-            </PremiumIconButton>
-          </div>
+          <HeaderControls darkMode={darkMode} />
         </div>
       </header>
 
@@ -509,7 +479,7 @@ export default function MainLayout() {
 
           Mobile:
           64px top header
-          80px bottom navigation
+          96px bottom navigation
 
           Desktop:
           72px top navigation
