@@ -9,6 +9,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import PageLoading from "../components/PageLoading";
 
 type Props = {
   userId: number;
@@ -586,69 +587,11 @@ export default function CalendarView({ userId }: Props) {
 
   if (loading) {
     return (
-      <div
-        className="calendar-root"
-        style={{
-          minHeight: "100svh",
-          background: pageBackground,
-          color: textPrimary,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 24,
-          fontFamily:
-            '-apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif',
-        }}
-      >
-        <div
-          style={{
-            width: "100%",
-            maxWidth: 280,
-            textAlign: "center",
-          }}
-        >
-          <div
-            style={{
-              width: 56,
-              height: 56,
-              margin: "0 auto 18px",
-              borderRadius: 18,
-              background: secondaryBackground,
-              border: `1px solid ${separator}`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: darkMode
-                ? "0 2px 8px rgba(0,0,0,.25)"
-                : "0 2px 8px rgba(0,0,0,.06)",
-            }}
-          >
-            <CalendarDays size={25} strokeWidth={1.7} color={blue} />
-          </div>
-
-          <p
-            style={{
-              margin: 0,
-              fontSize: 17,
-              fontWeight: 600,
-              letterSpacing: "-0.02em",
-            }}
-          >
-            Preparing your calendar
-          </p>
-
-          <p
-            style={{
-              margin: "7px 0 0",
-              fontSize: 14,
-              lineHeight: 1.4,
-              color: textSecondary,
-            }}
-          >
-            Your daily story is being organized.
-          </p>
-        </div>
-      </div>
+      <PageLoading
+        title="Preparing your calendar"
+        detail="Your daily story is being organized."
+        darkMode={darkMode}
+      />
     );
   }
 

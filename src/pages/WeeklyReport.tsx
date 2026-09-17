@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTheme } from "../context/ThemeContext";
+import PageLoading from "../components/PageLoading";
 
 import {
   ScatterChart,
@@ -298,36 +299,12 @@ function Card({
 ========================================================= */
 
 function LoadingScreen({ darkMode }: ThemeProps) {
-  const theme = getTheme(darkMode);
-
   return (
-    <div
-      className={`min-h-screen ${theme.pageBg} flex items-center justify-center px-6`}
-    >
-      <div className="flex flex-col items-center gap-5">
-        <div
-          className="
-            w-11 h-11
-            rounded-full
-            border-2 border-indigo-500
-            border-t-transparent
-            animate-spin
-          "
-        />
-
-        <div className="text-center">
-          <p
-            className={`text-[10px] uppercase tracking-[0.3em] font-semibold ${theme.secondaryText}`}
-          >
-            Preparing your report
-          </p>
-
-          <p className={`text-xs mt-1 ${theme.mutedText}`}>
-            Analyzing your latest activity
-          </p>
-        </div>
-      </div>
-    </div>
+    <PageLoading
+      title="Preparing your report"
+      detail="Analyzing your latest activity."
+      darkMode={darkMode}
+    />
   );
 }
 

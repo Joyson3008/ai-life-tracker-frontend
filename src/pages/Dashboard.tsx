@@ -15,6 +15,7 @@ import {
   Target,
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import PageLoading from "../components/PageLoading";
 
 type Props = { userId: number };
 type DailyLog = Record<string, any>;
@@ -155,14 +156,7 @@ export default function Dashboard({ userId }: Props) {
   ];
 
   if (loading) {
-    return (
-      <div
-        className={`dashboard-loading ${darkMode ? "dashboard-dark" : "dashboard-light"}`}
-      >
-        <div className="loading-dot" />
-        <p>Preparing your day</p>
-      </div>
-    );
+    return <PageLoading title="Preparing your day" darkMode={darkMode} />;
   }
 
   return (

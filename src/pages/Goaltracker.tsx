@@ -13,6 +13,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import PageLoading from "../components/PageLoading";
 
 type Props = { userId: number };
 type GoalType = "days_per_week" | "days_per_month" | "streak" | "score";
@@ -273,15 +274,9 @@ export default function GoalTracker({ userId }: Props) {
     [goalProgress],
   );
 
-  if (loading)
-    return (
-      <div
-        className={`goals-loading ${darkMode ? "goals-dark" : "goals-light"}`}
-      >
-        <span />
-        <p>Preparing your goals</p>
-      </div>
-    );
+  if (loading) {
+    return <PageLoading title="Preparing your goals" darkMode={darkMode} />;
+  }
 
   return (
     <main className={`goals-page ${darkMode ? "goals-dark" : "goals-light"}`}>

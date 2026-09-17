@@ -24,6 +24,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
+import PageLoading from "../components/PageLoading";
 
 type Props = {
   userId: number;
@@ -394,17 +395,7 @@ export default function Profile({ userId }: Props) {
   ------------------------------------------------------- */
 
   if (loading) {
-    return (
-      <div
-        className={`min-h-screen ${pageBg} flex items-center justify-center`}
-      >
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-7 h-7 rounded-full border-[2.5px] border-indigo-500 border-t-transparent animate-spin" />
-
-          <p className={`text-xs ${secondaryText} tracking-wide`}>Loading</p>
-        </div>
-      </div>
-    );
+    return <PageLoading title="Loading your profile" darkMode={darkMode} />;
   }
 
   /* -------------------------------------------------------

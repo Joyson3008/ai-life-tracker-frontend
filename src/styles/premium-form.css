@@ -81,44 +81,64 @@
   transform: scale(0.985);
 }
 
-/* Inputs: intentional focus without a second border or glow */
+/* Inputs: quiet surfaces with a clear system-style focus state */
 .input,
 .expense-input {
   width: 100%;
-  min-height: 52px;
+  min-height: 56px;
   box-sizing: border-box;
-  padding: 0 15px;
+  padding: 0 16px;
   border: 1px solid var(--ikigai-line);
-  border-radius: var(--ikigai-radius-control);
+  border-radius: 15px;
   outline: 0;
   background: var(--ikigai-field);
   color: var(--ikigai-text);
   font: inherit;
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.4;
   caret-color: var(--ikigai-accent);
-  transition: background 160ms ease, border-color 160ms ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: background 160ms ease, border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .input::placeholder,
 .expense-input::placeholder {
-  color: var(--ikigai-text-secondary);
+  color: color-mix(in srgb, var(--ikigai-text-secondary) 82%, transparent);
   opacity: 1;
+}
+
+.input:hover:not(:disabled),
+.expense-input:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--ikigai-text-secondary) 48%, transparent);
 }
 
 .input:focus,
 .input:focus-visible,
 .expense-input:focus,
 .expense-input:focus-visible {
-  border-color: transparent;
+  border-color: var(--ikigai-accent);
   outline: 0;
-  box-shadow: none;
-  background: var(--ikigai-accent-soft);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ikigai-accent) 22%, transparent);
+  background: color-mix(in srgb, var(--ikigai-accent) 5%, var(--ikigai-field));
+}
+
+.input:-webkit-autofill,
+.expense-input:-webkit-autofill {
+  -webkit-text-fill-color: var(--ikigai-text);
+  box-shadow: 0 0 0 100px var(--ikigai-field) inset;
+  transition: background-color 9999s ease-in-out 0s;
 }
 
 .input::selection,
 .expense-input::selection {
   background: color-mix(in srgb, var(--ikigai-accent) 30%, transparent);
+}
+
+.input:disabled,
+.expense-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
 }
 
 /* Primary actions */

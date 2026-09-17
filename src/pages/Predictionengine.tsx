@@ -1,5 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { useTheme } from "../context/ThemeContext";
+import PageLoading from "../components/PageLoading";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -592,41 +593,11 @@ export default function PredictionEngine({ userId }: Props) {
 
   if (loading) {
     return (
-      <div
-        className={`
-          min-h-screen
-          flex
-          items-center
-          justify-center
-          px-6
-          ${theme.page}
-        `}
-      >
-        <div className="flex flex-col items-center">
-          <div
-            className="
-              h-9
-              w-9
-              rounded-full
-              border-[2.5px]
-              border-violet-500/20
-              border-t-violet-500
-              animate-spin
-            "
-          />
-
-          <p
-            className={`
-              mt-4
-              text-sm
-              font-medium
-              ${theme.secondary}
-            `}
-          >
-            Preparing your forecast…
-          </p>
-        </div>
-      </div>
+      <PageLoading
+        title="Preparing your forecast"
+        detail="Analyzing your latest activity."
+        darkMode={darkMode}
+      />
     );
   }
 
