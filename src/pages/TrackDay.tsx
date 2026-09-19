@@ -24,10 +24,9 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { generatePDF } from "../utils/PDFGenerator";
+import { API_BASE_URL } from "../config/api";
 
 type Props = { userId: number };
-
-const API_BASE_URL = "http://localhost:8080/api";
 
 type SyncedAppUsage = {
   appName: string;
@@ -2213,7 +2212,7 @@ export default function TrackDay({ userId }: Props) {
                     {phoneSyncStatus === "missing" &&
                       "No phone usage sync is available for today yet."}
                     {phoneSyncStatus === "error" &&
-                      "Phone usage could not be loaded from the local backend."}
+                      "Phone usage could not be loaded from the server."}
                   </p>
                 </div>
               </div>

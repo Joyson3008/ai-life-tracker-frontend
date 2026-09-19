@@ -21,6 +21,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { generatePDF } from "../utils/PDFGenerator";
+import { API_BASE_URL } from "../config/api";
 
 type Props = {
   userId: number;
@@ -154,7 +155,7 @@ function DailyLog({ userId }: Props) {
           ? expenseList.reduce((sum, item) => sum + item.amount, 0)
           : extractAmount(form.expenses);
 
-      const res = await fetch(`http://localhost:8080/api/daily/${userId}`, {
+      const res = await fetch(`${API_BASE_URL}/daily/${userId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
