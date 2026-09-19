@@ -1290,6 +1290,11 @@ export default function TrackDay({ userId }: Props) {
   const handleSubmit = async (
     syncedPhoneApps: { name: string; time: number }[] = appList,
   ) => {
+    if (!Number.isInteger(userId) || userId <= 0) {
+      alert("Your session expired. Please sign in again.");
+      return;
+    }
+
     try {
       setLoading(true);
       const totalExpense =
@@ -1324,12 +1329,11 @@ export default function TrackDay({ userId }: Props) {
         .filter(Boolean)
         .join(", ");
 
-      const res = await fetch(
-        `${API_BASE_URL}/daily/${userId}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+      const analyzeUrl = `${API_BASE_URL}/daily/${userId}`;
+      const res = await fetch(analyzeUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
             ...form,
             bibleReading: spiritualSummary || "",
             expenses: totalExpense,
@@ -1350,12 +1354,15 @@ export default function TrackDay({ userId }: Props) {
             ]
               .filter(Boolean)
               .join("\n"),
-          }),
-        },
-      );
-      if (!res.ok) throw new Error("Failed");
+        }),
+      });
+      if (!res.ok) {
+        const errorBody = await res.text();
+        throw new Error(`Analyze failed (${res.status}) at ${analyzeUrl}: ${errorBody}`);
+      }
       setResult(await res.json());
-    } catch {
+    } catch (error) {
+      console.error("Analyze request failed:", error);
       alert("❌ Failed to analyze. Check backend.");
     } finally {
       setLoading(false);
