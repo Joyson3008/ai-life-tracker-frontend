@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { useTheme } from "../context/ThemeContext";
 import appLogo from "../assets/ikigai-logo.png";
+import { API_BASE_URL } from "../config/api";
 
 type Props = { setUserId: (id: number) => void; goToRegister: () => void };
 
@@ -78,14 +79,11 @@ export default function Login({ setUserId, goToRegister }: Props) {
     try {
       setError("");
       setLoading(true);
-      const response = await fetch(
-        "https://ai-life-tracker.onrender.com/api/users/login",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: email.trim(), password }),
-        },
-      );
+      const response = await fetch(`${API_BASE_URL}/users/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
       if (!response.ok) {
         setError(
           (await response.text()) ||

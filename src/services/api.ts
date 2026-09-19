@@ -1,7 +1,7 @@
-const BASE_URL = "http://localhost:8080/api";
+import { API_BASE_URL } from "../config/api";
 
 export const loginUser = async (email: string, password: string) => {
-  const res = await fetch(`${BASE_URL}/users/login`, {
+  const res = await fetch(`${API_BASE_URL}/users/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
@@ -11,7 +11,7 @@ export const loginUser = async (email: string, password: string) => {
 };
 
 export const createLog = async (userId: number) => {
-  const res = await fetch(`${BASE_URL}/daily/${userId}`, {
+  const res = await fetch(`${API_BASE_URL}/daily/${userId}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

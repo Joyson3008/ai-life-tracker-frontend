@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AIResult from "../components/AIResult";
 import { useTheme } from "../context/ThemeContext";
 import {
@@ -21,10 +21,41 @@ import {
   Plus,
   Trash2,
   ChevronDown,
+  RefreshCw,
 } from "lucide-react";
 import { generatePDF } from "../utils/PDFGenerator";
 
 type Props = { userId: number };
+
+const API_BASE_URL = "http://localhost:8080/api";
+
+type SyncedAppUsage = {
+  appName: string;
+  usageMinutes: number;
+};
+
+type SyncedPhoneUsage = {
+  apps?: SyncedAppUsage[];
+};
+
+type DailyLearning = {
+  csTopic: string;
+  csExplanation: string;
+  csExample: string;
+  hindiWords: LearningWord[];
+  teluguWords: LearningWord[];
+  malayalamWords: LearningWord[];
+  vocabulary: LearningWord[];
+};
+
+type LearningWord = {
+  word: string;
+  meaningEnglish: string;
+  meaningTamil: string;
+  exampleEnglish: string;
+  exampleTamil: string;
+  exampleRoman: string;
+};
 
 // ─── DATA ─────────────────────────────────────────────────────────────────────
 
@@ -1189,6 +1220,18 @@ export default function TrackDay({ userId }: Props) {
   });
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [phoneSyncStatus, setPhoneSyncStatus] = useState<
+    "loading" | "loaded" | "missing" | "error"
+  >("loading");
+  const [dailyLearning, setDailyLearning] = useState<DailyLearning | null>(
+    null,
+  );
+  const [learningStatus, setLearningStatus] = useState<
+    "loading" | "loaded" | "error"
+  >("loading");
+  const [refreshingLanguage, setRefreshingLanguage] = useState<string | null>(
+    null,
+  );
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -1237,7 +1280,9 @@ export default function TrackDay({ userId }: Props) {
     setCustomApp("");
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (
+    syncedPhoneApps: { name: string; time: number }[] = appList,
+  ) => {
     try {
       setLoading(true);
       const totalExpense =
@@ -1273,7 +1318,7 @@ export default function TrackDay({ userId }: Props) {
         .join(", ");
 
       const res = await fetch(
-        `https://ai-life-tracker.onrender.com/api/daily/${userId}`,
+        `${API_BASE_URL}/daily/${userId}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -1282,8 +1327,10 @@ export default function TrackDay({ userId }: Props) {
             bibleReading: spiritualSummary || "",
             expenses: totalExpense,
             phoneUsage:
-              appList.length > 0
-                ? appList.map((a) => `${a.name} ${a.time}min`).join(", ")
+              syncedPhoneApps.length > 0
+                ? syncedPhoneApps
+                    .map((a) => `${a.name} ${a.time}min`)
+                    .join(", ")
                 : form.phoneUsage,
             diary: [
               selectedMood && `Mood: ${selectedMood}`,
@@ -1307,6 +1354,120 @@ export default function TrackDay({ userId }: Props) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadSyncedPhoneUsage = async () => {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/phone-usage/${userId}/today`,
+        );
+
+        if (response.status === 404) {
+          if (!cancelled) setPhoneSyncStatus("missing");
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(`Phone usage request failed: ${response.status}`);
+        }
+
+        const usage: SyncedPhoneUsage = await response.json();
+        const syncedApps = (usage.apps ?? [])
+          .filter((app) => app.appName && Number(app.usageMinutes) >= 0)
+          .map((app) => ({
+            name: app.appName,
+            time: Number(app.usageMinutes),
+          }));
+
+        if (cancelled) return;
+
+        setAppList(syncedApps);
+        setForm((current) => ({
+          ...current,
+          phoneUsage: syncedApps
+            .map((app) => `${app.name} ${app.time}min`)
+            .join(", "),
+        }));
+        setPhoneSyncStatus("loaded");
+
+      } catch (error) {
+        console.error("Failed to load synced phone usage:", error);
+        if (!cancelled) setPhoneSyncStatus("error");
+      }
+    };
+
+    void loadSyncedPhoneUsage();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
+  const refreshLanguage = async (
+    language: "HINDI" | "TELUGU" | "MALAYALAM" | "ENGLISH",
+  ) => {
+    try {
+      setRefreshingLanguage(language);
+      const response = await fetch(
+        `${API_BASE_URL}/daily-learning/${userId}/today/refresh/${language}`,
+        { method: "POST" },
+      );
+      if (!response.ok) throw new Error(`Refresh failed: ${response.status}`);
+      const learning: DailyLearning = await response.json();
+      setDailyLearning((current) =>
+        current
+          ? {
+              ...current,
+              hindiWords: (learning.hindiWords ?? current.hindiWords).slice(0, 5),
+              teluguWords: (learning.teluguWords ?? current.teluguWords).slice(0, 5),
+              malayalamWords: (learning.malayalamWords ?? current.malayalamWords).slice(0, 5),
+              vocabulary: (learning.vocabulary ?? current.vocabulary).slice(0, 5),
+            }
+          : learning,
+      );
+    } catch (error) {
+      console.error(`Failed to refresh ${language} learning:`, error);
+    } finally {
+      setRefreshingLanguage(null);
+    }
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadDailyLearning = async () => {
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/daily-learning/${userId}/today`,
+        );
+        if (!response.ok) {
+          throw new Error(`Daily learning request failed: ${response.status}`);
+        }
+
+        const learning: DailyLearning = await response.json();
+        if (!cancelled) {
+          setDailyLearning({
+            ...learning,
+            hindiWords: (learning.hindiWords ?? []).slice(0, 5),
+            teluguWords: (learning.teluguWords ?? []).slice(0, 5),
+            malayalamWords: (learning.malayalamWords ?? []).slice(0, 5),
+            vocabulary: (learning.vocabulary ?? []).slice(0, 5),
+          });
+          setLearningStatus("loaded");
+        }
+      } catch (error) {
+        console.error("Failed to load daily learning:", error);
+        if (!cancelled) setLearningStatus("error");
+      }
+    };
+
+    void loadDailyLearning();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
 
   const completedGoals = goalsDone.filter(Boolean).length;
   const totalExpenses = expenseList.reduce((s, e) => s + e.amount, 0);
@@ -1708,6 +1869,132 @@ export default function TrackDay({ userId }: Props) {
                   className={inputClass}
                 />
               </div>
+
+              <div className="mt-4 space-y-3">
+                {learningStatus === "loading" && (
+                  <p className={`text-sm ${textFaint}`}>
+                    Preparing today's learning pack...
+                  </p>
+                )}
+                {learningStatus === "error" && (
+                  <p className={`text-sm ${textFaint}`}>
+                    Today's learning pack could not be loaded.
+                  </p>
+                )}
+                {dailyLearning && (
+                  <>
+                    <div
+                      className="rounded-2xl border p-4"
+                      style={{
+                        background: darkMode
+                          ? "rgba(168,85,247,0.10)"
+                          : "rgba(168,85,247,0.06)",
+                        borderColor: darkMode
+                          ? "rgba(168,85,247,0.24)"
+                          : "rgba(168,85,247,0.18)",
+                      }}
+                    >
+                      <p className={`text-xs uppercase tracking-wider ${textFaint}`}>
+                        Today's CS topic
+                      </p>
+                      <h3 className="mt-1 text-base font-semibold">
+                        {dailyLearning.csTopic}
+                      </h3>
+                      <p className={`mt-2 text-sm ${textMuted}`}>
+                        {dailyLearning.csExplanation}
+                      </p>
+                      <p className={`mt-2 text-sm ${textMuted}`}>
+                        Example: {dailyLearning.csExample}
+                      </p>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-3">
+                      {([
+                        ["Hindi", "HINDI", dailyLearning.hindiWords],
+                        ["Telugu", "TELUGU", dailyLearning.teluguWords],
+                        ["Malayalam", "MALAYALAM", dailyLearning.malayalamWords],
+                      ] as [string, "HINDI" | "TELUGU" | "MALAYALAM", LearningWord[]][]).map(([language, languageCode, lessons]) => {
+                        return (
+                          <div key={language} className="space-y-2">
+                            <div className="flex items-center justify-between gap-2">
+                              <label className={`text-xs font-semibold ${textMuted}`}>
+                                {language} words
+                              </label>
+                              <button
+                                type="button"
+                                onClick={() => void refreshLanguage(languageCode)}
+                                disabled={refreshingLanguage === languageCode}
+                                className={`inline-flex items-center gap-1 text-xs ${textMuted}`}
+                                title={`Refresh ${language} words`}
+                              >
+                                <RefreshCw size={12} className={refreshingLanguage === languageCode ? "animate-spin" : ""} />
+                                Refresh
+                              </button>
+                            </div>
+                            {lessons.map((lesson, index) => (
+                              <div key={`${language}-${lesson.word}-${index}`}>
+                                <input
+                                  readOnly
+                                  value={lesson.word}
+                                  className={inputClass}
+                                  aria-label={`${language} word ${index + 1}`}
+                                />
+                                <p className={`mt-1 text-xs leading-5 ${textFaint}`}>
+                                  Meaning in English: {lesson.meaningEnglish}<br />
+                                  Meaning in Tamil: {lesson.meaningTamil}<br />
+                                  Example in English: {lesson.exampleEnglish}<br />
+                                  Example in Tamil: {lesson.exampleTamil}<br />
+                                  Example in {language}, Roman letters: {lesson.exampleRoman}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <div>
+                      <div className="mb-2 flex items-center justify-between">
+                        <p className={`text-xs font-semibold uppercase tracking-wider ${textFaint}`}>
+                          5 English vocabulary words
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => void refreshLanguage("ENGLISH")}
+                          disabled={refreshingLanguage === "ENGLISH"}
+                          className={`inline-flex items-center gap-1 text-xs ${textMuted}`}
+                          title="Refresh English vocabulary"
+                        >
+                          <RefreshCw size={12} className={refreshingLanguage === "ENGLISH" ? "animate-spin" : ""} />
+                          Refresh
+                        </button>
+                      </div>
+                      <div className="grid md:grid-cols-2 gap-2">
+                        {dailyLearning.vocabulary.map((item, index) => (
+                          <div
+                            key={`${item.word}-${index}`}
+                            className="rounded-xl border px-3 py-2"
+                            style={{
+                              borderColor: darkMode
+                                ? "rgba(255,255,255,0.10)"
+                                : "#e5e7eb",
+                            }}
+                          >
+                            <p className="text-sm font-semibold">
+                              {index + 1}. {item.word}
+                            </p>
+                            <p className={`text-xs ${textMuted}`}>
+                              Meaning: {item.meaningEnglish} · {item.exampleEnglish}<br />
+                              Tamil: {item.meaningTamil} · {item.exampleTamil}<br />
+                              Roman example: {item.exampleRoman}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             </SectionCard>
 
             {/* ── 5. PRODUCTIVITY ── */}
@@ -1918,6 +2205,16 @@ export default function TrackDay({ userId }: Props) {
                       </span>
                     </div>
                   )}
+                  <p className={`mt-3 text-xs ${textFaint}`}>
+                    {phoneSyncStatus === "loading" &&
+                      "Loading today's synced phone usage..."}
+                    {phoneSyncStatus === "loaded" &&
+                      "Today's phone usage was fetched automatically."}
+                    {phoneSyncStatus === "missing" &&
+                      "No phone usage sync is available for today yet."}
+                    {phoneSyncStatus === "error" &&
+                      "Phone usage could not be loaded from the local backend."}
+                  </p>
                 </div>
               </div>
             </SectionCard>
@@ -2030,7 +2327,7 @@ export default function TrackDay({ userId }: Props) {
           {/* ── SUBMIT ── */}
           <div className="mt-12 flex flex-col items-center gap-4">
             <button
-              onClick={handleSubmit}
+              onClick={() => void handleSubmit()}
               disabled={loading}
               className="submit-btn"
             >
@@ -2081,6 +2378,11 @@ export default function TrackDay({ userId }: Props) {
                     appList,
                     selectedMood,
                     diaryTitle,
+                    undefined,
+                    undefined,
+                    undefined,
+                    undefined,
+                    dailyLearning,
                   )
                 }
               />

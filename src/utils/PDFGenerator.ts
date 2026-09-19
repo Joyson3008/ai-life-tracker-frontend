@@ -16,7 +16,8 @@ export const generatePDF = async (
   },
   goals?: { text: string; done: boolean }[],
   gratitude?: string,
-  tomorrowPlan?: string
+  tomorrowPlan?: string,
+  dailyLearning?: any
 ) => {
   if (!result) return;
 
@@ -305,6 +306,34 @@ export const generatePDF = async (
          </div>`
       : `<p style="font-size:12px;color:#4b5683;">No screen time logged.</p>`;
 
+  const learningWords = (title: string, words: any[] = []) => `
+    <div style="flex:1;min-width:30%;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1px;color:#c084fc;text-transform:uppercase;margin-bottom:8px;">${title}</div>
+      ${words.slice(0, 5).map((word: any, index: number) => `
+        <div style="border-bottom:1px solid #1e2440;padding:8px 0;page-break-inside:avoid;">
+          <div style="font-size:12px;font-weight:700;color:#f8faff;">${index + 1}. ${safe(word.word)}</div>
+          <div style="font-size:10px;line-height:1.7;color:#cbd5e1;">English: ${safe(word.meaningEnglish)}</div>
+          <div style="font-size:10px;line-height:1.7;color:#cbd5e1;">Tamil: ${safe(word.meaningTamil)}</div>
+          <div style="font-size:10px;line-height:1.7;color:#94a3b8;">English example: ${safe(word.exampleEnglish)}</div>
+          <div style="font-size:10px;line-height:1.7;color:#94a3b8;">Tamil example: ${safe(word.exampleTamil)}</div>
+          <div style="font-size:10px;line-height:1.7;color:#e9d5ff;">Roman example: ${safe(word.exampleRoman)}</div>
+        </div>`).join("")}
+    </div>`;
+
+  const learningHTML = dailyLearning
+    ? `
+      <div style="background:#0b1120;border:1px solid #1e2440;border-top:3px solid #c084fc;border-radius:14px;padding:24px;margin-bottom:18px;page-break-inside:avoid;">
+        ${sectionHead("🗣️", "Daily Learning Pack", "#c084fc")}
+        ${field("CS Topic", `${safe(dailyLearning.csTopic)}<br>${safe(dailyLearning.csExplanation)}<br>Example: ${safe(dailyLearning.csExample)}`, "#e9d5ff")}
+        <div style="display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;">
+          ${learningWords("Hindi · Roman", dailyLearning.hindiWords)}
+          ${learningWords("Telugu · Roman", dailyLearning.teluguWords)}
+          ${learningWords("Malayalam · Roman", dailyLearning.malayalamWords)}
+        </div>
+        <div style="margin-top:18px;">${learningWords("English Vocabulary", dailyLearning.vocabulary)}</div>
+      </div>`
+    : "";
+
   // ── FULL HTML ─────────────────────────────────────────────────────────────
   const element = document.createElement("div");
   element.innerHTML = `
@@ -381,6 +410,9 @@ export const generatePDF = async (
 
       <!-- ═══ TOMORROW'S PLAN ═══ -->
       ${tomorrowHTML}
+
+      <!-- ═══ DAILY LEARNING ═══ -->
+      ${learningHTML}
 
       <!-- ── DIARY ── -->
       ${card(`
