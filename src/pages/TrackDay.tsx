@@ -28,6 +28,14 @@ import { API_BASE_URL } from "../config/api";
 
 type Props = { userId: number };
 
+const localDate = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 type SyncedAppUsage = {
   appName: string;
   usageMinutes: number;
@@ -1360,7 +1368,7 @@ export default function TrackDay({ userId }: Props) {
     const loadSyncedPhoneUsage = async () => {
       try {
         const response = await fetch(
-          `${API_BASE_URL}/phone-usage/${userId}/today`,
+          `${API_BASE_URL}/phone-usage/${userId}/today?date=${localDate()}`,
         );
 
         if (response.status === 404) {
