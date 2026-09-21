@@ -1428,12 +1428,18 @@ export default function TrackDay({ userId }: Props) {
         `${API_BASE_URL}/daily-learning/${userId}/today/refresh/${language}`,
         { method: "POST" },
       );
-      if (!response.ok) throw new Error(`Refresh failed: ${response.status}`);
+      if (!response.ok) {
+        const errorBody = await response.text();
+        throw new Error(`Refresh failed (${response.status}): ${errorBody}`);
+      }
       const learning: DailyLearning = await response.json();
       setDailyLearning((current) =>
         current
           ? {
               ...current,
+              csTopic: learning.csTopic || current.csTopic,
+              csExplanation: learning.csExplanation || current.csExplanation,
+              csExample: learning.csExample || current.csExample,
               hindiWords: (learning.hindiWords ?? current.hindiWords).slice(0, 5),
               teluguWords: (learning.teluguWords ?? current.teluguWords).slice(0, 5),
               malayalamWords: (learning.malayalamWords ?? current.malayalamWords).slice(0, 5),
@@ -1443,6 +1449,7 @@ export default function TrackDay({ userId }: Props) {
       );
     } catch (error) {
       console.error(`Failed to refresh ${language} learning:`, error);
+      window.alert(`Could not refresh ${language} words. Please try again.`);
     } finally {
       setRefreshingLanguage(null);
     }
